@@ -201,7 +201,7 @@ const Home = () => {
           {portfolioProjects.map((project, index) => (
             <div
               key={index}
-              className="portfolio-card group relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-6 md:p-8 transition-all duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer"
+              className="portfolio-card group relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-6 md:p-8 transition-colors transition-shadow duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer"
             >
               <div>
                 <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-[0_15px_35px_rgba(0,0,0,0.05)] border border-black/5">

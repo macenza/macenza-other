@@ -84,7 +84,7 @@ const HeroSequence = ({ onLoadingComplete, children }) => {
       context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
     };
 
-    gsap.to(airpods, {
+    const anim = gsap.to(airpods, {
       frame: frameCount - 1,
       snap: "frame",
       ease: "none",
@@ -102,7 +102,8 @@ const HeroSequence = ({ onLoadingComplete, children }) => {
 
     return () => {
       window.removeEventListener('resize', setCanvasSize);
-      ScrollTrigger.getAll().forEach(t => t.kill());
+      if (anim.scrollTrigger) anim.scrollTrigger.kill();
+      anim.kill();
     };
   }, [images]);
 
