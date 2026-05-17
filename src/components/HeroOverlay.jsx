@@ -15,45 +15,45 @@ const HeroOverlay = () => {
       // Entry animations
       const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.5 } });
 
-      tl.fromTo(".hero-line-1", 
-        { x: -100, opacity: 0 }, 
-        { x: 0, opacity: 1 }, 
+      tl.fromTo(".hero-line-1",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1 },
         0.4
       );
 
-      tl.fromTo(".hero-line-2", 
-        { x: -100, opacity: 0 }, 
-        { x: 0, opacity: 1 }, 
+      tl.fromTo(".hero-line-2",
+        { x: -100, opacity: 0 },
+        { x: 0, opacity: 1 },
         0.6
       );
 
-      tl.fromTo(".hero-desc", 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1 }, 
+      tl.fromTo(".hero-desc",
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1 },
         0.8
       );
 
-      tl.fromTo(".hero-btns", 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1 }, 
+      tl.fromTo(".hero-btns",
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1 },
         1.0
       );
 
-      tl.fromTo(rightStatsRef.current, 
-        { x: 100, opacity: 0 }, 
-        { x: 0, opacity: 1, duration: 1.2 }, 
+      tl.fromTo(rightStatsRef.current,
+        { x: 100, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1.2 },
         1.2
       );
 
-      tl.fromTo(brandStripRef.current, 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.2 }, 
+      tl.fromTo(brandStripRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2 },
         1.4
       );
 
-      tl.fromTo(scrollIndicatorRef.current, 
-        { y: 50, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.2 }, 
+      tl.fromTo(scrollIndicatorRef.current,
+        { y: 50, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.2 },
         1.4
       );
     }, overlayRef);
@@ -71,13 +71,13 @@ const HeroOverlay = () => {
   const brands = ["Google", "Microsoft", "AWS", "IBM", "NVIDIA", "Adobe"];
 
   return (
-    <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 md:p-12 overflow-hidden">
-      
+    <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 pb-3 md:p-12 overflow-hidden">
+
       {/* Hero Content (Left) & Stats (Right) */}
       <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-12 mt-20">
-        
+
         {/* Left Hero Content */}
-        <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto">
+        <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto -mt-0 md:mt-0">
           <div className="overflow-hidden mb-2">
             <h1 className="hero-line-1 text-6xl md:text-8xl font-black text-black tracking-tight leading-[0.9]">
               Intelligence
@@ -88,7 +88,7 @@ const HeroOverlay = () => {
               Redefined.
             </h1>
           </div>
-          <p className="hero-desc text-lg md:text-xl text-black/65 leading-relaxed mb-10 max-w-[480px]">
+          <p className="hero-desc text-lg md:text-xl text-black/65 leading-relaxed mb-64 md:mb-10 max-w-[480px]">
             Macenza builds next-generation AI solutions that empower businesses and elevate human potential.
           </p>
           <div className="hero-btns flex flex-wrap gap-4">
@@ -104,8 +104,8 @@ const HeroOverlay = () => {
         {/* Right Floating Stats */}
         <div ref={rightStatsRef} className="hidden lg:flex flex-col gap-6 pointer-events-auto">
           {stats.map((stat, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="stat-card w-64 glass-morphism rounded-[28px] p-6 flex items-center gap-4 transition-all duration-500 hover:scale-110 hover:shadow-2xl cursor-default group"
             >
               <div className="p-3 bg-black/5 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-300">
@@ -121,18 +121,17 @@ const HeroOverlay = () => {
       </div>
 
       {/* Bottom Area */}
-      <div className="flex flex-col md:flex-row items-end justify-between gap-8 mt-auto">
-        
-        {/* Brand Strip */}
-        <div 
+      <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-4 md:gap-8 mt-auto w-full">
+
+        <div
           ref={brandStripRef}
-          className="mx-auto md:mx-0 glass-morphism rounded-full px-8 py-4 flex flex-col md:flex-row items-center gap-6 pointer-events-auto shadow-lg"
+          className="mx-auto md:mx-0 glass-morphism rounded-[2rem] md:rounded-full px-8 py-4 flex flex-col md:flex-row items-center gap-4 md:gap-6 pointer-events-auto shadow-lg w-[92%] sm:w-auto"
         >
-          <span className="text-xs font-bold text-dark/40 uppercase tracking-[0.2em] whitespace-nowrap">
+          <span className="text-xs font-bold text-dark/40 uppercase tracking-[0.2em] whitespace-nowrap text-center">
             Trusted by Industry Leaders
           </span>
           <div className="h-4 w-[1px] bg-dark/10 hidden md:block" />
-          <div className="flex items-center gap-8">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:gap-x-8 md:gap-y-0 items-center">
             {brands.map((brand) => (
               <span key={brand} className="text-sm font-black text-dark/30 hover:text-dark/60 transition-colors cursor-default">
                 {brand}
@@ -142,7 +141,7 @@ const HeroOverlay = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <div 
+        <div
           ref={scrollIndicatorRef}
           className="flex items-center gap-4 pointer-events-auto"
         >
