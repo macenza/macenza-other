@@ -189,21 +189,21 @@ const Careers = () => {
       </Section>
 
       {/* Company Culture Showcase */}
-      <Section id="culture" className="bg-black text-white overflow-hidden relative">
-        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/10 blur-[150px] -rotate-12 translate-x-1/2"></div>
+      <Section id="culture" className="overflow-hidden relative">
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[150px] -rotate-12 translate-x-1/2"></div>
         <div className="max-w-4xl mx-auto text-center mb-20 reveal-up relative z-10">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8">Life at <span className="text-primary italic">Macenza</span></h2>
-          <p className="text-xl text-white/60 font-light leading-relaxed">
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Life at <span className="text-primary italic">Macenza</span></h2>
+          <p className="text-xl text-black/60 font-light leading-relaxed">
             We don't just build software; we build a culture of relentless innovation. At Macenza, every engineer is a founder, and every designer is an architect of the future.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 reveal-up">
           {culturePoints.map((point, i) => (
-            <div key={i} className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary transition-all duration-300 text-center group">
-              <div className="mb-4 w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary mx-auto group-hover:scale-110 transition-transform">
+            <div key={i} className="p-8 rounded-3xl glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 text-center group">
+              <div className="mb-4 w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto group-hover:scale-110 transition-transform">
                 <Star className="w-5 h-5" />
               </div>
-              <span className="text-sm font-bold block leading-tight">{point}</span>
+              <span className="text-sm font-bold block leading-tight text-black">{point}</span>
             </div>
           ))}
         </div>

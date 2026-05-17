@@ -261,7 +261,7 @@ const Technology = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-up">
             {capabilities.map((cap, i) => (
-              <div key={i} className="p-8 rounded-[2rem] bg-black/5 border border-black/5 flex items-center gap-6 hover:bg-white hover:shadow-xl hover:border-primary transition-all duration-300 group">
+              <div key={i} className="p-8 rounded-[2rem] glass-morphism border border-black/5 flex items-center gap-6 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 group">
                 <div className="w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform"></div>
                 <span className="text-lg font-bold text-black">{cap}</span>
               </div>
