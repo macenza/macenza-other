@@ -335,11 +335,11 @@ const Technology = () => {
 
       {/* Metrics */}
       <Section id="metrics">
-        <div className="metrics-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div className="metrics-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
           {metrics.map((m, i) => (
-            <div key={i} className="metric-card p-10 rounded-[2.5rem] glass-morphism border border-black/5 text-center shadow-sm">
-              <div className="text-4xl md:text-5xl font-black text-black mb-2 tracking-tighter">{m.label}</div>
-              <div className="text-xs font-bold text-black/40 uppercase tracking-widest">{m.sub}</div>
+            <div key={i} className="metric-card p-6 sm:p-8 lg:p-6 xl:p-8 rounded-3xl sm:rounded-[2rem] glass-morphism border border-black/5 text-center shadow-sm flex flex-col justify-center">
+              <div className="text-xl sm:text-2xl xl:text-3xl font-black text-black mb-2 tracking-tight leading-tight">{m.label}</div>
+              <div className="text-[10px] sm:text-xs font-bold text-black/40 uppercase tracking-widest">{m.sub}</div>
             </div>
           ))}
         </div>
