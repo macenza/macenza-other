@@ -103,36 +103,6 @@ const Careers = () => {
 
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
-      {/* Simple Navbar */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-[9999] pointer-events-auto shadow-xl">
-        <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center glow-blue">
-              <span className="text-white font-black text-xl">M</span>
-            </div>
-            <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
-          </Link>
-        </div>
-
-        <div className="hidden lg:flex items-center gap-8">
-          {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-            <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
-              className={`text-sm font-medium transition-all duration-300 hover:scale-105 ${item === "Careers" ? "text-primary font-bold" : "text-black/70 hover:text-primary"}`}
-            >
-              {item}
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
-            Get Started
-          </Link>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className="relative min-h-[75vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">

@@ -10,19 +10,10 @@ import Footer from '../components/Footer';
 import LogoLoop from '../components/LogoLoop';
 
 const Home = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const navbarRef = useRef(null);
-
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Navbar Entrance Animation
-      gsap.fromTo(navbarRef.current, 
-        { y: -100, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.2, delay: 0.2, ease: "power4.out" }
-      );
-
       // Portfolio Cards Reveal Animation
       gsap.from(".portfolio-card", {
         y: 20,
@@ -101,68 +92,6 @@ const Home = () => {
 
   return (
     <div className="relative">
-      {/* Global Viewport-Anchored Navbar */}
-      <nav 
-        ref={navbarRef}
-        className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-[9999] pointer-events-auto shadow-xl"
-      >
-        <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center glow-blue">
-              <span className="text-white font-black text-xl">M</span>
-            </div>
-            <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
-          </Link>
-        </div>
-
-        <div className="hidden lg:flex items-center gap-8">
-          {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-            <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
-              className="text-sm font-medium text-black/70 hover:text-primary transition-all duration-300 hover:scale-105"
-            >
-              {item}
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Link to="/contact" className="hidden md:block px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95 text-center">
-            Get Started
-          </Link>
-          <button 
-            className="lg:hidden p-2 text-black"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? '-rotate-45 -translate-y-2.5' : ''}`} />
-            </div>
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="absolute top-[90px] left-0 w-full glass-morphism rounded-3xl p-6 flex flex-col gap-4 lg:hidden pointer-events-auto animate-in fade-in slide-in-from-top-4 duration-300">
-            {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-              <Link 
-                key={item} 
-                to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
-                className="text-lg font-bold text-black/80 hover:text-primary transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item}
-              </Link>
-            ))}
-            <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="w-full py-4 bg-primary text-white rounded-2xl font-bold glow-blue mt-2 text-center">
-              Get Started
-            </Link>
-          </div>
-        )}
-      </nav>
-
       <div id="hero-trigger" className="relative">
         <HeroSequence onLoadingComplete={handleLoadingComplete}>
           <div className="hero-overlay-container absolute inset-0 z-30">
