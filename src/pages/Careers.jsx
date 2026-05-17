@@ -60,18 +60,22 @@ const Careers = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     const ctx = gsap.context(() => {
-      gsap.from(".reveal-up", {
-        y: 60,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: ".reveal-up",
-          start: "top 85%",
-        }
+      // Animate each reveal-up element individually when it enters the viewport
+      gsap.utils.toArray(".reveal-up").forEach((elem) => {
+        gsap.from(elem, {
+          y: 60,
+          opacity: 0,
+          duration: 1,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: elem,
+            start: "top 85%",
+            toggleActions: "play none none none"
+          }
+        });
       });
 
+      // Stagger job cards once the job grid enters the viewport
       gsap.from(".job-card", {
         y: 30,
         opacity: 0,
@@ -81,11 +85,20 @@ const Careers = () => {
         scrollTrigger: {
           trigger: ".job-grid",
           start: "top 75%",
+          toggleActions: "play none none none"
         }
       });
     }, pageRef);
 
-    return () => ctx.revert();
+    // Refresh ScrollTrigger after a timeout to fix late rendering layout shifts
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 1500);
+
+    return () => {
+      ctx.revert();
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
