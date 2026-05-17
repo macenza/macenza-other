@@ -234,7 +234,7 @@ const Technology = () => {
       <Section id="tech-stack" title="Our Technology Stack" subtitle="A robust, multi-layered foundation for the next generation of digital products.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {techStack.map((category, idx) => (
-            <div key={idx} className="p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group reveal-up">
+            <div key={idx} className="p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group reveal-up">
               <div className="mb-8 p-5 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
                 {React.cloneElement(category.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
               </div>

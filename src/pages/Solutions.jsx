@@ -206,7 +206,7 @@ const Solutions = () => {
       <Section id="core-solutions" title="Our Core Solutions" subtitle="Empowering your business with high-performance digital tools.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 solution-grid">
           {solutions.map((sol, idx) => (
-            <div key={idx} className="solution-card p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group">
+            <div key={idx} className="solution-card p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group">
               <div className="mb-8 p-5 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
                 {React.cloneElement(sol.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
               </div>

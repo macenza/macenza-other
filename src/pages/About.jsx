@@ -177,7 +177,7 @@ const About = () => {
       {/* Mission Vision Values */}
       <Section id="mission">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-all duration-500">
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8">
               <Target className="w-8 h-8" />
             </div>
@@ -186,7 +186,7 @@ const About = () => {
               To empower every business with intelligent technology that amplifies human potential and drives sustainable global innovation.
             </p>
           </div>
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-all duration-500 bg-primary/5">
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 bg-primary/5">
             <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mb-8">
               <Lightbulb className="w-8 h-8" />
             </div>
@@ -195,7 +195,7 @@ const About = () => {
               To become the world's most trusted partner in AI-driven digital transformation, building the foundations for a smarter tomorrow.
             </p>
           </div>
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-all duration-500">
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500">
             <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8">
               <Heart className="w-8 h-8" />
             </div>
@@ -294,7 +294,7 @@ const About = () => {
             { title: "Global innovation", desc: "Drawing talent and inspiration from around the world." },
             { title: "Enterprise-ready solutions", desc: "Robust, secure, and reliable for high-stakes environments." },
           ].map((item, i) => (
-            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-dark/5 shadow-sm reveal-up hover:border-primary/50 transition-all duration-300">
+            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-dark/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
                 <Shield className="w-6 h-6" />
               </div>

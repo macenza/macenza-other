@@ -213,7 +213,7 @@ const Careers = () => {
       <Section id="positions" title="Current Open Roles" subtitle="Find your place in the future of intelligence.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 job-grid">
           {jobs.map((job, i) => (
-            <div key={i} className="job-card p-10 rounded-[2.5rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div key={i} className="job-card p-10 rounded-[2.5rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-colors transition-shadow duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div>
                 <h4 className="text-2xl font-bold text-black mb-2 group-hover:text-primary transition-colors">{job.title}</h4>
                 <div className="flex flex-wrap gap-4">
@@ -272,7 +272,7 @@ const Careers = () => {
       <Section id="testimonials" className="bg-white">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {testimonials.map((t, i) => (
-            <div key={i} className="p-12 rounded-[3rem] glass-morphism border border-black/5 reveal-up hover:shadow-2xl transition-all duration-500 flex flex-col md:flex-row gap-8 items-center md:items-start">
+            <div key={i} className="p-12 rounded-[3rem] glass-morphism border border-black/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 flex flex-col md:flex-row gap-8 items-center md:items-start">
               <img src={t.image} alt={t.name} className="w-24 h-24 rounded-full object-cover shadow-xl border-4 border-white" />
               <div>
                 <p className="text-xl text-black/70 font-light italic leading-relaxed mb-8">"{t.content}"</p>

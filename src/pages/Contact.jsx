@@ -295,7 +295,7 @@ const Contact = () => {
             { title: "Scalable architecture", icon: <Rocket />, desc: "Cloud-native systems designed to grow with your ambition." },
             { title: "Future-ready technology", icon: <Target />, desc: "Building the foundations for a smarter, digital tomorrow." }
           ].map((item, i) => (
-            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-all duration-300 flex gap-6 items-start">
+            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300 flex gap-6 items-start">
               <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                 {React.cloneElement(item.icon, { className: "w-6 h-6" })}
               </div>
