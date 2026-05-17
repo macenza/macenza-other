@@ -63,13 +63,13 @@ const Careers = () => {
       // Animate each reveal-up element individually when it enters the viewport
       gsap.utils.toArray(".reveal-up").forEach((elem) => {
         gsap.from(elem, {
-          y: 60,
+          y: 20,
           opacity: 0,
-          duration: 1,
-          ease: "power4.out",
+          duration: 0.4,
+          ease: "power2.out",
           scrollTrigger: {
             trigger: elem,
-            start: "top 85%",
+            start: "top 96%",
             toggleActions: "play none none none"
           }
         });

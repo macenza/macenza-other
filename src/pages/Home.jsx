@@ -15,14 +15,14 @@ const Home = () => {
     const ctx = gsap.context(() => {
       // Portfolio Cards Reveal Animation
       gsap.from(".portfolio-card", {
-        y: 60,
+        y: 20,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        ease: "power3.out",
+        duration: 0.4,
+        stagger: 0.1,
+        ease: "power2.out",
         scrollTrigger: {
           trigger: "#portfolio",
-          start: "top 85%",
+          start: "top 96%",
           toggleActions: "play none none none"
         }
       });
