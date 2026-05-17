@@ -11,7 +11,7 @@ import LogoLoop from '../components/LogoLoop';
 const Home = () => {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    
+
     const ctx = gsap.context(() => {
       // Portfolio Cards Reveal Animation
       gsap.from(".portfolio-card", {
@@ -183,7 +183,7 @@ const Home = () => {
           <div className="relative aspect-square rounded-3xl overflow-hidden group">
             <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700"></div>
             <img
-              src="https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000"
+              src="public\macenza-ad.png"
               alt="AI Technology"
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
             />
