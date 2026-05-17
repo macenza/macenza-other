@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { 
-  Mail, Phone, Clock, Globe, MapPin, MessageSquare, 
+import {
+  Mail, Phone, Clock, Globe, MapPin, MessageSquare,
   Send, ChevronDown, CheckCircle2, Shield, Rocket,
   Zap, Brain, Target, Search
 } from 'lucide-react';
@@ -13,10 +13,10 @@ import { Link } from 'react-router-dom';
 gsap.registerPlugin(ScrollTrigger);
 
 const contactInfo = [
-  { title: "Email", value: "hello@macenza.com", icon: <Mail /> },
-  { title: "Business Inquiries", value: "projects@macenza.com", icon: <MessageSquare /> },
-  { title: "Phone", value: "+91 Business Contact Number", icon: <Phone /> },
-  { title: "Working Hours", value: "Mon - Sat | 9 AM - 7 PM", icon: <Clock /> }
+  { title: "Email", value: "info@macenza.com", icon: <Mail /> },
+  { title: "Business Inquiries", value: "shanki9414@gmail.com", icon: <MessageSquare /> },
+  { title: "Phone", value: "+91 94146 60123", icon: <Phone /> },
+  { title: "Working Hours", value: "Mon - Sat | 10 AM - 6 PM", icon: <Clock /> }
 ];
 
 const countries = [
@@ -112,9 +112,9 @@ const Contact = () => {
 
         <div className="hidden lg:flex items-center gap-8">
           {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-            <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
+            <Link
+              key={item}
+              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
               className={`text-sm font-medium transition-all duration-300 hover:scale-105 ${item === "Contact" ? "text-primary font-bold" : "text-black/70 hover:text-primary"}`}
             >
               {item}
@@ -140,14 +140,14 @@ const Contact = () => {
             Connect With Macenza
           </div>
           <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-            Let’s Build Something <br /> 
+            Let’s Build Something <br />
             <span className="text-primary italic">Extraordinary.</span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
             Connect with Macenza to build AI solutions, software platforms, automation systems, and next-generation digital products.
           </p>
           <div className="flex justify-center reveal-up">
-            <button 
+            <button
               onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center"
             >
@@ -167,7 +167,7 @@ const Contact = () => {
             <p className="text-black/60 text-lg font-light mb-12 leading-relaxed">
               Have a visionary project in mind? Our team of engineers and AI experts is ready to transform your ideas into scalable reality. Fill out the form, and we'll get back to you within 24 hours.
             </p>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {contactInfo.map((info, i) => (
                 <div key={i} className="p-8 rounded-[2rem] glass-morphism border border-black/5 hover:border-primary/20 transition-all group">
@@ -246,20 +246,20 @@ const Contact = () => {
             Macenza works with clients and businesses across multiple international markets, bringing intelligent solutions to the world's most innovative regions.
           </p>
         </div>
-        
+
         <div className="map-container relative aspect-[21/9] w-full glass-morphism rounded-[3rem] border border-black/5 overflow-hidden reveal-up shadow-inner bg-black/5">
           {/* Simple Vector-style Map Background Placeholder */}
           <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-center bg-no-repeat bg-contain"></div>
-          
+
           {countries.map((country, i) => (
-            <div 
-              key={i} 
-              className="map-marker absolute group cursor-pointer" 
+            <div
+              key={i}
+              className="map-marker absolute group cursor-pointer"
               style={{ top: country.top, left: country.left }}
             >
               <div className="w-4 h-4 bg-primary rounded-full glow-blue animate-pulse relative z-10"></div>
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
-              
+
               {/* Tooltip */}
               <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-y-2 group-hover:translate-y-0">
                 <div className="glass-morphism px-4 py-2 rounded-xl border border-black/5 shadow-xl text-center whitespace-nowrap">
@@ -310,7 +310,7 @@ const Contact = () => {
         <div className="max-w-4xl mx-auto space-y-4 reveal-up">
           {faqs.map((faq, i) => (
             <div key={i} className="rounded-3xl border border-black/5 overflow-hidden transition-all duration-300 hover:border-primary/20">
-              <button 
+              <button
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
                 className="w-full px-10 py-8 flex items-center justify-between text-left group"
               >
@@ -332,14 +332,14 @@ const Contact = () => {
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
           <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
           <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Ready to Launch Your <br /> <span className="text-primary italic">Next Big Idea?</span>
           </h2>
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Partner with Macenza and build future-ready digital solutions.
           </p>
-          <button 
+          <button
             onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
             className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20"
           >
