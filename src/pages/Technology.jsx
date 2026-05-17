@@ -252,18 +252,18 @@ const Technology = () => {
       </Section>
 
       {/* AI Capabilities */}
-      <Section id="ai-capabilities" className="bg-black text-white relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary rounded-full blur-[200px] opacity-20"></div>
+      <Section id="ai-capabilities" className="relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary rounded-full blur-[200px] opacity-10"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-20 reveal-up">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8">AI <span className="text-primary italic">Capabilities</span></h2>
-            <p className="text-xl text-white/60 font-light max-w-2xl mx-auto">Pushing the boundaries of what artificial intelligence can achieve for modern enterprise.</p>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">AI <span className="text-primary italic">Capabilities</span></h2>
+            <p className="text-xl text-black/60 font-light max-w-2xl mx-auto">Pushing the boundaries of what artificial intelligence can achieve for modern enterprise.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-up">
             {capabilities.map((cap, i) => (
-              <div key={i} className="p-8 rounded-[2rem] bg-white/5 border border-white/10 flex items-center gap-6 hover:bg-white/10 hover:border-primary transition-all duration-300 group">
+              <div key={i} className="p-8 rounded-[2rem] bg-black/5 border border-black/5 flex items-center gap-6 hover:bg-white hover:shadow-xl hover:border-primary transition-all duration-300 group">
                 <div className="w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform"></div>
-                <span className="text-lg font-bold">{cap}</span>
+                <span className="text-lg font-bold text-black">{cap}</span>
               </div>
             ))}
           </div>
@@ -342,11 +342,11 @@ const Technology = () => {
       </Section>
 
       {/* Innovation Lab */}
-      <Section id="innovation" className="bg-black text-white">
+      <Section id="innovation" className="relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="reveal-up">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8">Macenza <span className="text-primary">Innovation Lab</span></h2>
-            <p className="text-xl text-white/60 font-light leading-relaxed mb-10">
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Macenza <span className="text-primary">Innovation Lab</span></h2>
+            <p className="text-xl text-black/60 font-light leading-relaxed mb-10">
               Our dedicated R&D wing where we experiment with the next frontier of human-AI interaction, decentralized computing, and adaptive interfaces.
             </p>
             <div className="space-y-6">
@@ -355,12 +355,12 @@ const Technology = () => {
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>
-                  <span className="text-lg font-medium">{item}</span>
+                  <span className="text-lg font-medium text-black">{item}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="relative aspect-video glass-morphism rounded-[3rem] border border-white/10 overflow-hidden reveal-up">
+          <div className="relative aspect-video glass-morphism rounded-[3rem] border border-black/10 bg-black/90 shadow-2xl overflow-hidden reveal-up">
             <div className="absolute inset-0 bg-primary/5 animate-pulse"></div>
             <div className="p-10 font-mono text-xs text-primary/40 space-y-2">
               <div>&gt; INITIALIZING NEURAL_LAYER...</div>
