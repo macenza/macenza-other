@@ -68,7 +68,7 @@ const HeroOverlay = () => {
     { icon: <Shield className="w-5 h-5 text-accent" />, title: "99.9%", subtitle: "Uptime" },
   ];
 
-  const brands = ["Google", "Microsoft", "AWS", "IBM", "NVIDIA", "Adobe"];
+  const brands = ["Aether", "Symmetry", "Neuralis", "Vortex", "Zentry", "Axiom"];
 
   return (
     <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 pb-3 md:p-12 overflow-hidden">
