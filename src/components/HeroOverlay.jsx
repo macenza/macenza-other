@@ -1,27 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { Search, ArrowRight, Play, Users, Rocket, Globe, Shield, ChevronDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight, Play, Users, Rocket, Globe, Shield, ChevronDown } from 'lucide-react';
 
 const HeroOverlay = () => {
   const overlayRef = useRef(null);
-  const navbarRef = useRef(null);
   const leftContentRef = useRef(null);
   const rightStatsRef = useRef(null);
   const brandStripRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Entry animations
       const tl = gsap.timeline({ defaults: { ease: "power4.out", duration: 1.5 } });
-
-      tl.fromTo(navbarRef.current, 
-        { y: -100, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1.2 }, 
-        0.2
-      );
 
       tl.fromTo(".hero-line-1", 
         { x: -100, opacity: 0 }, 
@@ -36,47 +27,34 @@ const HeroOverlay = () => {
       );
 
       tl.fromTo(".hero-desc", 
-        { y: 30, opacity: 0 }, 
+        { y: 50, opacity: 0 }, 
         { y: 0, opacity: 1 }, 
         0.8
       );
 
       tl.fromTo(".hero-btns", 
-        { y: 30, opacity: 0 }, 
+        { y: 50, opacity: 0 }, 
         { y: 0, opacity: 1 }, 
         1.0
       );
 
-      tl.fromTo(".stat-card", 
-        { x: 100, opacity: 0, stagger: 0.1 }, 
-        { x: 0, opacity: 1, stagger: 0.1 }, 
-        0.6
-      );
-
-      tl.fromTo(brandStripRef.current, 
-        { y: 100, opacity: 0 }, 
-        { y: 0, opacity: 1 }, 
+      tl.fromTo(rightStatsRef.current, 
+        { x: 100, opacity: 0 }, 
+        { x: 0, opacity: 1, duration: 1.2 }, 
         1.2
       );
 
-      tl.fromTo(scrollIndicatorRef.current, 
-        { opacity: 0, scale: 0.8 }, 
-        { opacity: 1, scale: 1 }, 
+      tl.fromTo(brandStripRef.current, 
+        { y: 50, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1.2 }, 
         1.4
       );
 
-      // Floating animation for stats cards
-      gsap.to(".stat-card", {
-        y: -10,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: {
-          each: 0.2,
-          from: "random"
-        }
-      });
+      tl.fromTo(scrollIndicatorRef.current, 
+        { y: 50, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1.2 }, 
+        1.4
+      );
     }, overlayRef);
 
     return () => ctx.revert();
@@ -94,71 +72,6 @@ const HeroOverlay = () => {
   return (
     <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 md:p-12 overflow-hidden">
       
-      {/* Navbar */}
-      <nav 
-        ref={navbarRef}
-        className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-50 pointer-events-auto shadow-xl"
-      >
-        <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center glow-blue">
-              <span className="text-white font-black text-xl">M</span>
-            </div>
-            <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
-          </Link>
-        </div>
-
-        <div className="hidden lg:flex items-center gap-8">
-          {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-            <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
-              className="text-sm font-medium text-black/70 hover:text-primary transition-all duration-300 hover:scale-105"
-            >
-              {item}
-            </Link>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-4">
-          <button className="p-2 text-black/60 hover:text-primary transition-colors">
-            <Search className="w-5 h-5" />
-          </button>
-          <button className="hidden md:block px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
-            Get Started
-          </button>
-          <button 
-            className="lg:hidden p-2 text-black"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <div className="w-6 h-5 flex flex-col justify-between">
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`} />
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
-              <span className={`h-0.5 w-full bg-black transition-all ${isMobileMenuOpen ? '-rotate-45 -translate-y-2.5' : ''}`} />
-            </div>
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="absolute top-[90px] left-0 w-full glass-morphism rounded-3xl p-6 flex flex-col gap-4 lg:hidden pointer-events-auto animate-in fade-in slide-in-from-top-4 duration-300">
-            {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-              <Link 
-                key={item} 
-                to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
-                className="text-lg font-bold text-black/80 hover:text-primary transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item}
-              </Link>
-            ))}
-            <button className="w-full py-4 bg-primary text-white rounded-2xl font-bold glow-blue mt-2">
-              Get Started
-            </button>
-          </div>
-        )}
-      </nav>
-
       {/* Hero Content (Left) & Stats (Right) */}
       <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-12 mt-20">
         

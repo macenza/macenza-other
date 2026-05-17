@@ -88,7 +88,7 @@ const About = () => {
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
       {/* Simple Navbar for About Page */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-50 pointer-events-auto shadow-xl">
+      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-[9999] pointer-events-auto shadow-xl">
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center glow-blue">
