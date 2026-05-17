@@ -180,7 +180,7 @@ const Technology = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
         </div>
@@ -205,12 +205,18 @@ const Technology = () => {
             Macenza engineers cutting-edge AI infrastructure, scalable software systems, and intelligent digital architectures built for the future.
           </p>
           <div className="flex flex-wrap justify-center gap-6 reveal-up">
-            <button className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 flex items-center gap-3 shadow-xl shadow-primary/20">
+            <button 
+              onClick={() => document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 flex items-center gap-3 shadow-xl shadow-primary/20"
+            >
               Explore Stack <ArrowDown className="w-5 h-5" />
             </button>
-            <button className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5">
+            <Link 
+              to="/contact" 
+              className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 text-center"
+            >
               Talk to Engineers
-            </button>
+            </Link>
           </div>
 
           {/* Visual Element Placeholder */}
@@ -422,9 +428,9 @@ const Technology = () => {
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Partner with Macenza to engineer intelligent systems designed for tomorrow.
           </p>
-          <button className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20">
+          <Link to="/contact" className="inline-block px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center">
             Talk to Our Engineers
-          </button>
+          </Link>
         </div>
       </Section>
 

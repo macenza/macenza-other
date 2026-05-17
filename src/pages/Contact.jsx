@@ -126,7 +126,7 @@ const Contact = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
         </div>
@@ -149,11 +149,11 @@ const Contact = () => {
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
             Connect with Macenza to build AI solutions, software platforms, automation systems, and next-generation digital products.
           </p>
-          <div className="flex flex-wrap justify-center gap-6 reveal-up">
-            <button className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20">
-              Start a Project
-            </button>
-            <button className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5">
+          <div className="flex justify-center reveal-up">
+            <button 
+              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center"
+            >
               Book Consultation
             </button>
           </div>
@@ -342,7 +342,10 @@ const Contact = () => {
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Partner with Macenza and build future-ready digital solutions.
           </p>
-          <button className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20">
+          <button 
+            onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20"
+          >
             Start Your Project
           </button>
         </div>

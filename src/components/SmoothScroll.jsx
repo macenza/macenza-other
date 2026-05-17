@@ -1,9 +1,21 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const SmoothScroll = () => {
+  const { pathname } = useLocation();
+  const lenisRef = useRef(null);
+
+  // Synchronous, immediate scroll restoration on pathname change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (lenisRef.current) {
+      lenisRef.current.scrollTo(0, { immediate: true });
+    }
+  }, [pathname]);
+
   useEffect(() => {
     // Register ScrollTrigger plugin
     gsap.registerPlugin(ScrollTrigger);
@@ -19,6 +31,8 @@ const SmoothScroll = () => {
       touchMultiplier: 2,
       infinite: false,
     });
+
+    lenisRef.current = lenis;
 
     // Synchronize ScrollTrigger with Lenis updates
     lenis.on('scroll', ScrollTrigger.update);
@@ -62,6 +76,7 @@ const SmoothScroll = () => {
 
     return () => {
       lenis.destroy();
+      lenisRef.current = null;
       gsap.ticker.remove(updateTicker);
       window.removeEventListener('scroll', handleScroll);
     };

@@ -130,7 +130,7 @@ const Careers = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
         </div>
@@ -154,12 +154,18 @@ const Careers = () => {
             Join a team of innovators, engineers, AI builders, and creators shaping the future of intelligent technology.
           </p>
           <div className="flex flex-wrap justify-center gap-6 reveal-up">
-            <button className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center gap-3">
+            <button 
+              onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center gap-3"
+            >
               View Open Positions <ArrowDown className="w-5 h-5" />
             </button>
-            <button className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5">
+            <Link 
+              to="/contact" 
+              className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 text-center"
+            >
               Join Our Mission
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -225,9 +231,9 @@ const Careers = () => {
                   </span>
                 </div>
               </div>
-              <button className="px-8 py-4 bg-black text-white rounded-full font-bold text-sm hover:bg-primary transition-all duration-300 shadow-lg group-hover:shadow-primary/20">
+              <Link to="/contact" className="px-8 py-4 bg-black text-white rounded-full font-bold text-sm hover:bg-primary transition-all duration-300 shadow-lg group-hover:shadow-primary/20 text-center">
                 Apply Now
-              </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -312,9 +318,9 @@ const Careers = () => {
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Join Macenza and shape the future of AI, software, and digital innovation.
           </p>
-          <button className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20">
+          <Link to="/contact" className="inline-block px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center">
             Apply Now
-          </button>
+          </Link>
         </div>
       </Section>
 

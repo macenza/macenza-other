@@ -143,9 +143,9 @@ const Home = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <button className="hidden md:block px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="hidden md:block px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95 text-center">
             Get Started
-          </button>
+          </Link>
           <button 
             className="lg:hidden p-2 text-black"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -171,9 +171,9 @@ const Home = () => {
                 {item}
               </Link>
             ))}
-            <button className="w-full py-4 bg-primary text-white rounded-2xl font-bold glow-blue mt-2">
+            <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="w-full py-4 bg-primary text-white rounded-2xl font-bold glow-blue mt-2 text-center">
               Get Started
-            </button>
+            </Link>
           </div>
         )}
       </nav>
@@ -325,9 +325,9 @@ const Home = () => {
           <p className="text-xl text-white/60 font-light mb-12 max-w-2xl mx-auto leading-relaxed">
             Ready to transform your ideas into reality? Our team of experts is standing by to help you build the next big thing.
           </p>
-          <button className="px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:bg-primary hover:text-white transition-all duration-300 shadow-xl shadow-white/5">
+          <Link to="/contact" className="inline-block px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:bg-primary hover:text-white transition-all duration-300 shadow-xl shadow-white/5 text-center">
             Get in Touch
-          </button>
+          </Link>
         </div>
       </Section>
 

@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { 
-  Brain, Code, Globe, Smartphone, Zap, Cloud, 
+import {
+  Brain, Code, Globe, Smartphone, Zap, Cloud,
   Search, Target, Rocket, Shield, ArrowRight,
   Database, Layers, Cpu, CheckCircle2, MessageSquare,
   Mic, UserCheck, BarChart3, ChevronRight
@@ -154,9 +154,9 @@ const Solutions = () => {
 
         <div className="hidden lg:flex items-center gap-8">
           {["Home", "About", "Solutions", "Technology", "Careers", "Contact"].map((item) => (
-            <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
+            <Link
+              key={item}
+              to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
               className={`text-sm font-medium transition-all duration-300 hover:scale-105 ${item === "Solutions" ? "text-primary font-bold" : "text-black/70 hover:text-primary"}`}
             >
               {item}
@@ -168,7 +168,7 @@ const Solutions = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
         </div>
@@ -185,19 +185,16 @@ const Solutions = () => {
             Intelligent Innovation
           </div>
           <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-            Intelligent Solutions <br /> 
+            Intelligent Solutions <br />
             <span className="text-primary">for the Future.</span>
           </h1>
           <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
             Macenza delivers AI-powered software, automation systems, and transformative digital solutions for modern businesses.
           </p>
-          <div className="flex flex-wrap justify-center gap-6 reveal-up">
-            <button className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20">
-              Explore Solutions
-            </button>
-            <button className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 shadow-sm">
+          <div className="flex justify-center reveal-up">
+            <Link to="/contact" className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center">
               Book Consultation
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -284,23 +281,23 @@ const Solutions = () => {
       {/* Case Studies */}
       <Section id="cases" title="Success Stories" subtitle="Real-world impact delivered through intelligent design.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 reveal-up">
-          <CaseStudyCard 
-            title="Healthcare AI Assistant" 
+          <CaseStudyCard
+            title="Healthcare AI Assistant"
             description="A specialized LLM-powered assistant for patient triage and support, reducing administrative load by 65%."
             image="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200"
           />
-          <CaseStudyCard 
-            title="Manufacturing ERP System" 
+          <CaseStudyCard
+            title="Manufacturing ERP System"
             description="Custom enterprise platform for real-time inventory tracking and predictive maintenance in multi-site facilities."
             image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200"
           />
-          <CaseStudyCard 
-            title="Retail Automation Platform" 
+          <CaseStudyCard
+            title="Retail Automation Platform"
             description="Automated workflow engine for multi-channel e-commerce stores, managing everything from stock to shipping."
             image="https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1200"
           />
-          <CaseStudyCard 
-            title="SaaS CRM Platform" 
+          <CaseStudyCard
+            title="SaaS CRM Platform"
             description="A highly scalable CRM with integrated AI lead scoring and automated sales pipelines for growing startups."
             image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200"
           />
@@ -324,8 +321,8 @@ const Solutions = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal-up">
           {[
             { title: "Fixed Cost Project", desc: "Best for clearly defined projects with specific scopes and deadlines.", accent: "bg-white" },
-            { title: "Dedicated Team", desc: "An extension of your internal team for long-term development needs.", accent: "bg-primary/5" },
-            { title: "Monthly Retainer", desc: "Ongoing support and iterative improvements for your digital products.", accent: "bg-white" },
+            { title: "Dedicated Team", desc: "An extension of your internal team for long-term development needs.", accent: "bg-white" },
+            { title: "Monthly Retainer", desc: "Ongoing support and improvements for your digital products.", accent: "bg-white" },
             { title: "Startup MVP", desc: "Rapid 8-12 week build to get your product to market and start scaling.", accent: "bg-white" }
           ].map((model, i) => (
             <div key={i} className={`p-10 rounded-[3rem] border border-black/5 shadow-sm ${model.accent} transition-all duration-300 hover:-translate-y-2`}>
@@ -333,9 +330,9 @@ const Solutions = () => {
               <p className="font-light leading-relaxed mb-10 text-black/60">
                 {model.desc}
               </p>
-              <button className="w-full py-4 rounded-full font-bold text-sm bg-black text-white hover:bg-primary transition-all">
+              <Link to="/contact" className="block w-full py-4 rounded-full font-bold text-sm bg-black text-white hover:bg-primary transition-all text-center">
                 Learn More
-              </button>
+              </Link>
             </div>
           ))}
         </div>
@@ -373,16 +370,16 @@ const Solutions = () => {
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
           <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
           <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Build Your Next <br /> <span className="text-primary">Intelligent Product</span>
           </h2>
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Partner with Macenza to transform your ideas into powerful digital solutions.
           </p>
-          <button className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20">
+          <Link to="/contact" className="inline-block px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center">
             Start Your Project
-          </button>
+          </Link>
         </div>
       </Section>
 

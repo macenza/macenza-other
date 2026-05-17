@@ -114,7 +114,7 @@ const About = () => {
           <button className="p-2 text-black/60 hover:text-primary transition-colors">
             <Search className="w-5 h-5" />
           </button>
-          <Link to="/" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
+          <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
         </div>
@@ -317,7 +317,7 @@ const About = () => {
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Macenza is creating the future of intelligent digital experiences. Are you ready to be part of the journey?
           </p>
-          <Link to="/" className="px-16 py-6 bg-white text-primary rounded-full font-bold text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl">
+          <Link to="/contact" className="px-16 py-6 bg-white text-primary rounded-full font-bold text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl">
             Contact Us
           </Link>
         </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { ArrowRight, Play, Users, Rocket, Globe, Shield, ChevronDown } from 'lucide-react';
+import { ArrowRight, Users, Rocket, Globe, Shield, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const HeroOverlay = () => {
   const overlayRef = useRef(null);
@@ -91,15 +92,12 @@ const HeroOverlay = () => {
             Macenza builds next-generation AI solutions that empower businesses and elevate human potential.
           </p>
           <div className="hero-btns flex flex-wrap gap-4">
-            <button className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
+            <Link to="/solutions" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
               Explore Solutions <ArrowRight className="w-5 h-5" />
-            </button>
-            <button className="px-8 py-4 glass-morphism text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-white/40 transition-all duration-300 border border-black/10">
-              <div className="w-8 h-8 bg-black/5 rounded-full flex items-center justify-center">
-                <Play className="w-4 h-4 fill-black" />
-              </div>
-              Watch Video
-            </button>
+            </Link>
+            <Link to="/contact" className="px-8 py-4 glass-morphism text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-white/40 transition-all duration-300 border border-black/10">
+              Contact Us <ArrowRight className="w-5 h-5" />
+            </Link>
           </div>
         </div>
 
