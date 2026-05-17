@@ -215,21 +215,6 @@ const Technology = () => {
               Talk to Engineers
             </Link>
           </div>
-
-          {/* Visual Element Placeholder */}
-          <div className="mt-20 w-full max-w-4xl aspect-[21/9] glass-morphism rounded-[3rem] border border-black/5 flex items-center justify-center relative overflow-hidden reveal-up">
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5"></div>
-            <div className="flex gap-10 items-center animate-float opacity-50">
-              <Cpu className="w-20 h-20 text-primary" />
-              <div className="w-[1px] h-20 bg-black/10"></div>
-              <Code className="w-20 h-20 text-accent" />
-              <div className="w-[1px] h-20 bg-black/10"></div>
-              <Layers className="w-20 h-20 text-primary" />
-            </div>
-            <div className="absolute top-10 left-10 text-[10px] font-mono text-black/20 text-left">
-              {"{ \"status\": \"optimized\", \"agent\": \"active\", \"load\": 0.12 }"}
-            </div>
-          </div>
         </div>
       </section>
 
