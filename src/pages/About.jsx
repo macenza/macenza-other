@@ -284,7 +284,7 @@ const About = () => {
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Macenza is creating the future of intelligent digital experiences. Are you ready to be part of the journey?
           </p>
-          <Link to="/contact" className="px-16 py-6 bg-white text-primary rounded-full font-bold text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl">
+          <Link to="/contact" className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Contact Us
           </Link>
         </div>

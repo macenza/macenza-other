@@ -311,7 +311,7 @@ const Contact = () => {
           </p>
           <button
             onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20"
+            className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-primary text-white rounded-full font-bold text-base sm:text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 whitespace-nowrap"
           >
             Start Your Project
           </button>

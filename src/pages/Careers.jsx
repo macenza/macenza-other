@@ -285,7 +285,7 @@ const Careers = () => {
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Join Macenza and shape the future of AI, software, and digital innovation.
           </p>
-          <Link to="/contact" className="inline-block px-16 py-6 bg-primary text-white rounded-full font-bold text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center">
+          <Link to="/contact" className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-primary text-white rounded-full font-bold text-base sm:text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center whitespace-nowrap">
             Apply Now
           </Link>
         </div>
