@@ -74,7 +74,7 @@ const HeroOverlay = () => {
     <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 pb-3 md:p-12 overflow-hidden">
 
       {/* Hero Content (Left) & Stats (Right) */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-12 mt-20">
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-6 sm:gap-12 mt-16 sm:mt-20">
 
         {/* Left Hero Content */}
         <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto -mt-0 md:mt-0">
@@ -88,7 +88,7 @@ const HeroOverlay = () => {
               Redefined.
             </h1>
           </div>
-          <p className="hero-desc text-lg md:text-xl text-black/65 leading-relaxed mb-64 md:mb-10 max-w-[480px]">
+          <p className="hero-desc text-lg md:text-xl text-black/65 leading-relaxed mb-12 sm:mb-16 md:mb-10 max-w-[480px]">
             Macenza builds next-generation AI solutions that empower businesses and elevate human potential.
           </p>
           <div className="hero-btns flex flex-wrap gap-4">
@@ -143,7 +143,7 @@ const HeroOverlay = () => {
         {/* Scroll Indicator */}
         <div
           ref={scrollIndicatorRef}
-          className="flex items-center gap-4 pointer-events-auto"
+          className="hidden sm:flex items-center gap-4 pointer-events-auto"
         >
           <span className="text-sm font-bold text-dark/40 uppercase tracking-widest hidden md:block">
             Scroll to Explore
