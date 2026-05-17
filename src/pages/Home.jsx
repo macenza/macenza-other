@@ -6,6 +6,7 @@ import HeroOverlay from '../components/HeroOverlay';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
 import { Cpu, Code, Globe, Smartphone, Zap, Cloud, ArrowRight } from 'lucide-react';
+import LogoLoop from '../components/LogoLoop';
 
 const Home = () => {
   useEffect(() => {
@@ -78,6 +79,24 @@ const Home = () => {
     }
   ];
 
+  const techLogos = [
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">React</span>, title: "React", href: "https://react.dev" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Next.js</span>, title: "Next.js", href: "https://nextjs.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TypeScript</span>, title: "TypeScript", href: "https://www.typescriptlang.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Tailwind CSS</span>, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Node.js</span>, title: "Node.js", href: "https://nodejs.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Python</span>, title: "Python", href: "https://www.python.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">OpenAI</span>, title: "OpenAI", href: "https://openai.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TensorFlow</span>, title: "TensorFlow", href: "https://www.tensorflow.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">AWS</span>, title: "AWS", href: "https://aws.amazon.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Docker</span>, title: "Docker", href: "https://www.docker.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">PostgreSQL</span>, title: "PostgreSQL", href: "https://www.postgresql.org" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">NVIDIA</span>, title: "NVIDIA", href: "https://www.nvidia.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Figma</span>, title: "Figma", href: "https://www.figma.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">GitHub</span>, title: "GitHub", href: "https://github.com" },
+    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span>, title: "Google", href: "https://google.com" },
+  ];
+
   const handleLoadingComplete = () => {
     ScrollTrigger.refresh();
   };
@@ -90,6 +109,27 @@ const Home = () => {
             <HeroOverlay />
           </div>
         </HeroSequence>
+      </div>
+
+      {/* Technology & Partners Logo Carousel */}
+      <div className="py-16 bg-white border-y border-black/5 overflow-hidden">
+        <div className="container mx-auto px-6 mb-8">
+          <p className="text-xs font-bold text-center text-black/40 uppercase tracking-[0.25em]">
+            Empowering Next-Gen AI & Core Tech Stacks
+          </p>
+        </div>
+        <LogoLoop
+          logos={techLogos}
+          speed={40}
+          direction="left"
+          logoHeight={48}
+          gap={60}
+          fadeOut={true}
+          fadeOutColor="#ffffff"
+          scaleOnHover={true}
+          pauseOnHover={true}
+          ariaLabel="Technology Partners and Tools Loop"
+        />
       </div>
 
       <Section
