@@ -72,20 +72,6 @@ const Home = () => {
       desc: "Complete employee management platform with payroll, attendance, leave tracking, recruitment, and analytics dashboards.",
       image: "/portfolio/hrms_saas.png",
       buttonText: "View Project"
-    },
-    {
-      name: "AI Customer Support Agent",
-      category: "AI Automation Platform",
-      desc: "24/7 intelligent AI chatbot and voice assistant for customer support, lead qualification, and business automation.",
-      image: "/portfolio/ai_support.png",
-      buttonText: "View Project"
-    },
-    {
-      name: "Manufacturing ERP System",
-      category: "Enterprise Manufacturing Software",
-      desc: "Advanced ERP system for production planning, inventory management, quality control, purchasing, and reporting.",
-      image: "/portfolio/manufacturing_erp.png",
-      buttonText: "View Project"
     }
   ];
 
