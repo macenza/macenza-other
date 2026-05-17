@@ -95,7 +95,7 @@ const HeroOverlay = () => {
             <Link to="/solutions" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
               Explore Solutions <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link to="/contact" className="px-8 py-4 glass-morphism text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-white/40 transition-all duration-300 border border-black/10">
+            <Link to="/contact" className="px-8 py-4 bg-white text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-black hover:text-white transition-all duration-300 border border-black/5 shadow-lg shadow-black/5">
               Contact Us <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
