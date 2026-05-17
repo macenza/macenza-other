@@ -127,9 +127,6 @@ const Careers = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="p-2 text-black/60 hover:text-primary transition-colors">
-            <Search className="w-5 h-5" />
-          </button>
           <Link to="/contact" className="px-6 py-3 bg-primary text-white rounded-full font-bold text-sm glow-blue hover:bg-primary-dark transition-all duration-300 active:scale-95">
             Get Started
           </Link>
