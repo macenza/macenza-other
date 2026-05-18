@@ -155,6 +155,18 @@ const Careers = () => {
     }
   }, [jobsList]);
 
+  // Disable body scroll when modal is open (traps scroll inside modal and works with smooth scroll libraries)
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
+
   // Handle Modal Open
   const handleOpenModal = (job = null) => {
     setSelectedJob(job || (jobsList.length > 0 ? jobsList[0] : null));
@@ -448,7 +460,10 @@ const Careers = () => {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsModalOpen(false)}></div>
           
           {/* Modal Card */}
-          <div className="relative bg-white w-full max-w-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl max-h-[90vh] overflow-y-auto border border-black/5 animate-in fade-in zoom-in-95 duration-200 text-black">
+          <div 
+            data-lenis-prevent
+            className="relative bg-white w-full max-w-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl max-h-[90vh] overflow-y-auto border border-black/5 animate-in fade-in zoom-in-95 duration-200 text-black"
+          >
             
             {/* Close Trigger */}
             <button 
