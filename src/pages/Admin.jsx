@@ -520,7 +520,7 @@ const Admin = () => {
                   </div>
                 )}
                 
-                <form className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-2" onSubmit={(e) => e.preventDefault()}>
+                <form data-lenis-prevent className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-2" onSubmit={(e) => e.preventDefault()}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Job Title</label>
@@ -983,7 +983,7 @@ const Admin = () => {
           {activeTab === 'Resume Manager' && (
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
               {/* Candidates Side Drawer List */}
-              <div className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-6 flex flex-col gap-4 overflow-y-auto">
+              <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-6 flex flex-col gap-4 overflow-y-auto">
                 <h4 className="text-xl font-black text-black mb-2 flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" /> Active Pipeline ({applications.length})
                 </h4>
@@ -1026,7 +1026,7 @@ const Admin = () => {
               </div>
 
               {/* Recruitment Review Panel & Resume Viewer */}
-              <div className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
+              <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
                 {selectedApp ? (
                   <div className="flex flex-col gap-6 h-full">
                     {/* Header Info */}
