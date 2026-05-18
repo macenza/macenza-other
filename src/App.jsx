@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -10,12 +10,16 @@ import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import Policy from './pages/Policy';
 import Terms from './pages/Terms';
+import Admin from './pages/Admin';
 
 function App() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/admin');
+
   return (
     <div className="relative">
       <SmoothScroll />
-      <Navbar />
+      {!isAdmin && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -25,6 +29,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<Policy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </div>
   );
