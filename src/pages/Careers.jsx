@@ -9,6 +9,7 @@ import {
   Heart, Briefcase, MapPin, Clock, ArrowDown, X, Upload, Check
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -77,20 +78,24 @@ const Careers = () => {
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Fetch dynamic jobs from backend
+  // Fetch dynamic jobs from Supabase
   const fetchJobs = async () => {
     try {
-      const res = await fetch('/api/jobs?status=Active');
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.length > 0) {
-          setJobsList(data);
-          return;
-        }
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('status', 'Active')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setJobsList(data);
+        return;
       }
       setJobsList(fallbackJobs);
     } catch (err) {
-      console.warn("Backend server not reached. Operating in static demonstration mode.");
+      console.warn("Supabase database not reached or table missing. Operating in static demonstration mode.", err);
       setJobsList(fallbackJobs);
     }
   };
@@ -190,40 +195,49 @@ const Careers = () => {
     setSubmitError('');
 
     try {
-      const fd = new FormData();
-      fd.append('candidateName', formData.candidateName);
-      fd.append('email', formData.email);
-      fd.append('phone', formData.phone);
-      fd.append('location', formData.location);
-      fd.append('experience', formData.experience);
-      fd.append('linkedInUrl', formData.linkedInUrl);
-      fd.append('portfolioUrl', formData.portfolioUrl);
-      fd.append('coverLetter', formData.coverLetter);
-      if (selectedJob && selectedJob._id) {
-        fd.append('jobId', selectedJob._id);
+      // 1. Upload resume to Supabase Storage Bucket 'resumes'
+      const fileExt = uploadFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(fileName, uploadFile);
+
+      if (uploadError) {
+        throw new Error(`Resume upload failed: ${uploadError.message}`);
       }
 
-      fd.append('resume', uploadFile);
+      // 2. Get the public URL of the uploaded resume
+      const { data: { publicUrl } } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(fileName);
 
-      const res = await fetch('/api/applications/create', {
-        method: 'POST',
-        body: fd
-      });
+      // 3. Save application entry in 'applications' table
+      const { error: insertError } = await supabase
+        .from('applications')
+        .insert([{
+          candidate_name: formData.candidateName,
+          email: formData.email,
+          phone: formData.phone,
+          location: formData.location,
+          experience: formData.experience,
+          linkedin_url: formData.linkedInUrl,
+          portfolio_url: formData.portfolioUrl,
+          cover_letter: formData.coverLetter,
+          resume_url: publicUrl,
+          job_id: (selectedJob && (selectedJob.id || selectedJob._id)) ? (selectedJob.id || selectedJob._id) : null
+        }]);
 
-      if (res.ok) {
-        setSubmitSuccess(true);
-        setFormData(initialFormState);
-        setResumeFile(null);
-      } else {
-        const errorData = await res.json();
-        setSubmitError(errorData.message || 'Submission failed. Please check entries.');
+      if (insertError) {
+        throw new Error(`Application save failed: ${insertError.message}`);
       }
-    } catch (err) {
-      console.error(err);
-      // Demo local success when server isn't connected to show frontend animations
+
       setSubmitSuccess(true);
       setFormData(initialFormState);
       setResumeFile(null);
+    } catch (err) {
+      console.error(err);
+      setSubmitError(err.message || 'Submission failed. Please check entries.');
     } finally {
       setSubmitting(false);
     }
@@ -314,7 +328,7 @@ const Careers = () => {
       <Section id="positions" title="Current Open Roles" subtitle="Find your place in the future of intelligence.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 job-grid">
           {jobsList.map((job, i) => (
-            <div key={job._id || i} className="job-card p-10 rounded-[2.5rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-colors transition-shadow duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div key={job.id || job._id || i} className="job-card p-10 rounded-[2.5rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-colors transition-shadow duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
               <div>
                 <h4 className="text-2xl font-bold text-black mb-2 group-hover:text-primary transition-colors">{job.title}</h4>
                 <div className="flex flex-wrap gap-4">
@@ -565,7 +579,7 @@ const Careers = () => {
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                     >
                       {jobsList.map((job, idx) => (
-                        <option key={job._id || idx} value={job.title}>{job.title}</option>
+                        <option key={job.id || job._id || idx} value={job.title}>{job.title}</option>
                       ))}
                     </select>
                   </div>

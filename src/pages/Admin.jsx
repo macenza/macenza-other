@@ -24,6 +24,8 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 
+import { supabase } from '../supabaseClient';
+
 const Admin = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [jobs, setJobs] = useState([]);
@@ -67,24 +69,55 @@ const Admin = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const jobsRes = await fetch('/api/jobs');
-      const appsRes = await fetch('/api/applications');
       
-      if (jobsRes.ok && appsRes.ok) {
-        const jobsData = await jobsRes.json();
-        const appsData = await appsRes.json();
-        setJobs(jobsData);
-        setApplications(appsData);
-        if (appsData.length > 0 && !selectedApp) {
-          setSelectedApp(appsData[0]);
-          setNotesText(appsData[0].notes || '');
-        }
-      } else {
-        throw new Error('Failed to retrieve server data');
+      // Fetch all jobs from Supabase
+      const { data: jobsData, error: jobsError } = await supabase
+        .from('jobs')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (jobsError) throw jobsError;
+
+      // Fetch all applications and populate their job relations
+      const { data: appsData, error: appsError } = await supabase
+        .from('applications')
+        .select('*, jobId:jobs(*)')
+        .order('created_at', { ascending: false });
+
+      if (appsError) throw appsError;
+
+      // Map snake_case database schema to camelCase expected by the React UI
+      const mappedJobs = (jobsData || []).map(job => ({
+        ...job,
+        _id: job.id, // Keep key compatible
+        employmentType: job.employment_type || job.employmentType
+      }));
+
+      const mappedApps = (appsData || []).map(app => ({
+        ...app,
+        _id: app.id, // Keep key compatible
+        candidateName: app.candidate_name || app.candidateName,
+        linkedInUrl: app.linkedin_url || app.linkedInUrl,
+        portfolioUrl: app.portfolio_url || app.portfolioUrl,
+        coverLetter: app.cover_letter || app.coverLetter,
+        resume: app.resume_url || app.resume,
+        jobId: app.jobId ? {
+          ...app.jobId,
+          _id: app.jobId.id,
+          employmentType: app.jobId.employment_type || app.jobId.employmentType
+        } : null
+      }));
+
+      setJobs(mappedJobs);
+      setApplications(mappedApps);
+      
+      if (mappedApps.length > 0 && !selectedApp) {
+        setSelectedApp(mappedApps[0]);
+        setNotesText(mappedApps[0].notes || '');
       }
     } catch (err) {
       console.error(err);
-      setError('Could not connect to the backend server. Make sure the Node server is running.');
+      setError('Could not connect to Supabase. Check your env keys.');
       // Local fallback for testing UI when server is loading
       setJobs([
         { _id: '1', title: 'Frontend Engineer', department: 'Engineering', salary: '$80,000 - $110,000', employmentType: 'Full Time', location: 'Remote', experience: '3+ Years', skills: 'React, Tailwind CSS, JavaScript', openings: 2, deadline: '2026-06-30', description: 'Build dynamic premium web interfaces.', status: 'Active', createdAt: new Date() },
@@ -121,45 +154,45 @@ const Admin = () => {
   };
 
   const handlePostJob = async (statusOverride = null) => {
-    const jobData = { ...jobForm };
-    if (statusOverride) {
-      jobData.status = statusOverride;
-    }
+    const jobData = {
+      title: jobForm.title,
+      department: jobForm.department,
+      salary: jobForm.salary,
+      employment_type: jobForm.employmentType, // snake_case DB mapping
+      location: jobForm.location,
+      experience: jobForm.experience,
+      skills: jobForm.skills,
+      openings: jobForm.openings,
+      deadline: jobForm.deadline,
+      description: jobForm.description,
+      requirements: jobForm.requirements,
+      benefits: jobForm.benefits,
+      status: statusOverride || jobForm.status
+    };
     
     try {
-      const url = editingJobId ? `/api/jobs/update/${editingJobId}` : '/api/jobs/create';
-      const method = editingJobId ? 'PUT' : 'POST';
-      
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(jobData)
-      });
-
-      if (res.ok) {
-        setJobFormSuccess(editingJobId ? 'Job updated successfully!' : 'Job posted successfully!');
-        setJobForm(initialJobForm);
-        setEditingJobId(null);
-        fetchData();
-        setTimeout(() => setJobFormSuccess(''), 4000);
-      } else {
-        const errData = await res.json();
-        alert('Error: ' + errData.message);
-      }
-    } catch (err) {
-      console.error(err);
-      // Mock update for fallback mode
       if (editingJobId) {
-        setJobs(prev => prev.map(j => j._id === editingJobId ? { ...j, ...jobData } : j));
-        setJobFormSuccess('Job updated (Local Dev Mode)');
+        const { error } = await supabase
+          .from('jobs')
+          .update(jobData)
+          .eq('id', editingJobId);
+        if (error) throw error;
+        setJobFormSuccess('Job updated successfully!');
       } else {
-        const newMock = { _id: Date.now().toString(), ...jobData, createdAt: new Date() };
-        setJobs(prev => [newMock, ...prev]);
-        setJobFormSuccess('Job posted (Local Dev Mode)');
+        const { error } = await supabase
+          .from('jobs')
+          .insert([jobData]);
+        if (error) throw error;
+        setJobFormSuccess('Job posted successfully!');
       }
+      
       setJobForm(initialJobForm);
       setEditingJobId(null);
+      fetchData();
       setTimeout(() => setJobFormSuccess(''), 4000);
+    } catch (err) {
+      console.error(err);
+      alert('Error: ' + err.message);
     }
   };
 
@@ -185,62 +218,89 @@ const Admin = () => {
   const handleDeleteJob = async (jobId) => {
     if (!window.confirm('Are you sure you want to delete this job posting? This cannot be undone.')) return;
     try {
-      const res = await fetch(`/api/jobs/delete/${jobId}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchData();
-      } else {
-        alert('Could not delete job.');
-      }
+      const { error } = await supabase
+        .from('jobs')
+        .delete()
+        .eq('id', jobId);
+      if (error) throw error;
+      fetchData();
     } catch (err) {
       console.error(err);
-      setJobs(prev => prev.filter(j => j._id !== jobId));
+      alert('Could not delete job: ' + err.message);
     }
   };
 
   // Handle Application recruitment actions
   const handleUpdateApplicationStatus = async (status) => {
     if (!selectedApp) return;
+    const appId = selectedApp.id || selectedApp._id;
     try {
-      const res = await fetch(`/api/applications/${selectedApp._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
+      const { data, error } = await supabase
+        .from('applications')
+        .update({ status })
+        .eq('id', appId)
+        .select('*, jobId:jobs(*)')
+        .single();
 
-      if (res.ok) {
-        const updated = await res.json();
-        setApplications(prev => prev.map(a => a._id === selectedApp._id ? updated : a));
-        setSelectedApp(updated);
-      }
+      if (error) throw error;
+
+      const mapped = {
+        ...data,
+        _id: data.id,
+        candidateName: data.candidate_name,
+        linkedInUrl: data.linkedin_url,
+        portfolioUrl: data.portfolio_url,
+        coverLetter: data.cover_letter,
+        resume: data.resume_url,
+        jobId: data.jobId ? {
+          ...data.jobId,
+          _id: data.jobId.id,
+          employmentType: data.jobId.employment_type || data.jobId.employmentType
+        } : null
+      };
+
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? mapped : a));
+      setSelectedApp(mapped);
     } catch (err) {
       console.error(err);
-      const updated = { ...selectedApp, status };
-      setApplications(prev => prev.map(a => a._id === selectedApp._id ? updated : a));
-      setSelectedApp(updated);
+      alert('Error updating status: ' + err.message);
     }
   };
 
   const handleSaveNotes = async () => {
     if (!selectedApp) return;
+    const appId = selectedApp.id || selectedApp._id;
     try {
-      const res = await fetch(`/api/applications/${selectedApp._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ notes: notesText })
-      });
+      const { data, error } = await supabase
+        .from('applications')
+        .update({ notes: notesText })
+        .eq('id', appId)
+        .select('*, jobId:jobs(*)')
+        .single();
 
-      if (res.ok) {
-        const updated = await res.json();
-        setApplications(prev => prev.map(a => a._id === selectedApp._id ? updated : a));
-        setSelectedApp(updated);
-        alert('Recruiter notes saved!');
-      }
+      if (error) throw error;
+
+      const mapped = {
+        ...data,
+        _id: data.id,
+        candidateName: data.candidate_name,
+        linkedInUrl: data.linkedin_url,
+        portfolioUrl: data.portfolio_url,
+        coverLetter: data.cover_letter,
+        resume: data.resume_url,
+        jobId: data.jobId ? {
+          ...data.jobId,
+          _id: data.jobId.id,
+          employmentType: data.jobId.employment_type || data.jobId.employmentType
+        } : null
+      };
+
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? mapped : a));
+      setSelectedApp(mapped);
+      alert('Recruiter notes saved!');
     } catch (err) {
       console.error(err);
-      const updated = { ...selectedApp, notes: notesText };
-      setApplications(prev => prev.map(a => a._id === selectedApp._id ? updated : a));
-      setSelectedApp(updated);
-      alert('Recruiter notes updated locally!');
+      alert('Error saving notes: ' + err.message);
     }
   };
 
