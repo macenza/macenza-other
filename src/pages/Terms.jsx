@@ -43,7 +43,7 @@ const Terms = () => {
   const sections = [
     {
       title: "Acceptance of Terms",
-      content: "By accessing and using our AI-powered fashion recommendation service, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
+      content: "By accessing and using our custom AI solutions, digital products, and software engineering services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
     },
     {
       title: "Use License",

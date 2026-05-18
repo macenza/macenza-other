@@ -43,11 +43,11 @@ const Policy = () => {
   const sections = [
     {
       title: "Information We Collect",
-      content: "We collect information you provide directly to us, such as when you create an account, upload images, or contact us for support. This may include your name, email address, and any images you upload to our service."
+      content: "We collect information you provide directly to us, such as when you upload resumes, submit contact requests, or communicate with us for support. This may include your name, email address, and any professional credentials or career documents you upload to our service."
     },
     {
       title: "How We Use Your Information",
-      content: "We use the information we collect to provide, maintain, and improve our services, process your requests, and communicate with you. Your uploaded images are processed to generate AI-powered fashion recommendations and are not shared with third parties."
+      content: "We use the information we collect to provide, maintain, and improve our services, process your requests, and communicate with you. Your uploaded career documents and resumes are processed strictly to facilitate candidate placement, client requests, and recruitment processes, and are not shared with third parties."
     },
     {
       title: "Data Security",
