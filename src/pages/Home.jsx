@@ -41,12 +41,12 @@ const Home = () => {
   }, []);
 
   const services = [
-    { icon: <Cpu className="w-8 h-8 text-primary" />, title: "AI Development", desc: "Custom machine learning models and neural networks tailored to your business needs." },
-    { icon: <Code className="w-8 h-8 text-primary" />, title: "Custom Software", desc: "Enterprise-grade software solutions built with scalability and performance in mind." },
-    { icon: <Globe className="w-8 h-8 text-primary" />, title: "Web Applications", desc: "Next-generation web experiences using the latest frontend and backend technologies." },
-    { icon: <Smartphone className="w-8 h-8 text-primary" />, title: "Mobile Apps", desc: "High-performance iOS and Android applications with seamless user interfaces." },
-    { icon: <Zap className="w-8 h-8 text-primary" />, title: "Automation Solutions", desc: "Streamline your workflows with intelligent RPA and process automation." },
-    { icon: <Cloud className="w-8 h-8 text-primary" />, title: "Cloud Infrastructure", desc: "Secure, scalable, and resilient cloud architectures for modern digital products." },
+    { icon: "🧠", title: "AI Development", desc: "Custom machine learning models and neural networks tailored to your business needs.", bgClass: "bg-violet-500/10" },
+    { icon: "💻", title: "Custom Software", desc: "Enterprise-grade software solutions built with scalability and performance in mind.", bgClass: "bg-blue-500/10" },
+    { icon: "🌐", title: "Web Applications", desc: "Next-generation web experiences using the latest frontend and backend technologies.", bgClass: "bg-teal-500/10" },
+    { icon: "📱", title: "Mobile Apps", desc: "High-performance iOS and Android applications with seamless user interfaces.", bgClass: "bg-rose-500/10" },
+    { icon: "⚡", title: "Automation Solutions", desc: "Streamline your workflows with intelligent RPA and process automation.", bgClass: "bg-amber-500/10" },
+    { icon: "☁️", title: "Cloud Infrastructure", desc: "Secure, scalable, and resilient cloud architectures for modern digital products.", bgClass: "bg-sky-500/10" },
   ];
 
   const portfolioProjects = [
@@ -132,8 +132,8 @@ const Home = () => {
               key={index}
               className="p-10 rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group"
             >
-              <div className="mb-6 p-4 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
-                {React.cloneElement(service.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
+              <div className={`mb-6 p-4 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${service.bgClass}`}>
+                {service.icon}
               </div>
               <h3 className="text-2xl font-bold text-black mb-4">{service.title}</h3>
               <p className="text-black/60 font-light leading-relaxed">

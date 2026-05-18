@@ -35,9 +35,14 @@ const hiringSteps = [
 ];
 
 const benefits = [
-  "Remote Work Flexibility", "Competitive Salary", "Learning Budget",
-  "Innovation Projects", "Flexible Work Hours", "Global Collaboration",
-  "Career Growth", "Creative Work Culture"
+  { text: "Remote Work Flexibility", icon: "🏡", bg: "bg-sky-500/10", hoverBg: "group-hover:bg-sky-500/20" },
+  { text: "Competitive Salary", icon: "💰", bg: "bg-emerald-500/10", hoverBg: "group-hover:bg-emerald-500/20" },
+  { text: "Learning Budget", icon: "🎓", bg: "bg-violet-500/10", hoverBg: "group-hover:bg-violet-500/20" },
+  { text: "Innovation Projects", icon: "🧠", bg: "bg-amber-500/10", hoverBg: "group-hover:bg-amber-500/20" },
+  { text: "Flexible Work Hours", icon: "⏰", bg: "bg-rose-500/10", hoverBg: "group-hover:bg-rose-500/20" },
+  { text: "Global Collaboration", icon: "🌐", bg: "bg-teal-500/10", hoverBg: "group-hover:bg-teal-500/20" },
+  { text: "Career Growth", icon: "📈", bg: "bg-indigo-500/10", hoverBg: "group-hover:bg-indigo-500/20" },
+  { text: "Creative Work Culture", icon: "✨", bg: "bg-pink-500/10", hoverBg: "group-hover:bg-pink-500/20" }
 ];
 
 const testimonials = [
@@ -295,16 +300,46 @@ const Careers = () => {
       <Section id="why-join" title="Why Work With Us" subtitle="Relentless innovation meets radical ownership.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "Startup Speed", icon: <Zap />, desc: "Work in a fast-moving environment where ideas become products quickly." },
-            { title: "AI Innovation", icon: <Brain />, desc: "Build cutting-edge AI systems, automation tools, and next-gen digital products." },
-            { title: "Ownership Culture", icon: <Target />, desc: "Take ownership like a founder and shape meaningful technology." },
-            { title: "Learning Growth", icon: <Rocket />, desc: "Continuous technical learning, mentorship, and innovation." },
-            { title: "Creative Freedom", icon: <Lightbulb />, desc: "Experiment, create, and solve problems without unnecessary barriers." },
-            { title: "Global Opportunities", icon: <Globe />, desc: "Collaborate with international teams and global clients." }
+            { 
+              title: "Startup Speed", 
+              icon: "⚡", 
+              desc: "Work in a fast-moving environment where ideas become products quickly.",
+              bgClass: "bg-amber-500/10"
+            },
+            { 
+              title: "AI Innovation", 
+              icon: "🧠", 
+              desc: "Build cutting-edge AI systems, automation tools, and next-gen digital products.",
+              bgClass: "bg-violet-500/10"
+            },
+            { 
+              title: "Ownership Culture", 
+              icon: "🎯", 
+              desc: "Take ownership like a founder and shape meaningful technology.",
+              bgClass: "bg-rose-500/10"
+            },
+            { 
+              title: "Learning Growth", 
+              icon: "🚀", 
+              desc: "Continuous technical learning, mentorship, and innovation.",
+              bgClass: "bg-pink-500/10"
+            },
+            { 
+              title: "Creative Freedom", 
+              icon: "💡", 
+              desc: "Experiment, create, and solve problems without unnecessary barriers.",
+              bgClass: "bg-yellow-500/10"
+            },
+            { 
+              title: "Global Opportunities", 
+              icon: "🌐", 
+              desc: "Collaborate with international teams and global clients.",
+              bgClass: "bg-teal-500/10"
+            }
           ].map((feature, i) => (
-            <div key={i} className="p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group reveal-up">
-              <div className="mb-8 p-5 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
-                {React.cloneElement(feature.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
+            <div key={i} className="p-10 rounded-[3rem] glass-morphism border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group reveal-up">
+              <div className={`mb-8 p-5 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${feature.bgClass}`}>
+                {feature.icon}
               </div>
               <h3 className="text-2xl font-bold text-black mb-4">{feature.title}</h3>
               <p className="text-black/60 font-light leading-relaxed">
@@ -389,10 +424,10 @@ const Careers = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 reveal-up">
           {benefits.map((benefit, i) => (
             <div key={i} className="p-8 rounded-[2rem] border border-black/5 hover:border-primary/20 hover:shadow-lg transition-all duration-500 text-center group">
-              <div className="mb-6 w-14 h-14 bg-primary/5 rounded-2xl flex items-center justify-center text-primary mx-auto group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                <Heart className="w-6 h-6" />
+              <div className={`mb-6 w-14 h-14 rounded-2xl flex items-center justify-center mx-auto transition-all duration-500 text-3xl group-hover:scale-110 ${benefit.bg} ${benefit.hoverBg}`}>
+                {benefit.icon}
               </div>
-              <h4 className="font-bold text-black text-sm uppercase tracking-wider">{benefit}</h4>
+              <h4 className="font-bold text-black text-sm uppercase tracking-wider">{benefit.text}</h4>
             </div>
           ))}
         </div>

@@ -16,33 +16,39 @@ gsap.registerPlugin(ScrollTrigger);
 const techStack = [
   {
     name: "Frontend Engineering",
-    icon: <Monitor className="w-8 h-8" />,
-    technologies: ["React", "Next.js", "Vue.js", "TailwindCSS", "TypeScript", "GSAP"]
+    icon: "💻",
+    technologies: ["React", "Next.js", "Vue.js", "TailwindCSS", "TypeScript", "GSAP"],
+    bgClass: "bg-sky-500/10"
   },
   {
     name: "Backend Engineering",
-    icon: <Server className="w-8 h-8" />,
-    technologies: ["Node.js", "Python", "FastAPI", "Express.js", "Django", "NestJS"]
+    icon: "🖥️",
+    technologies: ["Node.js", "Python", "FastAPI", "Express.js", "Django", "NestJS"],
+    bgClass: "bg-blue-500/10"
   },
   {
     name: "Mobile Engineering",
-    icon: <Smartphone className="w-8 h-8" />,
-    technologies: ["Flutter", "React Native", "Swift", "Kotlin"]
+    icon: "📱",
+    technologies: ["Flutter", "React Native", "Swift", "Kotlin"],
+    bgClass: "bg-rose-500/10"
   },
   {
     name: "Databases",
-    icon: <Database className="w-8 h-8" />,
-    technologies: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"]
+    icon: "💾",
+    technologies: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"],
+    bgClass: "bg-cyan-500/10"
   },
   {
     name: "AI / Machine Learning",
-    icon: <Brain className="w-8 h-8" />,
-    technologies: ["OpenAI", "LangChain", "TensorFlow", "PyTorch", "Hugging Face", "LlamaIndex"]
+    icon: "🧠",
+    technologies: ["OpenAI", "LangChain", "TensorFlow", "PyTorch", "Hugging Face", "LlamaIndex"],
+    bgClass: "bg-violet-500/10"
   },
   {
     name: "Cloud & DevOps",
-    icon: <Cloud className="w-8 h-8" />,
-    technologies: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "GitHub Actions"]
+    icon: "☁️",
+    technologies: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "GitHub Actions"],
+    bgClass: "bg-emerald-500/10"
   }
 ];
 
@@ -193,8 +199,8 @@ const Technology = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {techStack.map((category, idx) => (
             <div key={idx} className="p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group reveal-up">
-              <div className="mb-8 p-5 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
-                {React.cloneElement(category.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
+              <div className={`mb-8 p-5 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${category.bgClass}`}>
+                {category.icon}
               </div>
               <h3 className="text-2xl font-bold text-black mb-6">{category.name}</h3>
               <div className="flex flex-wrap gap-2">

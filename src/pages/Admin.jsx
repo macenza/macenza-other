@@ -377,22 +377,19 @@ const Admin = () => {
           {/* Navigation Items */}
           <nav className="flex flex-col gap-2">
             {[
-              { id: 'Dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-              { id: 'Jobs', icon: <Briefcase className="w-5 h-5" /> },
-              { id: 'Applications', icon: <FileSpreadsheet className="w-5 h-5" /> },
-              { id: 'Resume Manager', icon: <FileSearch className="w-5 h-5" /> },
-              { id: 'Analytics', icon: <BarChart3 className="w-5 h-5" /> }
+              { id: 'Dashboard', icon: "📊" },
+              { id: 'Jobs', icon: "💼" },
+              { id: 'Applications', icon: "📋" },
+              { id: 'Resume Manager', icon: "🔍" },
+              { id: 'Analytics', icon: "📈" }
             ].map(item => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`flex items-center gap-4 py-4 px-5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 ${
-                  activeTab === item.id 
-                    ? 'bg-[#DBEAFE] text-black shadow-md border-l-4 border-primary pl-6' 
-                    : 'text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-6'
-                }`}
+                className="flex items-center gap-4 py-4 px-5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-6 active:scale-95 group"
+                style={activeTab === item.id ? { backgroundColor: '#DBEAFE', color: 'black', paddingLeft: '24px', borderLeft: '4px solid #2563eb' } : {}}
               >
-                {item.icon}
+                <span className="text-xl group-hover:scale-125 transition-transform duration-300">{item.icon}</span>
                 {item.id}
               </button>
             ))}

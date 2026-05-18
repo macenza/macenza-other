@@ -16,54 +16,60 @@ gsap.registerPlugin(ScrollTrigger);
 const solutions = [
   {
     name: "AI Solutions",
-    icon: <Brain className="w-8 h-8" />,
-    services: ["Custom AI Development", "Machine Learning Models", "AI Chatbots", "Generative AI Applications", "AI Agents", "Computer Vision"]
+    icon: "🧠",
+    services: ["Custom AI Development", "Machine Learning Models", "AI Chatbots", "Generative AI Applications", "AI Agents", "Computer Vision"],
+    bgClass: "bg-violet-500/10"
   },
   {
     name: "Software Development",
-    icon: <Code className="w-8 h-8" />,
-    services: ["Custom SaaS Platforms", "Enterprise Software", "CRM Development", "ERP Systems", "Business Dashboards", "Admin Panels"]
+    icon: "💻",
+    services: ["Custom SaaS Platforms", "Enterprise Software", "CRM Development", "ERP Systems", "Business Dashboards", "Admin Panels"],
+    bgClass: "bg-blue-500/10"
   },
   {
     name: "Web Solutions",
-    icon: <Globe className="w-8 h-8" />,
-    services: ["Corporate Websites", "Landing Pages", "Web Applications", "E-commerce Stores", "Progressive Web Apps", "Customer Portals"]
+    icon: "🌐",
+    services: ["Corporate Websites", "Landing Pages", "Web Applications", "E-commerce Stores", "Progressive Web Apps", "Customer Portals"],
+    bgClass: "bg-teal-500/10"
   },
   {
     name: "Mobile Applications",
-    icon: <Smartphone className="w-8 h-8" />,
-    services: ["iOS Apps", "Android Apps", "Cross-platform Apps", "Startup MVP Apps", "On-demand Apps"]
+    icon: "📱",
+    services: ["iOS Apps", "Android Apps", "Cross-platform Apps", "Startup MVP Apps", "On-demand Apps"],
+    bgClass: "bg-rose-500/10"
   },
   {
     name: "Automation Solutions",
-    icon: <Zap className="w-8 h-8" />,
-    services: ["Workflow Automation", "Business Process Automation", "CRM Automation", "AI Automation", "Email Automation", "RPA Solutions"]
+    icon: "⚡",
+    services: ["Workflow Automation", "Business Process Automation", "CRM Automation", "AI Automation", "Email Automation", "RPA Solutions"],
+    bgClass: "bg-amber-500/10"
   },
   {
     name: "Cloud & DevOps",
-    icon: <Cloud className="w-8 h-8" />,
-    services: ["AWS Deployment", "Azure Cloud", "CI/CD Pipelines", "Cloud Migration", "Scalable Infrastructure", "Server Management"]
+    icon: "☁️",
+    services: ["AWS Deployment", "Azure Cloud", "CI/CD Pipelines", "Cloud Migration", "Scalable Infrastructure", "Server Management"],
+    bgClass: "bg-sky-500/10"
   }
 ];
 
 const industries = [
-  { name: "Healthcare Technology", icon: <UserCheck /> },
-  { name: "Fintech Solutions", icon: <BarChart3 /> },
-  { name: "Manufacturing ERP", icon: <Database /> },
-  { name: "Retail Automation", icon: <Target /> },
-  { name: "Education Platforms", icon: <Layers /> },
-  { name: "Real Estate Tech", icon: <Globe /> },
-  { name: "Hospitality Software", icon: <MessageSquare /> },
-  { name: "Logistics Systems", icon: <Rocket /> }
+  { name: "Healthcare Technology", icon: "🏥", bg: "bg-emerald-500/10", hoverBg: "group-hover:bg-emerald-500/20" },
+  { name: "Fintech Solutions", icon: "💳", bg: "bg-indigo-500/10", hoverBg: "group-hover:bg-indigo-500/20" },
+  { name: "Manufacturing ERP", icon: "🏭", bg: "bg-cyan-500/10", hoverBg: "group-hover:bg-cyan-500/20" },
+  { name: "Retail Automation", icon: "🛒", bg: "bg-amber-500/10", hoverBg: "group-hover:bg-amber-500/20" },
+  { name: "Education Platforms", icon: "🎓", bg: "bg-violet-500/10", hoverBg: "group-hover:bg-violet-500/20" },
+  { name: "Real Estate Tech", icon: "🏢", bg: "bg-sky-500/10", hoverBg: "group-hover:bg-sky-500/20" },
+  { name: "Hospitality Software", icon: "🏨", bg: "bg-rose-500/10", hoverBg: "group-hover:bg-rose-500/20" },
+  { name: "Logistics Systems", icon: "🚚", bg: "bg-pink-500/10", hoverBg: "group-hover:bg-pink-500/20" }
 ];
 
 const aiAgents = [
-  { name: "Sales AI Agent", icon: <Target /> },
-  { name: "Customer Support AI", icon: <MessageSquare /> },
-  { name: "Voice AI Assistant", icon: <Mic /> },
-  { name: "Recruitment AI Agent", icon: <UserCheck /> },
-  { name: "Lead Generation AI", icon: <Rocket /> },
-  { name: "Business Intelligence AI", icon: <BarChart3 /> }
+  { name: "Sales AI Agent", icon: "🎯", bg: "bg-rose-500/10" },
+  { name: "Customer Support AI", icon: "💬", bg: "bg-sky-500/10" },
+  { name: "Voice AI Assistant", icon: "🎙️", bg: "bg-violet-500/10" },
+  { name: "Recruitment AI Agent", icon: "👥", bg: "bg-emerald-500/10" },
+  { name: "Lead Generation AI", icon: "🚀", bg: "bg-amber-500/10" },
+  { name: "Business Intelligence AI", icon: "📊", bg: "bg-pink-500/10" }
 ];
 
 const processSteps = [
@@ -171,8 +177,8 @@ const Solutions = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 solution-grid">
           {solutions.map((sol, idx) => (
             <div key={idx} className="solution-card p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group">
-              <div className="mb-8 p-5 bg-primary/5 rounded-2xl w-fit group-hover:bg-primary group-hover:text-white transition-colors duration-500">
-                {React.cloneElement(sol.icon, { className: "w-8 h-8 group-hover:text-white transition-colors" })}
+              <div className={`mb-8 p-5 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${sol.bgClass}`}>
+                {sol.icon}
               </div>
               <h3 className="text-2xl font-bold text-black mb-6">{sol.name}</h3>
               <ul className="space-y-4">
@@ -200,8 +206,8 @@ const Solutions = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 reveal-up">
           {aiAgents.map((agent, i) => (
             <div key={i} className="p-8 rounded-3xl bg-white border border-black/5 hover:border-primary/50 transition-all duration-300 text-center group cursor-default shadow-sm">
-              <div className="mb-6 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mx-auto group-hover:scale-110 transition-transform">
-                {React.cloneElement(agent.icon, { className: "w-6 h-6" })}
+              <div className={`mb-6 w-12 h-12 rounded-xl flex items-center justify-center mx-auto transition-all duration-500 text-2xl group-hover:scale-110 ${agent.bg}`}>
+                {agent.icon}
               </div>
               <span className="text-sm font-bold block leading-tight text-black">{agent.name}</span>
             </div>
@@ -214,8 +220,8 @@ const Solutions = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-up">
           {industries.map((industry, i) => (
             <div key={i} className="p-10 rounded-[2rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 text-center group">
-              <div className="mb-6 w-14 h-14 bg-black/5 rounded-2xl flex items-center justify-center text-black/40 group-hover:bg-primary group-hover:text-white transition-all duration-500 mx-auto">
-                {React.cloneElement(industry.icon, { className: "w-6 h-6" })}
+              <div className={`mb-6 w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 mx-auto text-3xl group-hover:scale-110 ${industry.bg} ${industry.hoverBg}`}>
+                {industry.icon}
               </div>
               <h4 className="font-bold text-black group-hover:text-primary transition-colors">{industry.name}</h4>
             </div>
@@ -312,16 +318,16 @@ const Solutions = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "AI-first engineering", desc: "Every solution is built with artificial intelligence at its core." },
-            { title: "Startup speed", desc: "We move at the speed of thought to bring your ideas to market." },
-            { title: "Enterprise reliability", desc: "Robust, secure, and reliable for high-stakes environments." },
-            { title: "Scalable architecture", desc: "Cloud-native systems designed to grow with your ambition." },
-            { title: "Future-ready solutions", desc: "Building technology that stays relevant in a shifting world." },
-            { title: "Global innovation mindset", desc: "Drawing inspiration from the world's leading tech hubs." },
+            { title: "AI-first engineering", desc: "Every solution is built with artificial intelligence at its core.", icon: "🧠", bg: "bg-violet-500/10" },
+            { title: "Startup speed", desc: "We move at the speed of thought to bring your ideas to market.", icon: "⚡", bg: "bg-amber-500/10" },
+            { title: "Enterprise reliability", desc: "Robust, secure, and reliable for high-stakes environments.", icon: "🛡️", bg: "bg-blue-500/10" },
+            { title: "Scalable architecture", desc: "Cloud-native systems designed to grow with your ambition.", icon: "🚀", bg: "bg-pink-500/10" },
+            { title: "Future-ready solutions", desc: "Building technology that stays relevant in a shifting world.", icon: "🎯", bg: "bg-rose-500/10" },
+            { title: "Global innovation mindset", desc: "Drawing inspiration from the world's leading tech hubs.", icon: "🌐", bg: "bg-teal-500/10" },
           ].map((item, i) => (
-            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-all duration-300 flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                <Shield className="w-6 h-6" />
+            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-all duration-300 flex gap-6 items-start group">
+              <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110 ${item.bg}`}>
+                {item.icon}
               </div>
               <div>
                 <h4 className="text-2xl font-bold mb-3 text-black">{item.title}</h4>

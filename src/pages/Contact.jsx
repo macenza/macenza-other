@@ -13,10 +13,10 @@ import { Link } from 'react-router-dom';
 gsap.registerPlugin(ScrollTrigger);
 
 const contactInfo = [
-  { title: "Email", value: "info@macenza.com", icon: <Mail /> },
-  { title: "Business Inquiries", value: "shanki9414@gmail.com", icon: <MessageSquare /> },
-  { title: "Phone", value: "+91 94146 60123", icon: <Phone /> },
-  { title: "Working Hours", value: "Mon - Sat | 10 AM - 6 PM", icon: <Clock /> }
+  { title: "Email", value: "info@macenza.com", icon: "✉️", bgClass: "bg-violet-500/10" },
+  { title: "Business Inquiries", value: "shanki9414@gmail.com", icon: "💬", bgClass: "bg-teal-500/10" },
+  { title: "Phone", value: "+91 94146 60123", icon: "📞", bgClass: "bg-emerald-500/10" },
+  { title: "Working Hours", value: "Mon - Sat | 10 AM - 6 PM", icon: "⏰", bgClass: "bg-amber-500/10" }
 ];
 
 const countries = [
@@ -141,8 +141,8 @@ const Contact = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {contactInfo.map((info, i) => (
                 <div key={i} className="p-8 rounded-[2rem] glass-morphism border border-black/5 hover:border-primary/20 transition-all group">
-                  <div className="mb-4 w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    {React.cloneElement(info.icon, { className: "w-5 h-5" })}
+                  <div className={`mb-4 w-10 h-10 rounded-xl flex items-center justify-center text-xl transition-all group-hover:scale-110 ${info.bgClass}`}>
+                    {info.icon}
                   </div>
                   <h4 className="text-sm font-black text-black/30 uppercase tracking-[0.2em] mb-1">{info.title}</h4>
                   <p className="text-black font-bold break-words">{info.value}</p>
@@ -255,16 +255,16 @@ const Contact = () => {
       <Section id="why-choose" title="Why Businesses Choose Us" subtitle="Excellence in engineering, driven by intelligence.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "AI-first engineering", icon: <Brain />, desc: "Every solution is built with artificial intelligence at its core." },
-            { title: "Fast startup execution", icon: <Zap />, desc: "We move at the speed of thought to bring your ideas to market." },
-            { title: "Enterprise-grade solutions", icon: <Shield />, desc: "Robust, secure, and reliable for high-stakes environments." },
-            { title: "Global delivery capability", icon: <Globe />, desc: "Delivering world-class products across international borders." },
-            { title: "Scalable architecture", icon: <Rocket />, desc: "Cloud-native systems designed to grow with your ambition." },
-            { title: "Future-ready technology", icon: <Target />, desc: "Building the foundations for a smarter, digital tomorrow." }
+            { title: "AI-first engineering", icon: "🧠", desc: "Every solution is built with artificial intelligence at its core.", bg: "bg-violet-500/10" },
+            { title: "Fast startup execution", icon: "⚡", desc: "We move at the speed of thought to bring your ideas to market.", bg: "bg-amber-500/10" },
+            { title: "Enterprise-grade solutions", icon: "🛡️", desc: "Robust, secure, and reliable for high-stakes environments.", bg: "bg-blue-500/10" },
+            { title: "Global delivery capability", icon: "🌐", desc: "Delivering world-class products across international borders.", bg: "bg-teal-500/10" },
+            { title: "Scalable architecture", icon: "🚀", desc: "Cloud-native systems designed to grow with your ambition.", bg: "bg-pink-500/10" },
+            { title: "Future-ready technology", icon: "🎯", desc: "Building the foundations for a smarter, digital tomorrow.", bg: "bg-rose-500/10" }
           ].map((item, i) => (
-            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300 flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
-                {React.cloneElement(item.icon, { className: "w-6 h-6" })}
+            <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300 flex gap-6 items-start group">
+              <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110 ${item.bg}`}>
+                {item.icon}
               </div>
               <div>
                 <h4 className="text-2xl font-bold mb-3 text-black">{item.title}</h4>

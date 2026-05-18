@@ -134,27 +134,27 @@ const About = () => {
       {/* Mission Vision Values */}
       <Section id="mission">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8">
-              <Target className="w-8 h-8" />
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 hover:border-violet-500/20 group">
+            <div className="w-16 h-16 bg-violet-500/10 rounded-2xl flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-300">
+              🎯
             </div>
             <h3 className="text-3xl font-bold mb-6">Our Mission</h3>
             <p className="text-black/60 font-light leading-relaxed">
               To empower every business with intelligent technology that amplifies human potential and drives sustainable global innovation.
             </p>
           </div>
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 bg-primary/5">
-            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mb-8">
-              <Lightbulb className="w-8 h-8" />
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 bg-primary/5 hover:border-amber-500/20 group">
+            <div className="w-16 h-16 bg-amber-500/10 rounded-2xl flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-300">
+              💡
             </div>
             <h3 className="text-3xl font-bold mb-6">Our Vision</h3>
             <p className="text-black/60 font-light leading-relaxed">
               To become the world's most trusted partner in AI-driven digital transformation, building the foundations for a smarter tomorrow.
             </p>
           </div>
-          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-8">
-              <Heart className="w-8 h-8" />
+          <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 hover:border-rose-500/20 group">
+            <div className="w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-300">
+              ❤️
             </div>
             <h3 className="text-3xl font-bold mb-6">Our Values</h3>
             <div className="flex flex-wrap gap-3">
@@ -179,15 +179,15 @@ const About = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal-up">
           {[
-            { title: "Fast-paced innovation", icon: <Zap /> },
-            { title: "Remote-first collaboration", icon: <Globe /> },
-            { title: "AI-first mindset", icon: <Sparkles /> },
-            { title: "Creative engineering", icon: <Lightbulb /> },
-            { title: "Startup ownership culture", icon: <Target /> },
-            { title: "Rapid experimentation", icon: <Rocket /> },
+            { title: "Fast-paced innovation", icon: "⚡", bg: "bg-amber-500/10" },
+            { title: "Remote-first collaboration", icon: "🌐", bg: "bg-sky-500/10" },
+            { title: "AI-first mindset", icon: "✨", bg: "bg-violet-500/10" },
+            { title: "Creative engineering", icon: "💡", bg: "bg-pink-500/10" },
+            { title: "Startup ownership culture", icon: "🎯", bg: "bg-rose-500/10" },
+            { title: "Rapid experimentation", icon: "🚀", bg: "bg-indigo-500/10" },
           ].map((item, i) => (
-            <div key={i} className="p-8 rounded-3xl bg-white/50 border border-dark/5 flex items-center gap-6 hover:bg-white/80 transition-all duration-300 shadow-sm">
-              <div className="text-primary">{React.cloneElement(item.icon, { className: "w-6 h-6" })}</div>
+            <div key={i} className="p-8 rounded-3xl bg-white/50 border border-dark/5 flex items-center gap-6 hover:bg-white/80 transition-all duration-300 shadow-sm group">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 ${item.bg} group-hover:scale-110`}>{item.icon}</div>
               <span className="text-lg font-bold text-black">{item.title}</span>
             </div>
           ))}
