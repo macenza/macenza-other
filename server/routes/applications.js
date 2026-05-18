@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
@@ -71,7 +72,7 @@ router.post('/create', upload.single('resume'), async (req, res) => {
       portfolioUrl,
       coverLetter,
       resume: resumePath,
-      jobId: jobId || null,
+      jobId: (jobId && mongoose.Types.ObjectId.isValid(jobId)) ? jobId : null,
       status: 'Applied',
       notes: ''
     });
@@ -95,7 +96,7 @@ router.get('/', async (req, res) => {
     if (status) {
       filter.status = status;
     }
-    if (jobId) {
+    if (jobId && mongoose.Types.ObjectId.isValid(jobId)) {
       filter.jobId = jobId;
     }
     if (location) {
