@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageSquare, Send, X, Bot, Sparkles, SendHorizontal } from 'lucide-react';
 import { GoogleGenAI } from '@google/genai';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import PRIYANKA_SYSTEM_INSTRUCTION from './knowledge.md?raw';
 
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
@@ -137,19 +138,26 @@ const ChatWidget = () => {
 
   return (
     <>
-      {/* Floating Chat Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-8 right-8 z-[9999] w-14 h-14 bg-primary text-white rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(37,99,235,0.4)] hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer animate-pulse-glow"
+        className={`fixed bottom-8 right-8 z-[9999] w-16 h-16 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer hover:scale-110 active:scale-95 ${isOpen
+          ? 'bg-slate-950 text-white shadow-2xl border border-white/10'
+          : 'bg-primary/60 backdrop-blur-md border border-white shadow-[0_8px_32px_rgba(37,99,235,0.2)] hover:bg-primary/30'
+          }`}
         aria-label="Toggle AI Assistant"
       >
         {isOpen ? (
           <X className="w-6 h-6 transition-transform rotate-90 duration-300" />
         ) : (
-          <div className="relative">
-            <MessageSquare className="w-6 h-6" />
+          <div className="relative w-12 h-12 flex items-center justify-center overflow-hidden">
+            <DotLottieReact
+              src="/chatbot.lottie"
+              loop
+              autoplay
+              style={{ width: '100%', height: '100%' }}
+            />
             {hasNewMessageBadge && (
-              <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-rose-500 rounded-full border-2 border-primary animate-ping"></span>
+              <span className="absolute top-0.5 right-0.5 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-ping"></span>
             )}
           </div>
         )}
@@ -201,8 +209,8 @@ const ChatWidget = () => {
                 )}
                 <div
                   className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-line shadow-md ${msg.sender === 'user'
-                      ? 'bg-primary text-white rounded-tr-none'
-                      : 'bg-white/5 border border-white/5 text-white/90 rounded-tl-none'
+                    ? 'bg-primary text-white rounded-tr-none'
+                    : 'bg-white/5 border border-white/5 text-white/90 rounded-tl-none'
                     }`}
                 >
                   {msg.text}
