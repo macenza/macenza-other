@@ -171,8 +171,13 @@ const ChatWidget = () => {
           {/* Header Card */}
           <div className="p-6 bg-gradient-to-r from-primary/20 via-blue-900/10 to-transparent border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center text-primary relative">
-                <Bot className="w-5 h-5" />
+              <div className="w-10 h-10 bg-primary/10 border border-primary/20 rounded-xl flex items-center justify-center relative overflow-hidden">
+                <DotLottieReact
+                  src="/chatbot.lottie"
+                  loop
+                  autoplay
+                  style={{ width: '100%', height: '100%' }}
+                />
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-slate-950 animate-pulse"></span>
               </div>
               <div>
@@ -203,8 +208,13 @@ const ChatWidget = () => {
                   }`}
               >
                 {msg.sender === 'bot' && (
-                  <div className="w-8 h-8 rounded-lg bg-white/5 flex-shrink-0 flex items-center justify-center border border-white/5 text-primary">
-                    <Bot className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex-shrink-0 flex items-center justify-center border border-white/5 overflow-hidden">
+                    <DotLottieReact
+                      src="/chatbot.lottie"
+                      loop
+                      autoplay
+                      style={{ width: '100%', height: '100%' }}
+                    />
                   </div>
                 )}
                 <div
@@ -220,8 +230,13 @@ const ChatWidget = () => {
 
             {isTyping && (
               <div className="flex gap-3 max-w-[85%]">
-                <div className="w-8 h-8 rounded-lg bg-white/5 flex-shrink-0 flex items-center justify-center border border-white/5 text-primary">
-                  <Bot className="w-4 h-4" />
+                <div className="w-8 h-8 rounded-lg bg-white/5 flex-shrink-0 flex items-center justify-center border border-white/5 overflow-hidden">
+                  <DotLottieReact
+                    src="/chatbot.lottie"
+                    loop
+                    autoplay
+                    style={{ width: '100%', height: '100%' }}
+                  />
                 </div>
                 <div className="p-4 bg-white/5 border border-white/5 rounded-2xl rounded-tl-none flex items-center gap-1.5">
                   <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
