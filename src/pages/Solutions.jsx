@@ -147,30 +147,200 @@ const Solutions = () => {
 
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
-      {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
-        </div>
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
+      
+{/* HERO SECTION */}
+<section className="relative min-h-screen flex items-center overflow-hidden bg-white pt-36 pb-24">
+
+  {/* Background Images */}
+  <div className="absolute inset-0 z-0">
+
+    {/* Main Background */}
+    <div
+      className="absolute inset-0 bg-cover bg-center opacity-[0.22] scale-105"
+      style={{
+        backgroundImage: "url('about/image1.png')",
+      }}
+    />
+
+    {/* Secondary Overlay Image */}
+    <div
+      className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen"
+      style={{
+        backgroundImage: "url('about/image2.png')",
+      }}
+    />
+
+    {/* Soft White Overlay */}
+    <div className="absolute inset-0 bg-gradient-to-br from-white/90 via-white/75 to-primary/10"></div>
+
+    {/* AI Glow Effects */}
+    <div className="absolute top-[-10%] left-[-5%] w-[550px] h-[550px] bg-primary/15 rounded-full blur-[140px]" />
+
+    <div className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-accent/15 rounded-full blur-[140px]" />
+
+    {/* Grid */}
+    <div className="absolute inset-0 opacity-[0.06] 
+    bg-[linear-gradient(to_right,rgba(16,185,129,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(16,185,129,0.15)_1px,transparent_1px)] 
+    bg-[size:70px_70px]" />
+  </div>
+
+  {/* Floating Blur Cards */}
+  <div className="absolute top-40 right-20 hidden xl:block z-10">
+    <div className="w-52 h-52 rounded-[2rem] border border-white/40 bg-white/40 backdrop-blur-2xl shadow-2xl rotate-12"></div>
+  </div>
+
+  <div className="absolute bottom-32 left-16 hidden xl:block z-10">
+    <div className="w-40 h-40 rounded-[2rem] border border-white/40 bg-white/40 backdrop-blur-2xl shadow-2xl -rotate-12"></div>
+  </div>
+
+  {/* CONTENT */}
+  <div className="container mx-auto px-6 relative z-20">
+
+    <div className="grid lg:grid-cols-2 gap-20 items-center">
+
+      {/* LEFT CONTENT */}
+      <div>
+
+        {/* Badge */}
+        <div className="inline-flex items-center gap-3 px-6 py-3 
+        bg-emerald-400/10 border border-emerald-400/20 
+        backdrop-blur-xl rounded-full 
+        shadow-[0_8px_30px_rgba(16,185,129,0.15)] 
+        mb-8 reveal-up group transition-all duration-300 hover:scale-105">
+
+          <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.9)]"></div>
+
+          <span className="text-emerald-600 font-semibold text-xs uppercase tracking-[0.28em]">
             Intelligent Innovation
-          </div>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-            Intelligent Solutions <br />
-            <span className="text-primary">for the Future.</span>
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-            Macenza delivers AI-powered software, automation systems, and transformative digital solutions for modern businesses.
-          </p>
-          <div className="flex justify-center reveal-up">
-            <Link to="/contact" className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center">
-              Book Consultation
-            </Link>
-          </div>
+          </span>
+
         </div>
-      </section>
+
+        {/* Heading */}
+        <h1 className="text-4xl md:text-6xl xl:text-8xl font-black tracking-tight text-gray-700 mb-8 leading-[0.92] reveal-up">
+          Intelligent Solutions
+          <br />
+
+          <span  className="bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+            Powered by AI.
+          </span>
+        </h1>
+
+        {/* Subtitle */}
+        <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light leading-relaxed mb-10 reveal-up">
+          Macenza builds AI-powered software, scalable automation systems,
+          enterprise-grade digital platforms, and next-generation intelligent experiences
+          engineered for modern businesses.
+        </p>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-wrap items-center gap-5 reveal-up">
+
+          {/* Primary Button */}
+          {/* <Link
+            to="/contact"
+            className="group relative overflow-hidden px-8 py-4 rounded-full bg-primary text-white font-bold shadow-2xl shadow-primary/20 transition-all duration-500 hover:scale-105 hover:shadow-primary/40"
+          > */}
+            
+            
+            
+             <Link to="/contact">
+  <button className="btn-ai-primary">
+    Book Consultation
+  </button>
+</Link>
+
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {/* </Link> */}
+
+          {/* Secondary Button */}
+          <Link
+            to="/technology"
+            className="px-8 py-4 rounded-full border border-black/10 bg-white/70 backdrop-blur-xl text-black font-bold hover:bg-black hover:text-white transition-all duration-300 shadow-xl"
+          >
+            Explore Technology
+          </Link>
+
+        </div>
+
+        {/* Stats */}
+        <div className="flex flex-wrap gap-12 mt-16 reveal-up">
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">120+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              AI Solutions
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">500+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              Clients
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">25+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              Countries
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="relative flex justify-center lg:justify-end reveal-up">
+
+        {/* Glow */}
+        <div className="absolute w-[550px] h-[550px] bg-primary/10 rounded-full blur-[140px]" />
+
+        {/* Main Image */}
+        <img
+          src="about/image2.png"
+          alt="AI Solutions"
+          className="relative z-10 w-full max-w-[720px] object-contain 
+          drop-shadow-[0_30px_100px_rgba(59,130,246,0.25)]
+          animate-float"
+        />
+
+        {/* Floating Glass Card */}
+        <div className="absolute top-16 -left-10 hidden lg:flex items-center gap-4 
+        px-5 py-4 rounded-2xl bg-white/70 backdrop-blur-2xl 
+        border border-white/50 shadow-2xl">
+
+          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-2xl">
+            ⚡
+          </div>
+
+          <div>
+            <h4 className="font-bold text-black">AI Automation</h4>
+            <p className="text-sm text-black/50">Enterprise Scale</p>
+          </div>
+
+        </div>
+
+        {/* Floating Glass Card */}
+        <div className="absolute bottom-12 right-0 hidden lg:flex items-center gap-4 
+        px-5 py-4 rounded-2xl bg-white/70 backdrop-blur-2xl 
+        border border-white/50 shadow-2xl">
+
+          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-2xl">
+            🚀
+          </div>
+
+          <div>
+            <h4 className="font-bold text-black">Future Ready</h4>
+            <p className="text-sm text-black/50">AI Infrastructure</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Core Solutions Grid */}
       <Section id="core-solutions" title="Our Core Solutions" subtitle="Empowering your business with high-performance digital tools.">

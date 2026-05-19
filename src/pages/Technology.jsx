@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { 
-  Monitor, Server, Smartphone, Database, Brain, Cloud, 
+import {
+  Monitor, Server, Smartphone, Database, Brain, Cloud,
   Shield, Zap, Cpu, Globe, Rocket, Terminal,
   Layers, Code, Lock, Activity, Search, ArrowRight,
   ArrowDown
@@ -114,11 +114,11 @@ const Technology = () => {
       // Diagram animation
       const lines = diagramRef.current.querySelectorAll('.flow-line');
       lines.forEach((line, i) => {
-        gsap.fromTo(line, 
-          { scaleY: 0 }, 
-          { 
-            scaleY: 1, 
-            duration: 0.8, 
+        gsap.fromTo(line,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            duration: 0.8,
             delay: i * 0.3,
             ease: "power2.inOut",
             scrollTrigger: {
@@ -160,37 +160,86 @@ const Technology = () => {
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
+      {/* Hero Section */}
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden pt-40 pb-24">
+
+        {/* Background Images */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(37,99,235,0.05)_0%,transparent_50%)]"></div>
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[100px] animate-pulse delay-700"></div>
+
+          {/* Left Background Image */}
+          <img
+            src="/image1.png"
+            alt="Technology Background"
+            className="absolute top-0 left-0 w-full h-full object-cover opacity-25"
+          />
+
+          {/* Right Overlay Image */}
+          <img
+            src="/image2.png"
+            alt="Technology Overlay"
+            className="absolute top-0 right-0 w-full h-full object-cover opacity-20 mix-blend-screen"
+          />
+
+          {/* Dark Overlay */}
+          <div className="absolute inset-0 bg-white/70"></div>
+
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/40 via-white/60 to-white"></div>
+
+          {/* Glow Effects */}
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
+
+          <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-accent/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,#000_1px,transparent_1px),linear-gradient(to_bottom,#000_1px,transparent_1px)] bg-[size:80px_80px]"></div>
         </div>
+
+        {/* Hero Content */}
         <div className="container mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-          <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-            Deep-Tech Engineering
+
+          {/* Badge */}
+          <div className="inline-flex items-center gap-3 px-6 py-3 
+bg-emerald-400/10 border border-emerald-400/20 
+backdrop-blur-xl rounded-full shadow-[0_8px_30px_rgba(16,185,129,0.15)] 
+mb-8 reveal-up group transition-all duration-300 hover:scale-105">
+
+            {/* Glow Dot */}
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_12px_rgba(52,211,153,0.9)]"></div>
+
+            {/* Text */}
+            <span className="text-emerald-600 font-semibold text-xs uppercase tracking-[0.28em]">
+              Deep-Tech Engineering
+            </span>
+
           </div>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-[0.9]">
-            Technology That <br /> 
-            <span className="text-primary italic">Powers Intelligence.</span>
+          {/* Heading */}
+          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-gray-700 mb-8 reveal-up leading-[0.9]">
+            Technology That <br />
+            <span className="text-blue-500 ">
+              Powers Intelligence.
+            </span>
           </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-            Macenza engineers cutting-edge AI infrastructure, scalable software systems, and intelligent digital architectures built for the future.
+
+          {/* Subtitle */}
+          <p className="max-w-3xl mx-auto text-lg md:text-2xl text-black/70 font-light reveal-up mb-12 leading-relaxed">
+            Macenza engineers cutting-edge AI infrastructure, scalable software systems,
+            and intelligent digital architectures built for the future.
           </p>
+
+          {/* Buttons */}
           <div className="flex flex-wrap justify-center gap-6 reveal-up">
-            <button 
-              onClick={() => document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 flex items-center gap-3 shadow-xl shadow-primary/20"
-            >
-              Explore Stack <ArrowDown className="w-5 h-5" />
+
+            <button className="btn-ai-primary">
+              Explore Stack
             </button>
-            <Link 
-              to="/contact" 
-              className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 text-center"
-            >
+
+
+            <Link to="/contact"><button className="btn-ai-outline">
               Talk to Engineers
-            </Link>
+            </button></Link>
           </div>
+
         </div>
       </section>
 
@@ -379,7 +428,7 @@ const Technology = () => {
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
           <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
           <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Build Future-Ready <br /> <span className="text-primary italic">Technology.</span>
           </h2>

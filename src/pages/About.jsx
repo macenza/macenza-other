@@ -78,24 +78,113 @@ const About = () => {
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent/20 rounded-full blur-[120px] animate-pulse delay-1000"></div>
+      {/* Hero Section */}
+
+{/* Hero Section */}
+<section className="relative min-h-screen flex items-center overflow-hidden bg-white pt-36 pb-24">
+
+  {/* Background Image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center opacity-[0.25] scale-105"
+    style={{
+      backgroundImage: "url('about/image1.png')",
+    }}
+  />
+
+  {/* Overlay */}
+  <div className="absolute inset-0 bg-gradient-to-br from-white/85 via-white/75 to-primary/10"></div>
+
+  {/* Glow Effects */}
+  <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px]" />
+  <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[140px]" />
+
+  <div className="container mx-auto px-6 relative z-10">
+    <div className="grid lg:grid-cols-2 items-center gap-16">
+
+      {/* LEFT CONTENT */}
+      <div>
+
+        <div className="inline-flex items-center gap-4 mb-8 reveal-up">
+          <span className="text-primary font-bold text-xs uppercase tracking-[0.3em]">
+            Intelligent Innovation
+          </span>
+
+          <div className="w-20 h-[1px] bg-primary"></div>
         </div>
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-            Our Journey
+
+        <h1 className="text-5xl md:text-7xl xl:text-8xl font-black tracking-tight text-black mb-8 leading-[0.95] reveal-up">
+          Intelligent Solutions
+          <br />
+          <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            for the Future.
+          </span>
+        </h1>
+
+        <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light leading-relaxed mb-10 reveal-up">
+          Macenza delivers AI-powered software, automation systems,
+          and transformative digital solutions for modern businesses.
+        </p>
+
+        <div className="flex flex-wrap items-center gap-5 reveal-up">
+          <Link
+            to="/contact"
+            className="px-8 py-4 bg-primary text-white rounded-full font-bold hover:scale-105 transition-all duration-300 shadow-xl shadow-primary/20"
+          >
+            Book Consultation
+          </Link>
+
+          <Link
+            to="/technology"
+            className="px-8 py-4 border border-black/10 rounded-full font-bold text-black hover:bg-black hover:text-white transition-all duration-300"
+          >
+            Explore Technology
+          </Link>
+        </div>
+
+        {/* STATS */}
+        <div className="flex flex-wrap gap-10 mt-16 reveal-up">
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">120+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              AI Solutions
+            </p>
           </div>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-            Building the Future <br />
-            <span className="text-accent">with Intelligence.</span>
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up">
-            Macenza is a next-generation AI and software company building intelligent digital products, automation systems, and transformative technology experiences.
-          </p>
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">500+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              Clients
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-4xl font-black text-primary">25+</h3>
+            <p className="text-black/50 text-sm uppercase tracking-widest">
+              Countries
+            </p>
+          </div>
+
         </div>
-      </section>
+      </div>
+
+      {/* RIGHT SIDE IMAGE */}
+      <div className="relative flex justify-center lg:justify-end reveal-up">
+
+        {/* Glow */}
+        <div className="absolute w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px]" />
+
+        {/* Main Image */}
+        <img
+          src="about/image2.png"
+          alt="AI Technology"
+          className="relative z-10 w-full max-w-[650px] object-contain drop-shadow-[0_20px_80px_rgba(124,58,237,0.25)] animate-float"
+        />
+
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* Company Story */}
       <Section id="story" className="bg-white text-black">
