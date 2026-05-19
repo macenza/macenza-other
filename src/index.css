@@ -129,3 +129,16 @@ nav.fixed.nav-hidden {
   opacity: 0;
   pointer-events: none;
 }
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.4), 0 0 0 0px rgba(37, 99, 235, 0.3);
+  }
+  50% {
+    box-shadow: 0 10px 30px rgba(37, 99, 235, 0.5), 0 0 0 12px rgba(37, 99, 235, 0);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite;
+}

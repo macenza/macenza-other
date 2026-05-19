@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
+import ChatWidget from './components/ChatWidget';
 import Home from './pages/Home';
 import About from './pages/About';
 import Solutions from './pages/Solutions';
@@ -20,6 +21,7 @@ function App() {
     <div className="relative">
       <SmoothScroll />
       {!isAdmin && <Navbar />}
+      {!isAdmin && <ChatWidget />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
