@@ -117,7 +117,7 @@ const About = () => {
           <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
 
           {/* Decorative Dot Grid */}
-          <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
+          <svg className="absolute left-[15%] top-[50%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
             <pattern id="dotGridAbout" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="3" cy="3" r="1.5" />
             </pattern>
@@ -166,9 +166,9 @@ const About = () => {
             alt="Macenza AI Robot"
             className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float"
           />
-          {/* Bottom Fade Mask */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
         </div>
+        {/* Bottom Fade Mask */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-30"></div>
       </section>
 
       {/* Company Story */}
