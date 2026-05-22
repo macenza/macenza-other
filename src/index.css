@@ -114,6 +114,56 @@ h6 {
   animation-delay: 2s;
 }
 
+/* AI Neural Network Flowing Dots & Pulsing Nodes */
+@keyframes flow-wave-dots {
+  from {
+    stroke-dashoffset: 240;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-flow-dots-fast {
+  animation: flow-wave-dots 8s linear infinite;
+}
+
+.animate-flow-dots-medium {
+  animation: flow-wave-dots 12s linear infinite;
+}
+
+.animate-flow-dots-slow {
+  animation: flow-wave-dots 18s linear infinite;
+}
+
+.animate-flow-dots-reverse {
+  animation: flow-wave-dots 14s linear infinite reverse;
+}
+
+@keyframes node-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+.animate-node-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: node-pulse 3s ease-in-out infinite;
+}
+
+.animate-node-pulse-delayed {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: node-pulse 3.5s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
 /* Auto-hiding Navigation Bar Styles */
 nav.fixed {
   /* No transform transition by default to avoid GSAP entry animation conflicts */
