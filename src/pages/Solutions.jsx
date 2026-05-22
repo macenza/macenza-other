@@ -148,26 +148,38 @@ const Solutions = () => {
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
+      <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
-        </div>
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-            Intelligent Innovation
+          {/* Background Hero Robot Image */}
+          <div className="absolute right-0 bottom-0 top-0 w-full lg:w-1/2 opacity-15 lg:opacity-100 pointer-events-none z-0 overflow-hidden">
+            <img 
+              src="/hero-robot.png" 
+              alt="Macenza AI Robot" 
+              className="w-full h-full object-cover object-center lg:object-right select-none mix-blend-multiply" 
+            />
+            {/* Bottom Fade Mask */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-10"></div>
           </div>
-          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-            Intelligent Solutions <br />
-            <span className="text-primary">for the Future.</span>
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-            Macenza delivers AI-powered software, automation systems, and transformative digital solutions for modern businesses.
-          </p>
-          <div className="flex justify-center reveal-up">
-            <Link to="/contact" className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center">
-              Book Consultation
-            </Link>
+        </div>
+        <div className="container mx-auto px-6 relative z-10 text-left w-full flex flex-col items-start justify-center">
+          <div className="max-w-3xl">
+            <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
+              Intelligent Innovation
+            </div>
+            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+              Intelligent Solutions <br />
+              <span className="text-primary">for the Future.</span>
+            </h1>
+            <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
+              Macenza delivers AI-powered software, automation systems, and transformative digital solutions for modern businesses.
+            </p>
+            <div className="flex justify-start reveal-up">
+              <Link to="/contact" className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center">
+                Book Consultation
+              </Link>
+            </div>
           </div>
         </div>
       </section>
