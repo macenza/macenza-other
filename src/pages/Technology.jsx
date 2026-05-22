@@ -352,16 +352,46 @@ const Technology = () => {
       </Section>
 
       {/* Partners */}
-      <Section id="partners" className="py-20 border-y border-black/5">
+      <section id="partners" className="py-20 border-y border-black/5 overflow-hidden relative w-full marquee-container">
+        {/* Edge Fades for premium high-end look */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
         <div className="text-center mb-16 reveal-up">
-          <h3 className="text-sm font-black uppercase tracking-[0.3em] text-black/30 mb-12">Technology Ecosystem</h3>
-          <div className="flex flex-wrap justify-center gap-x-12 gap-y-10 items-center opacity-40 hover:opacity-100 transition-opacity duration-700">
-            {partners.map((p) => (
-              <span key={p} className="text-2xl font-black text-black">{p}</span>
+          <h3 className="text-sm font-black uppercase tracking-[0.3em] text-black/30">Technology Ecosystem</h3>
+        </div>
+
+        {/* Infinite scrolling wrapper container */}
+        <div className="flex w-max select-none animate-marquee-stats opacity-40 hover:opacity-100 transition-opacity duration-700">
+          {/* Group 1 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0">
+            {partners.map((p, i) => (
+              <span key={i} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{p}</span>
+            ))}
+          </div>
+
+          {/* Group 2 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {partners.map((p, i) => (
+              <span key={`g2-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{p}</span>
+            ))}
+          </div>
+
+          {/* Group 3 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {partners.map((p, i) => (
+              <span key={`g3-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{p}</span>
+            ))}
+          </div>
+
+          {/* Group 4 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {partners.map((p, i) => (
+              <span key={`g4-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{p}</span>
             ))}
           </div>
         </div>
-      </Section>
+      </section>
 
       {/* Developer Tools */}
       <Section id="dev-tools" title="Developer Tooling" subtitle="The precision instruments our engineers use to build excellence.">

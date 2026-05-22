@@ -278,16 +278,46 @@ const Solutions = () => {
       </Section>
 
       {/* Tech Stack */}
-      <Section id="stack" className="py-20 border-y border-black/5">
+      <section id="stack" className="py-20 border-y border-black/5 overflow-hidden relative w-full marquee-container">
+        {/* Edge Fades for premium high-end look */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
         <div className="text-center mb-16 reveal-up">
-          <h3 className="text-sm font-black uppercase tracking-[0.3em] text-black/30 mb-8">Technologies We Use</h3>
-          <div className="flex flex-wrap justify-center gap-x-12 gap-y-10 items-center opacity-40 hover:opacity-100 transition-opacity duration-700">
-            {["React", "Next.js", "Node.js", "Python", "OpenAI", "LangChain", "TensorFlow", "AWS", "Docker", "MongoDB", "PostgreSQL", "Flutter"].map((tech) => (
-              <span key={tech} className="text-2xl font-black text-black">{tech}</span>
+          <h3 className="text-sm font-black uppercase tracking-[0.3em] text-black/30">Technologies We Use</h3>
+        </div>
+
+        {/* Infinite scrolling wrapper container */}
+        <div className="flex w-max select-none animate-marquee-stats opacity-40 hover:opacity-100 transition-opacity duration-700">
+          {/* Group 1 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0">
+            {["React", "Next.js", "Node.js", "Python", "OpenAI", "LangChain", "TensorFlow", "AWS", "Docker", "MongoDB", "PostgreSQL", "Flutter"].map((tech, i) => (
+              <span key={i} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{tech}</span>
+            ))}
+          </div>
+
+          {/* Group 2 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {["React", "Next.js", "Node.js", "Python", "OpenAI", "LangChain", "TensorFlow", "AWS", "Docker", "MongoDB", "PostgreSQL", "Flutter"].map((tech, i) => (
+              <span key={`g2-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{tech}</span>
+            ))}
+          </div>
+
+          {/* Group 3 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {["React", "Next.js", "Node.js", "Python", "OpenAI", "LangChain", "TensorFlow", "AWS", "Docker", "MongoDB", "PostgreSQL", "Flutter"].map((tech, i) => (
+              <span key={`g3-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{tech}</span>
+            ))}
+          </div>
+
+          {/* Group 4 */}
+          <div className="flex gap-16 md:gap-32 pr-16 md:pr-32 flex-shrink-0" aria-hidden="true">
+            {["React", "Next.js", "Node.js", "Python", "OpenAI", "LangChain", "TensorFlow", "AWS", "Docker", "MongoDB", "PostgreSQL", "Flutter"].map((tech, i) => (
+              <span key={`g4-${i}`} className="text-3xl md:text-5xl font-black text-black tracking-tighter hover:text-primary transition-colors duration-300 select-none">{tech}</span>
             ))}
           </div>
         </div>
-      </Section>
+      </section>
 
       {/* Engagement Models */}
       <Section id="models" title="Flexible Engagement Models" subtitle="Choosing the right partnership for your business growth.">
