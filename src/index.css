@@ -141,4 +141,51 @@ nav.fixed.nav-hidden {
 
 .animate-pulse-glow {
   animation: pulseGlow 2.5s infinite;
+}
+
+/* Infinite Marquee Styles */
+@keyframes marquee-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 25s linear infinite;
+}
+
+.animate-marquee-right {
+  display: flex;
+  width: max-content;
+  animation: marquee-right 25s linear infinite;
+}
+
+/* Dedicated high-performance 4-group marquee animation */
+@keyframes marquee-infinite-stats {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}
+
+.animate-marquee-stats {
+  display: flex;
+  width: max-content;
+  animation: marquee-infinite-stats 35s linear infinite;
 }

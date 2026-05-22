@@ -194,23 +194,79 @@ const About = () => {
         </div>
       </Section>
 
-      {/* Stats Section */}
-      <Section id="stats">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 reveal-up">
-          {[
-            { value: "120+", label: "AI Solutions" },
-            { value: "500+", label: "Happy Clients" },
-            { value: "25+", label: "Countries Served" },
-            { value: "99.9%", label: "Uptime" },
-            { value: "50+", label: "Products Delivered" },
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <div className="text-4xl md:text-6xl font-black text-primary mb-2 tracking-tighter">{stat.value}</div>
-              <div className="text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
-            </div>
-          ))}
+      {/* Stats Section (Infinite Marquee) */}
+      <section id="stats" className="py-20 bg-white overflow-hidden relative w-full marquee-container">
+        {/* Edge Fades for a premium, high-end look */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+        <div className="absolute right-0 top-0 bottom-0 w-24 sm:w-48 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
+        {/* Infinite scrolling wrapper container (4-group seamless train) */}
+        <div className="flex w-max select-none animate-marquee-stats">
+          {/* Group 1 */}
+          <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0">
+            {[
+              { value: "120+", label: "AI Solutions" },
+              { value: "500+", label: "Happy Clients" },
+              { value: "25+", label: "Countries Served" },
+              { value: "99.9%", label: "Uptime" },
+              { value: "50+", label: "Products Delivered" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center min-w-[200px] flex-shrink-0 select-none">
+                <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
+                <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Group 2 */}
+          <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
+            {[
+              { value: "120+", label: "AI Solutions" },
+              { value: "500+", label: "Happy Clients" },
+              { value: "25+", label: "Countries Served" },
+              { value: "99.9%", label: "Uptime" },
+              { value: "50+", label: "Products Delivered" },
+            ].map((stat, i) => (
+              <div key={`g2-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
+                <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
+                <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Group 3 */}
+          <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
+            {[
+              { value: "120+", label: "AI Solutions" },
+              { value: "500+", label: "Happy Clients" },
+              { value: "25+", label: "Countries Served" },
+              { value: "99.9%", label: "Uptime" },
+              { value: "50+", label: "Products Delivered" },
+            ].map((stat, i) => (
+              <div key={`g3-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
+                <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
+                <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Group 4 */}
+          <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
+            {[
+              { value: "120+", label: "AI Solutions" },
+              { value: "500+", label: "Happy Clients" },
+              { value: "25+", label: "Countries Served" },
+              { value: "99.9%", label: "Uptime" },
+              { value: "50+", label: "Products Delivered" },
+            ].map((stat, i) => (
+              <div key={`g4-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
+                <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
+                <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </Section>
+      </section>
 
       {/* Team Grid */}
       <Section
