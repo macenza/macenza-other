@@ -181,7 +181,7 @@ const Solutions = () => {
           <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
 
           {/* Decorative Dot Grid */}
-          <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
+          <svg className="absolute left-[15%] top-[50%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
             <pattern id="dotGridSolutions" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="3" cy="3" r="1.5" />
             </pattern>

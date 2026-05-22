@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { 
+import {
   Rocket, Brain, Target, Zap, Lightbulb, Globe,
   Search, ArrowRight, CheckCircle2, Star, Users,
   Heart, Briefcase, MapPin, Clock, ArrowDown, X, Upload, Check
@@ -215,7 +215,7 @@ const Careers = () => {
       // 1. Upload resume to Supabase Storage Bucket 'resumes'
       const fileExt = uploadFile.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${fileExt}`;
-      
+
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('resumes')
         .upload(fileName, uploadFile);
@@ -274,14 +274,14 @@ const Careers = () => {
               Join the Revolution
             </div>
             <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-              Build the Future <br /> 
+              Build the Future <br />
               <span className="text-primary italic">With Macenza.</span>
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
               Join a team of innovators, engineers, AI builders, and creators shaping the future of intelligent technology.
             </p>
             <div className="flex flex-wrap justify-start gap-6 reveal-up">
-              <button 
+              <button
                 onClick={() => document.getElementById('positions')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center gap-3"
               >
@@ -303,9 +303,9 @@ const Careers = () => {
           <div className="absolute right-[5%] top-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-primary/[0.04] to-accent/[0.04] border border-primary/15 pointer-events-none z-0 blur-[1px]"></div>
           <div className="absolute right-[10%] top-[15%] w-[450px] h-[450px] rounded-full border border-dashed border-primary/25 pointer-events-none z-0 animate-[spin_40s_linear_infinite]"></div>
           <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
-          
+
           {/* Decorative Dot Grid */}
-          <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
+          <svg className="absolute left-[15%] top-[50%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
             <pattern id="dotGridCareers" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="3" cy="3" r="1.5" />
             </pattern>
@@ -324,7 +324,7 @@ const Careers = () => {
 
             {/* Main dense dot-stream wave */}
             <path className="animate-flow-dots-fast" d="M -50 340 Q 150 240, 350 320 T 750 200 T 950 260" stroke="#3b82f6" strokeWidth="5" strokeDasharray="0 16" strokeLinecap="round" opacity="0.8" />
-            
+
             {/* Secondary overlapping wave */}
             <path className="animate-flow-dots-medium" d="M -50 310 Q 130 220, 330 300 T 730 180 T 930 240" stroke="#60a5fa" strokeWidth="3" strokeDasharray="0 12" strokeLinecap="round" opacity="0.6" />
 
@@ -349,10 +349,10 @@ const Careers = () => {
             <circle cx="200" cy="290" r="3" fill="#93c5fd" className="animate-node-pulse-delayed" />
           </svg>
 
-          <img 
-            src="/hero-robot.png" 
-            alt="Macenza AI Robot" 
-            className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float" 
+          <img
+            src="/hero-robot.png"
+            alt="Macenza AI Robot"
+            className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float"
           />
         </div>
         {/* Bottom Fade Mask */}
@@ -363,39 +363,39 @@ const Careers = () => {
       <Section id="why-join" title="Why Work With Us" subtitle="Relentless innovation meets radical ownership.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { 
-              title: "Startup Speed", 
-              icon: "⚡", 
+            {
+              title: "Startup Speed",
+              icon: "⚡",
               desc: "Work in a fast-moving environment where ideas become products quickly.",
               bgClass: "bg-amber-500/10"
             },
-            { 
-              title: "AI Innovation", 
-              icon: "🧠", 
+            {
+              title: "AI Innovation",
+              icon: "🧠",
               desc: "Build cutting-edge AI systems, automation tools, and next-gen digital products.",
               bgClass: "bg-violet-500/10"
             },
-            { 
-              title: "Ownership Culture", 
-              icon: "🎯", 
+            {
+              title: "Ownership Culture",
+              icon: "🎯",
               desc: "Take ownership like a founder and shape meaningful technology.",
               bgClass: "bg-rose-500/10"
             },
-            { 
-              title: "Learning Growth", 
-              icon: "🚀", 
+            {
+              title: "Learning Growth",
+              icon: "🚀",
               desc: "Continuous technical learning, mentorship, and innovation.",
               bgClass: "bg-pink-500/10"
             },
-            { 
-              title: "Creative Freedom", 
-              icon: "💡", 
+            {
+              title: "Creative Freedom",
+              icon: "💡",
               desc: "Experiment, create, and solve problems without unnecessary barriers.",
               bgClass: "bg-yellow-500/10"
             },
-            { 
-              title: "Global Opportunities", 
-              icon: "🌐", 
+            {
+              title: "Global Opportunities",
+              icon: "🌐",
               desc: "Collaborate with international teams and global clients.",
               bgClass: "bg-teal-500/10"
             }
@@ -450,7 +450,7 @@ const Careers = () => {
                   </span>
                 </div>
               </div>
-              <button 
+              <button
                 onClick={() => handleOpenModal(job)}
                 className="px-8 py-4 bg-black text-white rounded-full font-bold text-sm hover:bg-primary transition-all duration-300 shadow-lg group-hover:shadow-primary/20 text-center whitespace-nowrap"
               >
@@ -533,14 +533,14 @@ const Careers = () => {
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
           <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
           <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Ready to Build <br /> <span className="text-primary italic">What’s Next?</span>
           </h2>
           <p className="text-2xl text-black/60 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Join Macenza and shape the future of AI, software, and digital innovation.
           </p>
-          <button 
+          <button
             onClick={() => handleOpenModal()}
             className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-primary text-white rounded-full font-bold text-base sm:text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 text-center whitespace-nowrap"
           >
@@ -556,15 +556,15 @@ const Careers = () => {
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
           {/* Backdrop */}
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsModalOpen(false)}></div>
-          
+
           {/* Modal Card */}
-          <div 
+          <div
             data-lenis-prevent
             className="relative bg-white w-full max-w-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl max-h-[90vh] overflow-y-auto border border-black/5 animate-in fade-in zoom-in-95 duration-200 text-black"
           >
-            
+
             {/* Close Trigger */}
-            <button 
+            <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-8 right-8 p-3 bg-black/5 hover:bg-black/10 rounded-full text-black transition-colors"
             >
@@ -593,7 +593,7 @@ const Careers = () => {
                 <p className="text-black/60 max-w-sm leading-relaxed">
                   Thank you for applying. Our talent acquisition specialists have saved your details and resume. We will contact you soon.
                 </p>
-                <button 
+                <button
                   onClick={() => setIsModalOpen(false)}
                   className="mt-6 px-8 py-3.5 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20"
                 >
@@ -612,10 +612,10 @@ const Careers = () => {
                   {/* Full Name */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Full Name *</label>
-                    <input 
-                      type="text" 
-                      name="candidateName" 
-                      value={formData.candidateName} 
+                    <input
+                      type="text"
+                      name="candidateName"
+                      value={formData.candidateName}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       required
@@ -625,10 +625,10 @@ const Careers = () => {
                   {/* Email */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Email Address *</label>
-                    <input 
-                      type="email" 
-                      name="email" 
-                      value={formData.email} 
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       required
@@ -641,10 +641,10 @@ const Careers = () => {
                   {/* Phone */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Phone Number *</label>
-                    <input 
-                      type="tel" 
-                      name="phone" 
-                      value={formData.phone} 
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       required
@@ -654,10 +654,10 @@ const Careers = () => {
                   {/* Current Location */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Current Location *</label>
-                    <input 
-                      type="text" 
-                      name="location" 
-                      value={formData.location} 
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       required
@@ -670,10 +670,10 @@ const Careers = () => {
                   {/* Experience */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Years of Experience *</label>
-                    <input 
-                      type="text" 
-                      name="experience" 
-                      value={formData.experience} 
+                    <input
+                      type="text"
+                      name="experience"
+                      value={formData.experience}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       required
@@ -702,10 +702,10 @@ const Careers = () => {
                   {/* LinkedIn */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">LinkedIn URL</label>
-                    <input 
-                      type="url" 
-                      name="linkedInUrl" 
-                      value={formData.linkedInUrl} 
+                    <input
+                      type="url"
+                      name="linkedInUrl"
+                      value={formData.linkedInUrl}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       placeholder="https://linkedin.com/in/username"
@@ -714,10 +714,10 @@ const Careers = () => {
                   {/* Portfolio */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-black/70">Portfolio URL</label>
-                    <input 
-                      type="url" 
-                      name="portfolioUrl" 
-                      value={formData.portfolioUrl} 
+                    <input
+                      type="url"
+                      name="portfolioUrl"
+                      value={formData.portfolioUrl}
                       onChange={handleInputChange}
                       className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
                       placeholder="https://yourwebsite.com"
@@ -728,9 +728,9 @@ const Careers = () => {
                 {/* Cover Letter */}
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-black/70">Cover Letter / Pitch</label>
-                  <textarea 
-                    name="coverLetter" 
-                    value={formData.coverLetter} 
+                  <textarea
+                    name="coverLetter"
+                    value={formData.coverLetter}
                     onChange={handleInputChange}
                     rows="3"
                     className="bg-black/5 border border-black/5 p-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all resize-none"
@@ -742,8 +742,8 @@ const Careers = () => {
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-bold text-black/70">Upload Resume (PDF, DOC, DOCX) *</label>
                   <div className="relative border-2 border-dashed border-black/10 rounded-2xl p-6 text-center hover:border-primary/40 transition-colors bg-black/5 flex flex-col items-center justify-center gap-2 cursor-pointer">
-                    <input 
-                      type="file" 
+                    <input
+                      type="file"
                       onChange={handleFileChange}
                       className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
                       accept=".pdf,.doc,.docx"
@@ -767,8 +767,8 @@ const Careers = () => {
                 </div>
 
                 {/* Submit Trigger */}
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={submitting}
                   className="w-full mt-4 py-4 bg-primary text-white rounded-full font-bold text-base hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

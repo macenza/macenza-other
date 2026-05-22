@@ -171,7 +171,7 @@ const Technology = () => {
               Deep-Tech Engineering
             </div>
             <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-[0.9]">
-              Tech That Powers <br /> 
+              Tech That Powers <br />
               <span className="text-primary italic">Intelligence.</span>
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
@@ -203,7 +203,7 @@ const Technology = () => {
           <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
 
           {/* Decorative Dot Grid */}
-          <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
+          <svg className="absolute left-[15%] top-[50%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
             <pattern id="dotGridTech" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="3" cy="3" r="1.5" />
             </pattern>
