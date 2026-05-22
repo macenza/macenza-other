@@ -12,20 +12,33 @@ import { Link } from 'react-router-dom';
 
 const teamMembers = [
 
-  { name: "Shashank Shubham", role: "Founder & CEO", image: "/Team/Shashank Shubham.png" },
+  { name: "Shashank Shubham", role: "Founder & CEO", image: "/Team/Shashank Shubham Founder & CEO.jpeg" },
   { name: "Garima", role: "CTO", image: "/Team/Garima CTO.png" },
+  { name: "Dipanshu Shubham", role: "CMO", image: "/Team/A Dipanshu Shubham CMO.png" },
+  { name: "Kavita", role: "Marketing", image: "/Team/A Kavita Markating.png" },
+  { name: "Divya Ghalot", role: "AI Engineer", image: "/Team/A Divya Ghalot AI Engineer.png" },
+  { name: "Priyanka Berwa", role: "HR", image: "/Team/Priyanka HR.png" },
+  { name: "Piyush Saini", role: "Fullstack Developer", image: "/Team/Piyush Saini Fullstack Developer.png" },
+  { name: "Neha Jaiswal", role: "Fullstack Developer", image: "/Team/NEHA JAISWAL Fullstack Developer.png" },
+  { name: "Riva Sha", role: "Fullstack Developer", image: "/Team/Riva Sha FullStack Developer.png" },
+  { name: "Khushboo Rawat", role: "Business Development Manager", image: "/Team/A Khushboo Rawat Business Development Manager.png" },
+  { name: "Aman Partha", role: "Full Stack Developer", image: "/Team/A Aman Partha Full Stack Developer.png" },
+  { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.png" },
+  { name: "Diksha Bansal", role: "AI/ML Engineer", image: "/Team/A Diksha Bansal AI ML.png" },
+  { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.png" },
+  { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.png" },
+  { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.png" },
+  { name: "Payal Meena", role: "UI/UX Designer", image: "/Team/A Payal Meena Ui Ux Designer.png" },
+  { name: "Santosh Rathore", role: "Sales", image: "/Team/A Santosh Rathore Salles.png" },
   { name: "Anamika Sharma", role: "Frontend Developer", image: "/Team/Anamika Sharma Frontend Developer.png" },
   { name: "Deepti Solanki", role: "AI/ML Engineer", image: "/Team/Deepti Solanki AI ML Engineer.png" },
   { name: "Devendra Singh", role: "Backend Engineer", image: "/Team/Devendra Singh Backend Engineer.png" },
   { name: "Kavita Yadhav", role: "Frontend Engineer", image: "/Team/Kavita Yadhav Frontend Engineer.png" },
   { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.png" },
-  { name: "Neha Jaiswal", role: "Fullstack Developer", image: "/Team/NEHA JAISWAL Fullstack Developer.png" },
-  { name: "Piyush Saini", role: "Fullstack Developer", image: "/Team/Piyush Saini Fullstack Developer.png" },
-  { name: "Preeti", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.png" },
-  { name: "Priyanka Berwa", role: "HR", image: "/Team/Priyanka HR.png" },
-  { name: "Riva Sha", role: "Fullstack Developer", image: "/Team/Riva Sha FullStack Developer.png" },
+  { name: "Preeti Kumari", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.png" },
   { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.png" },
   { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.png" }
+
 ];
 
 const About = () => {
