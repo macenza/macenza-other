@@ -3,8 +3,8 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { 
-  Monitor, Server, Smartphone, Database, Brain, Cloud, 
+import {
+  Monitor, Server, Smartphone, Database, Brain, Cloud,
   Shield, Zap, Cpu, Globe, Rocket, Terminal,
   Layers, Code, Lock, Activity, Search, ArrowRight,
   ArrowDown
@@ -114,11 +114,11 @@ const Technology = () => {
       // Diagram animation
       const lines = diagramRef.current.querySelectorAll('.flow-line');
       lines.forEach((line, i) => {
-        gsap.fromTo(line, 
-          { scaleY: 0 }, 
-          { 
-            scaleY: 1, 
-            duration: 0.8, 
+        gsap.fromTo(line,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            duration: 0.8,
             delay: i * 0.3,
             ease: "power2.inOut",
             scrollTrigger: {
@@ -160,70 +160,10 @@ const Technology = () => {
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] lg:h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
+      <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">
           <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
-          {/* Background Hero Robot Image */}
-          <div className="absolute right-0 bottom-0 top-0 w-full lg:w-1/2 opacity-15 lg:opacity-100 pointer-events-none z-0 overflow-hidden">
-            {/* Tech Circle Background */}
-            <div className="absolute right-[5%] top-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-primary/[0.04] to-accent/[0.04] border border-primary/15 pointer-events-none z-0 blur-[1px]"></div>
-            <div className="absolute right-[10%] top-[15%] w-[450px] h-[450px] rounded-full border border-dashed border-primary/25 pointer-events-none z-0 animate-[spin_40s_linear_infinite]"></div>
-            <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
-            
-            {/* Decorative Dot Grid */}
-            <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
-              <pattern id="dotGridTech" width="20" height="20" patternUnits="userSpaceOnUse">
-                <circle cx="3" cy="3" r="1.5" />
-              </pattern>
-              <rect width="120" height="160" fill="url(#dotGridTech)" />
-            </svg>
-
-            {/* Glowing Tech Waves (Flowing data particles) */}
-            <svg className="absolute right-[-10%] bottom-[-5%] w-[110%] h-[55%] pointer-events-none z-0" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <radialGradient id="glowTech" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#3b82f6" stopOpacity="1" />
-                  <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-
-              {/* Main dense dot-stream wave */}
-              <path className="animate-flow-dots-fast" d="M -50 340 Q 150 240, 350 320 T 750 200 T 950 260" stroke="#3b82f6" strokeWidth="5" strokeDasharray="0 16" strokeLinecap="round" opacity="0.8" />
-              
-              {/* Secondary overlapping wave */}
-              <path className="animate-flow-dots-medium" d="M -50 310 Q 130 220, 330 300 T 730 180 T 930 240" stroke="#60a5fa" strokeWidth="3" strokeDasharray="0 12" strokeLinecap="round" opacity="0.6" />
-
-              {/* Accent wave with thin line + sparse glowing dots */}
-              <path d="M -50 280 Q 180 180, 380 270 T 780 150 T 980 210" stroke="#93c5fd" strokeWidth="1" opacity="0.2" />
-              <path className="animate-flow-dots-reverse" d="M -50 280 Q 180 180, 380 270 T 780 150 T 980 210" stroke="#3b82f6" strokeWidth="6" strokeDasharray="0 48" strokeLinecap="round" opacity="0.8" />
-
-              {/* Bottom thick blurred ambient wave */}
-              <path className="animate-flow-dots-slow" d="M -50 370 Q 170 270, 370 350 T 770 230 T 970 290" stroke="#3b82f6" strokeWidth="8" strokeDasharray="0 24" strokeLinecap="round" opacity="0.15" />
-
-              {/* Standalone large glowing nodes */}
-              <circle cx="350" cy="320" r="14" fill="url(#glowTech)" opacity="0.7" className="animate-node-pulse" />
-              <circle cx="350" cy="320" r="4" fill="#ffffff" className="animate-node-pulse" />
-
-              <circle cx="550" cy="260" r="16" fill="url(#glowTech)" opacity="0.8" className="animate-node-pulse-delayed" />
-              <circle cx="550" cy="260" r="5" fill="#ffffff" className="animate-node-pulse-delayed" />
-
-              <circle cx="750" cy="200" r="12" fill="url(#glowTech)" opacity="0.6" className="animate-node-pulse" />
-              <circle cx="750" cy="200" r="3.5" fill="#ffffff" className="animate-node-pulse" />
-
-              <circle cx="200" cy="290" r="10" fill="url(#glowTech)" opacity="0.5" className="animate-node-pulse-delayed" />
-              <circle cx="200" cy="290" r="3" fill="#93c5fd" className="animate-node-pulse-delayed" />
-            </svg>
-
-            <img 
-              src="/hero-robot.png" 
-              alt="Macenza AI Robot" 
-              className="w-full h-full object-cover object-center lg:object-right select-none relative z-10 animate-float" 
-            />
-            {/* Bottom Fade Mask */}
-            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
-          </div>
         </div>
         <div className="container mx-auto px-6 relative z-10 text-left w-full flex flex-col items-start justify-center">
           <div className="max-w-3xl">
@@ -231,27 +171,89 @@ const Technology = () => {
               Deep-Tech Engineering
             </div>
             <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-[0.9]">
-              Technology That <br /> 
-              <span className="text-primary italic">Powers Intelligence.</span>
+              Tech That Powers <br /> 
+              <span className="text-primary italic">Intelligence.</span>
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-              Macenza engineers cutting-edge AI infrastructure, scalable software systems, and intelligent digital architectures built for the future.
+              We design cutting-edge AI infrastructure <br />
+              and high-performance software architectures.
             </p>
             <div className="flex flex-wrap justify-start gap-6 reveal-up">
-              <button 
+              <button
                 onClick={() => document.getElementById('tech-stack')?.scrollIntoView({ behavior: 'smooth' })}
                 className="px-10 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 flex items-center gap-3 shadow-xl shadow-primary/20"
               >
                 Explore Stack <ArrowDown className="w-5 h-5" />
               </button>
-              <Link 
-                to="/contact" 
+              <Link
+                to="/contact"
                 className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 text-center"
               >
                 Book Consultation
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Background Hero Robot Image & decorations on top layer z-20 (pointer-events-none passes all clicks through) */}
+        <div className="absolute right-0 bottom-0 top-0 w-full lg:w-1/2 opacity-15 lg:opacity-100 pointer-events-none z-20 overflow-hidden">
+          {/* Tech Circle Background */}
+          <div className="absolute right-[5%] top-[10%] w-[550px] h-[550px] rounded-full bg-gradient-to-tr from-primary/[0.04] to-accent/[0.04] border border-primary/15 pointer-events-none z-0 blur-[1px]"></div>
+          <div className="absolute right-[10%] top-[15%] w-[450px] h-[450px] rounded-full border border-dashed border-primary/25 pointer-events-none z-0 animate-[spin_40s_linear_infinite]"></div>
+          <div className="absolute right-[12%] top-[17%] w-[410px] h-[410px] rounded-full border border-dashed border-accent/20 pointer-events-none z-0 animate-[spin_25s_linear_infinite_reverse]"></div>
+
+          {/* Decorative Dot Grid */}
+          <svg className="absolute left-[15%] top-[25%] w-[120px] h-[160px] text-primary/15 pointer-events-none z-0" fill="currentColor" viewBox="0 0 120 160">
+            <pattern id="dotGridTech" width="20" height="20" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="1.5" />
+            </pattern>
+            <rect width="120" height="160" fill="url(#dotGridTech)" />
+          </svg>
+
+          {/* Glowing Tech Waves (Flowing data particles) */}
+          <svg className="absolute right-[-10%] bottom-[-5%] w-[110%] h-[55%] pointer-events-none z-0" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="glowTech" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#3b82f6" stopOpacity="1" />
+                <stop offset="30%" stopColor="#3b82f6" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+              </radialGradient>
+            </defs>
+
+            {/* Main dense dot-stream wave */}
+            <path className="animate-flow-dots-fast" d="M -50 340 Q 150 240, 350 320 T 750 200 T 950 260" stroke="#3b82f6" strokeWidth="5" strokeDasharray="0 16" strokeLinecap="round" opacity="0.8" />
+
+            {/* Secondary overlapping wave */}
+            <path className="animate-flow-dots-medium" d="M -50 310 Q 130 220, 330 300 T 730 180 T 930 240" stroke="#60a5fa" strokeWidth="3" strokeDasharray="0 12" strokeLinecap="round" opacity="0.6" />
+
+            {/* Accent wave with thin line + sparse glowing dots */}
+            <path d="M -50 280 Q 180 180, 380 270 T 780 150 T 980 210" stroke="#93c5fd" strokeWidth="1" opacity="0.2" />
+            <path className="animate-flow-dots-reverse" d="M -50 280 Q 180 180, 380 270 T 780 150 T 980 210" stroke="#3b82f6" strokeWidth="6" strokeDasharray="0 48" strokeLinecap="round" opacity="0.8" />
+
+            {/* Bottom thick blurred ambient wave */}
+            <path className="animate-flow-dots-slow" d="M -50 370 Q 170 270, 370 350 T 770 230 T 970 290" stroke="#3b82f6" strokeWidth="8" strokeDasharray="0 24" strokeLinecap="round" opacity="0.15" />
+
+            {/* Standalone large glowing nodes */}
+            <circle cx="350" cy="320" r="14" fill="url(#glowTech)" opacity="0.7" className="animate-node-pulse" />
+            <circle cx="350" cy="320" r="4" fill="#ffffff" className="animate-node-pulse" />
+
+            <circle cx="550" cy="260" r="16" fill="url(#glowTech)" opacity="0.8" className="animate-node-pulse-delayed" />
+            <circle cx="550" cy="260" r="5" fill="#ffffff" className="animate-node-pulse-delayed" />
+
+            <circle cx="750" cy="200" r="12" fill="url(#glowTech)" opacity="0.6" className="animate-node-pulse" />
+            <circle cx="750" cy="200" r="3.5" fill="#ffffff" className="animate-node-pulse" />
+
+            <circle cx="200" cy="290" r="10" fill="url(#glowTech)" opacity="0.5" className="animate-node-pulse-delayed" />
+            <circle cx="200" cy="290" r="3" fill="#93c5fd" className="animate-node-pulse-delayed" />
+          </svg>
+
+          <img
+            src="/hero-robot.png"
+            alt="Macenza AI Robot"
+            className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float"
+          />
+          {/* Bottom Fade Mask */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none z-20"></div>
         </div>
       </section>
 
@@ -470,7 +472,7 @@ const Technology = () => {
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
           <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
           <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
-          
+
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Build Future-Ready <br /> <span className="text-primary italic">Technology.</span>
           </h2>
