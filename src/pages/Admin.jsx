@@ -101,6 +101,7 @@ const Admin = () => {
         portfolioUrl: app.portfolio_url || app.portfolioUrl,
         coverLetter: app.cover_letter || app.coverLetter,
         resume: app.resume_url || app.resume,
+        createdAt: app.created_at || app.createdAt,
         jobId: app.jobId ? {
           ...app.jobId,
           _id: app.jobId.id,
@@ -252,6 +253,7 @@ const Admin = () => {
         portfolioUrl: data.portfolio_url,
         coverLetter: data.cover_letter,
         resume: data.resume_url,
+        createdAt: data.created_at || data.createdAt,
         jobId: data.jobId ? {
           ...data.jobId,
           _id: data.jobId.id,
@@ -288,6 +290,7 @@ const Admin = () => {
         portfolioUrl: data.portfolio_url,
         coverLetter: data.cover_letter,
         resume: data.resume_url,
+        createdAt: data.created_at || data.createdAt,
         jobId: data.jobId ? {
           ...data.jobId,
           _id: data.jobId.id,
