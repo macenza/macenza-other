@@ -1,14 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import {
-  Mail, Phone, Clock, Globe, MapPin, MessageSquare,
-  Send, ChevronDown, CheckCircle2, Shield, Rocket,
-  Zap, Brain, Target, Search
-} from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Send, ChevronDown } from 'lucide-react';
+import ReactGlobe from 'react-globe.gl';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,14 +16,24 @@ const contactInfo = [
 ];
 
 const countries = [
-  { name: "Czech Republic", city: "Prague", top: "35%", left: "48%" },
-  { name: "Australia", city: "Sydney", top: "75%", left: "85%" },
-  { name: "New Zealand", city: "Auckland", top: "82%", left: "92%" },
-  { name: "United States", city: "New York", top: "40%", left: "25%" },
-  { name: "France", city: "Paris", top: "38%", left: "45%" },
-  { name: "Dubai", city: "Dubai", top: "52%", left: "58%" },
-  { name: "Uzbekistan", city: "Tashkent", top: "42%", left: "62%" },
-  { name: "Thailand", city: "Bangkok", top: "60%", left: "75%" }
+  { name: "Czech Republic", city: "Prague", lat: 50.0755, lng: 14.4378 },
+  { name: "Australia", city: "Sydney", lat: -33.8688, lng: 151.2093 },
+  { name: "New Zealand", city: "Auckland", lat: -36.8485, lng: 174.7633 },
+  { name: "United States", city: "New York", lat: 40.7128, lng: -74.0060 },
+  { name: "France", city: "Paris", lat: 48.8566, lng: 2.3522 },
+  { name: "Dubai", city: "Dubai", lat: 25.2048, lng: 55.2708 },
+  { name: "Uzbekistan", city: "Tashkent", lat: 41.2995, lng: 69.2401 },
+  { name: "Thailand", city: "Bangkok", lat: 13.7563, lng: 100.5018 }
+];
+
+const arcsData = [
+  { startLat: 40.7128, startLng: -74.0060, endLat: 50.0755, endLng: 14.4378, color: ['rgba(59, 130, 246, 0.8)', 'rgba(20, 184, 166, 0.8)'] }, // NY to Prague
+  { startLat: 50.0755, startLng: 14.4378, endLat: 25.2048, endLng: 55.2708, color: ['rgba(59, 130, 246, 0.8)', 'rgba(20, 184, 166, 0.8)'] }, // Prague to Dubai
+  { startLat: 25.2048, startLng: 55.2708, endLat: 41.2995, endLng: 69.2401, color: ['rgba(20, 184, 166, 0.8)', 'rgba(245, 158, 11, 0.8)'] }, // Dubai to Tashkent
+  { startLat: 41.2995, startLng: 69.2401, endLat: 13.7563, endLng: 100.5018, color: ['rgba(245, 158, 11, 0.8)', 'rgba(59, 130, 246, 0.8)'] }, // Tashkent to Bangkok
+  { startLat: 13.7563, startLng: 100.5018, endLat: -33.8688, endLng: 151.2093, color: ['rgba(59, 130, 246, 0.8)', 'rgba(16, 185, 129, 0.8)'] }, // Bangkok to Sydney
+  { startLat: -33.8688, startLng: 151.2093, endLat: -36.8485, endLng: 174.7633, color: ['rgba(16, 185, 129, 0.8)', 'rgba(59, 130, 246, 0.8)'] }, // Sydney to Auckland
+  { startLat: -36.8485, startLng: 174.7633, endLat: 40.7128, endLng: -74.0060, color: ['rgba(59, 130, 246, 0.8)', 'rgba(139, 92, 246, 0.8)'] }  // Auckland to NY
 ];
 
 const faqs = [
@@ -51,7 +57,45 @@ const faqs = [
 
 const Contact = () => {
   const pageRef = useRef(null);
+  const containerRef = useRef(null);
+  const globeRef = useRef(null);
   const [activeFaq, setActiveFaq] = useState(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setDimensions({
+        width: containerRef.current.clientWidth,
+        height: containerRef.current.clientHeight || 700
+      });
+
+      const handleResize = () => {
+        if (containerRef.current) {
+          setDimensions({
+            width: containerRef.current.clientWidth,
+            height: containerRef.current.clientHeight || 700
+          });
+        }
+      };
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (globeRef.current) {
+      const controls = globeRef.current.controls();
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.0;
+      controls.enableZoom = false;
+
+      // Dynamically calculate the target camera zoom based on the viewport width
+      const isMobile = window.innerWidth < 768;
+      const targetAltitude = isMobile ? 2.5 : 1.8;
+      globeRef.current.pointOfView({ altitude: targetAltitude });
+    }
+  }, [globeRef.current, dimensions.width]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -71,16 +115,16 @@ const Contact = () => {
         });
       });
 
-      // Animate map markers when the map container enters the viewport
-      gsap.from(".map-marker", {
-        scale: 0,
+      // Reveal globe container when it enters viewport
+      gsap.from(".globe-container", {
+        scale: 0.95,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
+        duration: 1.2,
+        ease: "power2.out",
+        clearProps: "all",
         scrollTrigger: {
-          trigger: ".map-container",
-          start: "top 70%",
+          trigger: ".globe-container",
+          start: "top 80%",
           toggleActions: "play none none none"
         }
       });
@@ -274,43 +318,52 @@ const Contact = () => {
       {/* Global Presence Map */}
       <Section id="global-presence" className="bg-white overflow-hidden">
         <div className="text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Our <span className="text-primary italic">Global Presence</span></h2>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Our <span className="text-primary italic">Global Customers</span></h2>
           <p className="text-xl text-black/60 font-light max-w-3xl mx-auto leading-relaxed">
             Macenza works with clients and businesses across multiple international markets, bringing intelligent solutions to the world's most innovative regions.
           </p>
         </div>
 
-        <div className="map-container relative aspect-[21/9] w-full glass-morphism rounded-[3rem] border border-black/5 overflow-hidden reveal-up shadow-inner bg-black/5">
-          {/* Simple Vector-style Map Background Placeholder */}
-          <div className="absolute inset-0 opacity-10 bg-[url('https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg')] bg-center bg-no-repeat bg-contain"></div>
+        <div ref={containerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
+          <ReactGlobe
+            ref={globeRef}
+            width={dimensions.width}
+            height={dimensions.height}
+            globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+            bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+            backgroundImageUrl=""
+            backgroundColor="rgba(0,0,0,0)"
+            showAtmosphere={true}
+            atmosphereColor="#2563eb"
+            atmosphereAltitude={0.18}
 
-          {countries.map((country, i) => (
-            <div
-              key={i}
-              className="map-marker absolute group cursor-pointer"
-              style={{ top: country.top, left: country.left }}
-            >
-              <div className="w-4 h-4 bg-primary rounded-full glow-blue animate-pulse relative z-10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-primary/20 rounded-full animate-ping"></div>
+            // Arcs
+            arcsData={arcsData}
+            arcColor="color"
+            arcDashLength={0.45}
+            arcDashGap={2}
+            arcDashAnimateTime={2000}
+            arcStroke={0.8}
+            arcAltitude={0.28}
 
-              {/* Tooltip */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none translate-y-2 group-hover:translate-y-0">
-                <div className="glass-morphism px-4 py-2 rounded-xl border border-black/5 shadow-xl text-center whitespace-nowrap">
-                  <div className="text-[10px] font-black text-primary uppercase tracking-widest">{country.name}</div>
-                  <div className="text-sm font-bold text-black">{country.city}</div>
-                </div>
-                <div className="w-2 h-2 bg-white border-r border-b border-black/5 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
-              </div>
-            </div>
-          ))}
+            // Points (Rippling or glowing landmarks)
+            pointsData={countries}
+            pointLat="lat"
+            pointLng="lng"
+            pointColor={() => '#2563eb'}
+            pointAltitude={0.06}
+            pointRadius={0.5}
 
-          {/* Connection Lines simulation */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-            <path d="M25% 40% Q 40% 30%, 45% 38%" stroke="var(--primary)" strokeWidth="1" fill="none" strokeDasharray="5,5" className="animate-dash" />
-            <path d="M45% 38% Q 50% 35%, 58% 52%" stroke="var(--primary)" strokeWidth="1" fill="none" strokeDasharray="5,5" className="animate-dash" />
-            <path d="M58% 52% Q 65% 55%, 75% 60%" stroke="var(--primary)" strokeWidth="1" fill="none" strokeDasharray="5,5" className="animate-dash" />
-            <path d="M75% 60% Q 80% 65%, 85% 75%" stroke="var(--primary)" strokeWidth="1" fill="none" strokeDasharray="5,5" className="animate-dash" />
-          </svg>
+            // Labels
+            labelsData={countries}
+            labelLat="lat"
+            labelLng="lng"
+            labelText="city"
+            labelSize={1.5}
+            labelColor={() => '#fff'}
+            labelDotRadius={0.5}
+            labelResolution={2}
+          />
         </div>
       </Section>
 
