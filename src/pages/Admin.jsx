@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, 
-  Briefcase, 
-  FileText, 
-  Users, 
-  FileSearch, 
-  BarChart3, 
-  Search, 
-  Plus, 
-  Edit3, 
-  Trash2, 
-  Download, 
+import {
+  LayoutDashboard,
+  Briefcase,
+  FileText,
+  Users,
+  FileSearch,
+  BarChart3,
+  Search,
+  Plus,
+  Edit3,
+  Trash2,
+  Download,
   ExternalLink,
-  Save, 
-  Clock, 
-  MapPin, 
-  Check, 
+  Save,
+  Clock,
+  MapPin,
+  Check,
   X,
   FileCheck,
   UserCheck,
@@ -27,6 +27,15 @@ import {
 import { supabase } from '../supabaseClient';
 
 const Admin = () => {
+  // Authentication states
+  const [user, setUser] = useState(null);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [signingIn, setSigningIn] = useState(false);
+
+  // Dashboard states
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -65,17 +74,32 @@ const Admin = () => {
   const [editingJobId, setEditingJobId] = useState(null);
   const [jobFormSuccess, setJobFormSuccess] = useState('');
 
+  // Handle Authentication Subscription
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setAuthChecking(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setAuthChecking(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   // Fetch Jobs and Applications
   const fetchData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch all jobs from Supabase
       const { data: jobsData, error: jobsError } = await supabase
         .from('jobs')
         .select('*')
         .order('created_at', { ascending: false });
-        
+
       if (jobsError) throw jobsError;
 
       // Fetch all applications and populate their job relations
@@ -111,7 +135,7 @@ const Admin = () => {
 
       setJobs(mappedJobs);
       setApplications(mappedApps);
-      
+
       if (mappedApps.length > 0 && !selectedApp) {
         setSelectedApp(mappedApps[0]);
         setNotesText(mappedApps[0].notes || '');
@@ -137,9 +161,45 @@ const Admin = () => {
     }
   };
 
+  // Trigger data fetching on user login
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (user) {
+      fetchData();
+    }
+  }, [user]);
+
+  const handleSignIn = async (e) => {
+    e?.preventDefault();
+    if (!email || !password) {
+      setLoginError('Please enter both email and password.');
+      return;
+    }
+    setLoginError('');
+    setSigningIn(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    } catch (err) {
+      console.error(err);
+      setLoginError(err.message || 'Invalid sign-in credentials.');
+    } finally {
+      setSigningIn(false);
+    }
+  };
+
+  const handleSignOut = async () => {
+    if (!window.confirm('Are you sure you want to sign out of the Admin Portal?')) return;
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+
+
+
 
   // Update notesText when selectedApp changes
   useEffect(() => {
@@ -170,7 +230,7 @@ const Admin = () => {
       benefits: jobForm.benefits,
       status: statusOverride || jobForm.status
     };
-    
+
     try {
       if (editingJobId) {
         const { error } = await supabase
@@ -186,7 +246,7 @@ const Admin = () => {
         if (error) throw error;
         setJobFormSuccess('Job posted successfully!');
       }
-      
+
       setJobForm(initialJobForm);
       setEditingJobId(null);
       fetchData();
@@ -310,21 +370,21 @@ const Admin = () => {
   // Filter Applications
   const filteredApplications = applications.filter(app => {
     // Name / Email search
-    const matchesName = app.candidateName.toLowerCase().includes(searchName.toLowerCase()) || 
-                        app.email.toLowerCase().includes(searchName.toLowerCase());
-    
+    const matchesName = app.candidateName.toLowerCase().includes(searchName.toLowerCase()) ||
+      app.email.toLowerCase().includes(searchName.toLowerCase());
+
     // Location Filter
     const matchesLocation = !filterLocation || app.location.toLowerCase().includes(filterLocation.toLowerCase());
-    
+
     // Position Filter
     const matchesPosition = !filterPosition || (app.jobId && app.jobId.title === filterPosition);
-    
+
     // Experience Filter
     const matchesExperience = !filterExperience || app.experience.toLowerCase().includes(filterExperience.toLowerCase());
-    
+
     // Type Filter
     const matchesType = !filterType || (app.jobId && app.jobId.employmentType === filterType);
-    
+
     // Date Filter (within X days)
     let matchesDate = true;
     if (filterDate) {
@@ -364,6 +424,105 @@ const Admin = () => {
     </div>
   );
 
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-white text-black flex items-center justify-center font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm font-bold tracking-widest text-black/40 uppercase animate-pulse">Verifying Credentials...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-white text-black flex flex-col items-center justify-center font-sans relative overflow-hidden px-6">
+        {/* Futuristic glowing ambient background */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] animate-pulse"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+        </div>
+
+        {/* Brand Header */}
+        <div className="flex items-center gap-3 mb-10 relative z-10">
+          <div className="w-10 h-10 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <span className="text-white font-black text-xl">M</span>
+          </div>
+          <span className="text-2xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
+        </div>
+
+        {/* Login Card */}
+        <div className="w-full max-w-md bg-[#EFF6FF]/60 backdrop-blur-xl border border-[#BFDBFE]/60 p-10 rounded-[3rem] shadow-2xl relative z-10 hover:border-primary/20 transition-all duration-500 group">
+          <div className="mb-8">
+            <h3 className="text-3xl font-black text-black mb-2 tracking-tight">System Sign In</h3>
+            <p className="text-sm text-black/55 font-medium leading-relaxed">Enter your administrator credentials to securely connect to the recruitment pipelines.</p>
+          </div>
+
+          {loginError && (
+            <div className="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-800 font-semibold rounded-2xl text-xs flex items-center gap-2.5 animate-shake">
+              <span className="w-2.5 h-2.5 bg-rose-500 rounded-full"></span>
+              {loginError}
+            </div>
+          )}
+
+          <form onSubmit={handleSignIn} className="flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase text-black/60 tracking-wider">Email Address</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@macenza.com"
+                className="bg-white border border-[#BFDBFE] p-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-black uppercase text-black/60 tracking-wider">Security Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="bg-white border border-[#BFDBFE] p-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={signingIn}
+              className="w-full py-4 mt-2 bg-primary text-white rounded-full font-black text-sm tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 hover:shadow-2xl active:scale-98 disabled:opacity-50 flex items-center justify-center gap-3 group"
+            >
+              {signingIn ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Authenticating...
+                </>
+              ) : (
+                <>
+                  Enter Dashboard ➔
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Database Info Tip */}
+          <div className="mt-8 pt-6 border-t border-[#BFDBFE]/60 flex items-center gap-3">
+            <div className="p-2 bg-[#DBEAFE] rounded-xl text-primary">
+              🔒
+            </div>
+            <p className="text-[10px] font-bold text-black/40 leading-normal uppercase">
+              Secure authentication via Macenza database firewall.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex bg-[#FFFFFF] min-h-screen font-sans text-black relative select-none">
       {/* Sidebar */}
@@ -399,12 +558,21 @@ const Admin = () => {
           </nav>
         </div>
 
-        {/* Info panel at bottom */}
-        <div className="bg-[#DBEAFE] rounded-3xl p-5 border border-[#BFDBFE]">
-          <p className="text-xs font-bold text-black uppercase mb-1">Live Database Connection</p>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-            <span className="text-sm font-semibold text-black">Active Server Sync</span>
+        <div className="flex flex-col gap-4">
+          <button
+            onClick={handleSignOut}
+            className="w-full flex items-center justify-center gap-3 py-4 bg-rose-50 border border-rose-200 text-rose-800 hover:bg-rose-100 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 active:scale-95"
+          >
+            <span>🚪</span> Sign Out Admin
+          </button>
+
+          {/* Info panel at bottom */}
+          <div className="bg-[#DBEAFE] rounded-3xl p-5 border border-[#BFDBFE]">
+            <p className="text-xs font-bold text-black uppercase mb-1">Live Database Connection</p>
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+              <span className="text-sm font-semibold text-black">Active Server Sync</span>
+            </div>
           </div>
         </div>
       </aside>
@@ -461,9 +629,8 @@ const Admin = () => {
                           <h5 className="font-bold text-black text-base">{job.title}</h5>
                           <span className="text-xs text-black/50 font-semibold">{job.department} &bull; {job.location}</span>
                         </div>
-                        <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${
-                          job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
+                        <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                          }`}>
                           {job.status}
                         </span>
                       </div>
@@ -482,8 +649,8 @@ const Admin = () => {
                   </div>
                   <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2">
                     {applications.slice(0, 4).map(app => (
-                      <div 
-                        key={app._id} 
+                      <div
+                        key={app._id}
                         onClick={() => {
                           setSelectedApp(app);
                           setActiveTab('Resume Manager');
@@ -519,16 +686,16 @@ const Admin = () => {
                     <Check className="w-5 h-5 text-emerald-700" /> {jobFormSuccess}
                   </div>
                 )}
-                
+
                 <form data-lenis-prevent className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-2" onSubmit={(e) => e.preventDefault()}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Job Title</label>
-                      <input 
-                        type="text" 
-                        name="title" 
-                        value={jobForm.title} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="title"
+                        value={jobForm.title}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         required
                         placeholder="e.g. Frontend Engineer"
@@ -536,11 +703,11 @@ const Admin = () => {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Department</label>
-                      <input 
-                        type="text" 
-                        name="department" 
-                        value={jobForm.department} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="department"
+                        value={jobForm.department}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         required
                         placeholder="e.g. Engineering"
@@ -551,21 +718,21 @@ const Admin = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Salary Range</label>
-                      <input 
-                        type="text" 
-                        name="salary" 
-                        value={jobForm.salary} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="salary"
+                        value={jobForm.salary}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         placeholder="e.g. $80k - $100k"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Employment Type</label>
-                      <select 
-                        name="employmentType" 
-                        value={jobForm.employmentType} 
-                        onChange={handleJobFormChange} 
+                      <select
+                        name="employmentType"
+                        value={jobForm.employmentType}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                       >
                         <option value="Full Time">Full Time</option>
@@ -579,11 +746,11 @@ const Admin = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Location</label>
-                      <input 
-                        type="text" 
-                        name="location" 
-                        value={jobForm.location} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="location"
+                        value={jobForm.location}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         required
                         placeholder="e.g. Remote / Hybrid"
@@ -591,11 +758,11 @@ const Admin = () => {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Experience Required</label>
-                      <input 
-                        type="text" 
-                        name="experience" 
-                        value={jobForm.experience} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="experience"
+                        value={jobForm.experience}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         placeholder="e.g. 3+ Years"
                       />
@@ -605,22 +772,22 @@ const Admin = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Skills Required (Comma separated)</label>
-                      <input 
-                        type="text" 
-                        name="skills" 
-                        value={jobForm.skills} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="text"
+                        name="skills"
+                        value={jobForm.skills}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                         placeholder="React, CSS, Node"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Number of Openings</label>
-                      <input 
-                        type="number" 
-                        name="openings" 
-                        value={jobForm.openings} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="number"
+                        name="openings"
+                        value={jobForm.openings}
+                        onChange={handleJobFormChange}
                         min="1"
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                       />
@@ -630,20 +797,20 @@ const Admin = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Application Deadline</label>
-                      <input 
-                        type="date" 
-                        name="deadline" 
-                        value={jobForm.deadline} 
-                        onChange={handleJobFormChange} 
+                      <input
+                        type="date"
+                        name="deadline"
+                        value={jobForm.deadline}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Status</label>
-                      <select 
-                        name="status" 
-                        value={jobForm.status} 
-                        onChange={handleJobFormChange} 
+                      <select
+                        name="status"
+                        value={jobForm.status}
+                        onChange={handleJobFormChange}
                         className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
                       >
                         <option value="Active">Active</option>
@@ -654,10 +821,10 @@ const Admin = () => {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-black uppercase text-black/60">Job Description</label>
-                    <textarea 
-                      name="description" 
-                      value={jobForm.description} 
-                      onChange={handleJobFormChange} 
+                    <textarea
+                      name="description"
+                      value={jobForm.description}
+                      onChange={handleJobFormChange}
                       rows="3"
                       className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
                       required
@@ -667,10 +834,10 @@ const Admin = () => {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-black uppercase text-black/60">Responsibilities (Line separated)</label>
-                    <textarea 
-                      name="requirements" 
-                      value={jobForm.requirements} 
-                      onChange={handleJobFormChange} 
+                    <textarea
+                      name="requirements"
+                      value={jobForm.requirements}
+                      onChange={handleJobFormChange}
                       rows="3"
                       className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
                       placeholder="e.g. Design sleek components&#10;Implement API routers"
@@ -679,10 +846,10 @@ const Admin = () => {
 
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-black uppercase text-black/60">Skills & Requirements</label>
-                    <textarea 
-                      name="benefits" 
-                      value={jobForm.benefits} 
-                      onChange={handleJobFormChange} 
+                    <textarea
+                      name="benefits"
+                      value={jobForm.benefits}
+                      onChange={handleJobFormChange}
                       rows="3"
                       className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
                       placeholder="e.g. Strong React understanding&#10;Good team collaboration"
@@ -693,19 +860,19 @@ const Admin = () => {
                   <div className="flex flex-col gap-2 mt-4">
                     {editingJobId ? (
                       <div className="flex gap-3">
-                        <button 
-                          type="button" 
-                          onClick={() => handlePostJob()} 
+                        <button
+                          type="button"
+                          onClick={() => handlePostJob()}
                           className="flex-1 bg-[#DBEAFE] border border-[#BFDBFE] py-3 rounded-xl text-black font-bold text-sm tracking-wider uppercase hover:bg-primary/20 active:scale-95 transition-all"
                         >
                           Update Job
                         </button>
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => {
                             setEditingJobId(null);
                             setJobForm(initialJobForm);
-                          }} 
+                          }}
                           className="bg-[#EFF6FF] border border-[#BFDBFE] px-5 py-3 rounded-xl text-black font-bold text-sm hover:bg-[#DBEAFE] active:scale-95 transition-all"
                         >
                           Cancel
@@ -713,16 +880,16 @@ const Admin = () => {
                       </div>
                     ) : (
                       <div className="flex gap-3">
-                        <button 
-                          type="button" 
-                          onClick={() => handlePostJob('Active')} 
+                        <button
+                          type="button"
+                          onClick={() => handlePostJob('Active')}
                           className="flex-1 bg-[#DBEAFE] border border-[#BFDBFE] py-3 rounded-xl text-black font-bold text-sm tracking-wider uppercase hover:bg-primary/20 active:scale-95 transition-all"
                         >
                           Post Job
                         </button>
-                        <button 
-                          type="button" 
-                          onClick={() => handlePostJob('Draft')} 
+                        <button
+                          type="button"
+                          onClick={() => handlePostJob('Draft')}
                           className="bg-[#EFF6FF] border border-[#BFDBFE] px-5 py-3 rounded-xl text-black font-bold text-sm hover:bg-[#DBEAFE] active:scale-95 transition-all"
                         >
                           Save Draft
@@ -730,9 +897,9 @@ const Admin = () => {
                       </div>
                     )}
                     {editingJobId && (
-                      <button 
-                        type="button" 
-                        onClick={() => handleDeleteJob(editingJobId)} 
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteJob(editingJobId)}
                         className="w-full bg-rose-100 border border-rose-300 py-3 rounded-xl text-rose-950 font-bold text-sm tracking-wider uppercase hover:bg-rose-200 active:scale-95 transition-all flex items-center justify-center gap-2"
                       >
                         <Trash2 className="w-4 h-4" /> Delete Job Posting
@@ -747,18 +914,16 @@ const Admin = () => {
                 <h4 className="text-2xl font-black text-black">Active Postings List</h4>
                 <div className="flex flex-col gap-4">
                   {jobs.map(job => (
-                    <div 
-                      key={job._id} 
-                      className={`p-6 bg-white border rounded-[2rem] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 hover:shadow-md transition-shadow ${
-                        editingJobId === job._id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-[#BFDBFE]'
-                      }`}
+                    <div
+                      key={job._id}
+                      className={`p-6 bg-white border rounded-[2rem] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 hover:shadow-md transition-shadow ${editingJobId === job._id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-[#BFDBFE]'
+                        }`}
                     >
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-3">
                           <h5 className="text-xl font-bold text-black">{job.title}</h5>
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                            }`}>
                             {job.status}
                           </span>
                         </div>
@@ -773,14 +938,14 @@ const Admin = () => {
                       </div>
 
                       <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                        <button 
+                        <button
                           onClick={() => handleEditJobClick(job)}
                           className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
                           title="Edit Job"
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDeleteJob(job._id)}
                           className="p-3 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-800 transition-colors"
                           title="Delete Job"
@@ -803,7 +968,7 @@ const Admin = () => {
               <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-[#BFDBFE] pb-4">
                   <h4 className="text-xl font-black text-black">Structured Resume Filtering</h4>
-                  <button 
+                  <button
                     onClick={() => {
                       setSearchName('');
                       setFilterLocation('');
@@ -823,10 +988,10 @@ const Admin = () => {
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Candidate Name / Email</label>
                     <div className="relative">
-                      <input 
-                        type="text" 
-                        value={searchName} 
-                        onChange={(e) => setSearchName(e.target.value)} 
+                      <input
+                        type="text"
+                        value={searchName}
+                        onChange={(e) => setSearchName(e.target.value)}
                         className="w-full bg-white border border-[#BFDBFE] pl-9 pr-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                         placeholder="Search..."
                       />
@@ -837,10 +1002,10 @@ const Admin = () => {
                   {/* Filter by Location */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Location</label>
-                    <input 
-                      type="text" 
-                      value={filterLocation} 
-                      onChange={(e) => setFilterLocation(e.target.value)} 
+                    <input
+                      type="text"
+                      value={filterLocation}
+                      onChange={(e) => setFilterLocation(e.target.value)}
                       className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                       placeholder="e.g. Remote"
                     />
@@ -849,9 +1014,9 @@ const Admin = () => {
                   {/* Filter by Position */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Position</label>
-                    <select 
-                      value={filterPosition} 
-                      onChange={(e) => setFilterPosition(e.target.value)} 
+                    <select
+                      value={filterPosition}
+                      onChange={(e) => setFilterPosition(e.target.value)}
                       className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                     >
                       <option value="">All Positions</option>
@@ -864,10 +1029,10 @@ const Admin = () => {
                   {/* Filter by Experience */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Experience</label>
-                    <input 
-                      type="text" 
-                      value={filterExperience} 
-                      onChange={(e) => setFilterExperience(e.target.value)} 
+                    <input
+                      type="text"
+                      value={filterExperience}
+                      onChange={(e) => setFilterExperience(e.target.value)}
                       className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                       placeholder="e.g. 4 Years"
                     />
@@ -876,9 +1041,9 @@ const Admin = () => {
                   {/* Filter by Employment Type */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Employment Type</label>
-                    <select 
-                      value={filterType} 
-                      onChange={(e) => setFilterType(e.target.value)} 
+                    <select
+                      value={filterType}
+                      onChange={(e) => setFilterType(e.target.value)}
                       className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                     >
                       <option value="">All Types</option>
@@ -892,9 +1057,9 @@ const Admin = () => {
                   {/* Filter by Application Date */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Applied Date</label>
-                    <select 
-                      value={filterDate} 
-                      onChange={(e) => setFilterDate(e.target.value)} 
+                    <select
+                      value={filterDate}
+                      onChange={(e) => setFilterDate(e.target.value)}
                       className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
                     >
                       <option value="">Any Time</option>
@@ -943,17 +1108,16 @@ const Admin = () => {
                             {new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </td>
                           <td className="px-6 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${
-                              app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
+                            <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
                               app.status === 'Shortlisted' ? 'bg-indigo-100 text-indigo-800' :
-                              app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
-                              app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
-                            }`}>
+                                app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
+                                  app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+                              }`}>
                               {app.status}
                             </span>
                           </td>
                           <td className="px-8 py-5 text-right">
-                            <button 
+                            <button
                               onClick={() => {
                                 setSelectedApp(app);
                                 setActiveTab('Resume Manager');
@@ -989,26 +1153,24 @@ const Admin = () => {
                 </h4>
                 <div className="flex flex-col gap-3">
                   {applications.map(app => (
-                    <div 
+                    <div
                       key={app._id}
                       onClick={() => {
                         setSelectedApp(app);
                         setNotesText(app.notes || '');
                       }}
-                      className={`p-5 rounded-[2rem] border cursor-pointer transition-all duration-300 ${
-                        selectedApp && selectedApp._id === app._id 
-                          ? 'bg-white border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]' 
-                          : 'bg-white border-[#BFDBFE] hover:border-primary/40'
-                      }`}
+                      className={`p-5 rounded-[2rem] border cursor-pointer transition-all duration-300 ${selectedApp && selectedApp._id === app._id
+                        ? 'bg-white border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]'
+                        : 'bg-white border-[#BFDBFE] hover:border-primary/40'
+                        }`}
                     >
                       <div className="flex justify-between items-start gap-2 mb-1">
                         <h5 className="font-bold text-black text-base">{app.candidateName}</h5>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                          app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
+                        <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
                           app.status === 'Shortlisted' ? 'bg-indigo-100 text-indigo-800' :
-                          app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
-                          app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
-                        }`}>
+                            app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
+                              app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+                          }`}>
                           {app.status}
                         </span>
                       </div>
@@ -1046,10 +1208,10 @@ const Admin = () => {
                       {/* Download / Social Links */}
                       <div className="flex items-center gap-3">
                         {selectedApp.linkedInUrl && (
-                          <a 
-                            href={selectedApp.linkedInUrl} 
-                            target="_blank" 
-                            rel="noreferrer" 
+                          <a
+                            href={selectedApp.linkedInUrl}
+                            target="_blank"
+                            rel="noreferrer"
                             className="p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
                             title="LinkedIn Profile"
                           >
@@ -1057,18 +1219,18 @@ const Admin = () => {
                           </a>
                         )}
                         {selectedApp.portfolioUrl && (
-                          <a 
-                            href={selectedApp.portfolioUrl} 
-                            target="_blank" 
-                            rel="noreferrer" 
+                          <a
+                            href={selectedApp.portfolioUrl}
+                            target="_blank"
+                            rel="noreferrer"
                             className="p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
                             title="Portfolio Link"
                           >
                             <ExternalLink className="w-4 h-4" />
                           </a>
                         )}
-                        <a 
-                          href={selectedApp.resume} 
+                        <a
+                          href={selectedApp.resume}
                           download
                           target="_blank"
                           rel="noreferrer"
@@ -1111,15 +1273,15 @@ const Admin = () => {
                         {/* Recruiter Notes Block */}
                         <div className="bg-white border border-[#BFDBFE] p-6 rounded-3xl flex flex-col gap-4 flex-1">
                           <h5 className="font-black text-black text-sm uppercase tracking-wider border-b border-[#BFDBFE] pb-2">Recruiter Evaluation Notes</h5>
-                          <textarea 
-                            value={notesText} 
+                          <textarea
+                            value={notesText}
                             onChange={(e) => setNotesText(e.target.value)}
-                            rows="4" 
+                            rows="4"
                             className="bg-[#EFF6FF] border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary resize-none flex-1"
                             placeholder="Add evaluation summary or interview feedback..."
                           />
-                          <button 
-                            onClick={handleSaveNotes} 
+                          <button
+                            onClick={handleSaveNotes}
                             className="bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 py-2.5 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center justify-center gap-2 transition-all active:scale-95"
                           >
                             <Save className="w-3.5 h-3.5" /> Save Evaluation Notes
@@ -1136,8 +1298,8 @@ const Admin = () => {
                         <div className="flex-1 w-full h-full bg-slate-100 relative min-h-[350px]">
                           {/* Attempt to preview PDF. Fallback dynamically to card if not PDF or offline */}
                           {selectedApp.resume && selectedApp.resume.toLowerCase().endsWith('.pdf') ? (
-                            <iframe 
-                              src={`${selectedApp.resume}#toolbar=0`} 
+                            <iframe
+                              src={`${selectedApp.resume}#toolbar=0`}
                               className="w-full h-full border-none absolute inset-0"
                               title="Resume Preview PDF"
                             />
@@ -1150,7 +1312,7 @@ const Admin = () => {
                               <p className="text-xs text-black/50 max-w-[250px] mb-6">
                                 Docx formats or local development assets are safely secured. You can read, view, or download the full document here.
                               </p>
-                              <a 
+                              <a
                                 href={selectedApp.resume}
                                 download
                                 className="px-6 py-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all"
@@ -1167,25 +1329,25 @@ const Admin = () => {
                     <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-2 shadow-sm">
                       <span className="text-xs font-black uppercase text-black/60">Update Recruitment Stage:</span>
                       <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                        <button 
+                        <button
                           onClick={() => handleUpdateApplicationStatus('Shortlisted')}
                           className="flex-1 md:flex-initial px-5 py-3 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded-xl text-indigo-900 font-bold text-xs tracking-wider uppercase transition-colors"
                         >
                           Shortlist
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleUpdateApplicationStatus('Interview Scheduled')}
                           className="flex-1 md:flex-initial px-5 py-3 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-xl text-amber-900 font-bold text-xs tracking-wider uppercase transition-colors"
                         >
                           Schedule Interview
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleUpdateApplicationStatus('Selected')}
                           className="flex-1 md:flex-initial px-5 py-3 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-emerald-900 font-bold text-xs tracking-wider uppercase transition-colors"
                         >
                           Select
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleUpdateApplicationStatus('Rejected')}
                           className="flex-1 md:flex-initial px-5 py-3 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-900 font-bold text-xs tracking-wider uppercase transition-colors"
                         >
