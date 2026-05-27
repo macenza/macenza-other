@@ -418,8 +418,8 @@ const Contact = () => {
       {/* Final CTA */}
       <Section id="final-cta" className="text-center">
         <div className="max-w-6xl mx-auto p-20 rounded-[4rem] bg-white border border-black/5 text-black relative overflow-hidden reveal-up shadow-2xl shadow-primary/5">
-          <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px]"></div>
-          <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px]"></div>
+          <div className="absolute -top-24 -right-24 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
 
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter text-black">
             Ready to Launch Your <br /> <span className="text-primary italic">Next Big Idea?</span>
@@ -429,7 +429,7 @@ const Contact = () => {
           </p>
           <button
             onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-primary text-white rounded-full font-bold text-base sm:text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 whitespace-nowrap"
+            className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-primary text-white rounded-full font-bold text-base sm:text-xl hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 whitespace-nowrap"
           >
             Start Your Project
           </button>

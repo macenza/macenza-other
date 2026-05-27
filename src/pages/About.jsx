@@ -410,8 +410,8 @@ const About = () => {
       {/* Join Our Journey CTA */}
       <Section id="join" className="text-center">
         <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px]"></div>
-          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px]"></div>
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
             Join Us in Building Tomorrow
@@ -419,7 +419,7 @@ const About = () => {
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Macenza is creating the future of intelligent digital experiences. Are you ready to be part of the journey?
           </p>
-          <Link to="/contact" className="inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
+          <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Contact Us
           </Link>
         </div>
