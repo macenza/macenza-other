@@ -302,7 +302,7 @@ const Solutions = () => {
           <div className="absolute top-1/2 left-0 w-full h-[1px] bg-black/10 hidden lg:block"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-10">
             {processSteps.map((step, i) => (
-              <div key={i} className="relative z-10 group">
+              <div key={i} className="relative z-10 group flex flex-col items-center text-center lg:items-start lg:text-left">
                 <div className="mb-6 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-black text-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] group-hover:scale-125 transition-transform duration-500">
                   {i + 1}
                 </div>
