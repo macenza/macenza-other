@@ -16,6 +16,7 @@ const contactInfo = [
 ];
 
 const countries = [
+  { name: "Rajasthan, India", city: "Headquarters", lat: 26.4499, lng: 74.6399, isHQ: true },
   { name: "Czech Republic", city: "Prague", lat: 50.0755, lng: 14.4378 },
   { name: "Australia", city: "Sydney", lat: -33.8688, lng: 151.2093 },
   { name: "New Zealand", city: "Auckland", lat: -36.8485, lng: 174.7633 },
@@ -27,13 +28,14 @@ const countries = [
 ];
 
 const arcsData = [
-  { startLat: 40.7128, startLng: -74.0060, endLat: 50.0755, endLng: 14.4378, color: ['rgba(59, 130, 246, 0.8)', 'rgba(20, 184, 166, 0.8)'] }, // NY to Prague
-  { startLat: 50.0755, startLng: 14.4378, endLat: 25.2048, endLng: 55.2708, color: ['rgba(59, 130, 246, 0.8)', 'rgba(20, 184, 166, 0.8)'] }, // Prague to Dubai
-  { startLat: 25.2048, startLng: 55.2708, endLat: 41.2995, endLng: 69.2401, color: ['rgba(20, 184, 166, 0.8)', 'rgba(245, 158, 11, 0.8)'] }, // Dubai to Tashkent
-  { startLat: 41.2995, startLng: 69.2401, endLat: 13.7563, endLng: 100.5018, color: ['rgba(245, 158, 11, 0.8)', 'rgba(59, 130, 246, 0.8)'] }, // Tashkent to Bangkok
-  { startLat: 13.7563, startLng: 100.5018, endLat: -33.8688, endLng: 151.2093, color: ['rgba(59, 130, 246, 0.8)', 'rgba(16, 185, 129, 0.8)'] }, // Bangkok to Sydney
-  { startLat: -33.8688, startLng: 151.2093, endLat: -36.8485, endLng: 174.7633, color: ['rgba(16, 185, 129, 0.8)', 'rgba(59, 130, 246, 0.8)'] }, // Sydney to Auckland
-  { startLat: -36.8485, startLng: 174.7633, endLat: 40.7128, endLng: -74.0060, color: ['rgba(59, 130, 246, 0.8)', 'rgba(139, 92, 246, 0.8)'] }  // Auckland to NY
+  { startLat: 26.4499, startLng: 74.6399, endLat: 50.0755, endLng: 14.4378, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Prague
+  { startLat: 26.4499, startLng: 74.6399, endLat: -33.8688, endLng: 151.2093, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Sydney
+  { startLat: 26.4499, startLng: 74.6399, endLat: -36.8485, endLng: 174.7633, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Auckland
+  { startLat: 26.4499, startLng: 74.6399, endLat: 40.7128, endLng: -74.0060, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to New York
+  { startLat: 26.4499, startLng: 74.6399, endLat: 48.8566, endLng: 2.3522, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Paris
+  { startLat: 26.4499, startLng: 74.6399, endLat: 25.2048, endLng: 55.2708, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Dubai
+  { startLat: 26.4499, startLng: 74.6399, endLat: 41.2995, endLng: 69.2401, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }, // Ajmer to Tashkent
+  { startLat: 26.4499, startLng: 74.6399, endLat: 13.7563, endLng: 100.5018, color: ['rgba(234, 88, 12, 0.9)', 'rgba(255, 255, 255, 1)', 'rgba(37, 99, 235, 1)'] }  // Ajmer to Bangkok
 ];
 
 const faqs = [
@@ -350,18 +352,18 @@ const Contact = () => {
             pointsData={countries}
             pointLat="lat"
             pointLng="lng"
-            pointColor={() => '#2563eb'}
-            pointAltitude={0.06}
-            pointRadius={0.5}
+            pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
+            pointAltitude={d => d.isHQ ? 0.09 : 0.06}
+            pointRadius={d => d.isHQ ? 0.8 : 0.5}
 
             // Labels
             labelsData={countries}
             labelLat="lat"
             labelLng="lng"
             labelText="city"
-            labelSize={1.5}
-            labelColor={() => '#fff'}
-            labelDotRadius={0.5}
+            labelSize={d => d.isHQ ? 2.0 : 1.5}
+            labelColor={d => d.isHQ ? '#fff' : '#fff'}
+            labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
             labelResolution={2}
           />
         </div>
