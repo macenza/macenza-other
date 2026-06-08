@@ -74,6 +74,31 @@ const Admin = () => {
   const [editingJobId, setEditingJobId] = useState(null);
   const [jobFormSuccess, setJobFormSuccess] = useState('');
 
+  // Employees states
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isEditingEmployee, setIsEditingEmployee] = useState(false);
+  const [editEmployeeForm, setEditEmployeeForm] = useState(null);
+  const [newEmployeeForm, setNewEmployeeForm] = useState({
+    registration_no: '',
+    name: '',
+    father_name: '',
+    dob: '',
+    email: '',
+    contact_number: '',
+    role: '',
+    department: '',
+    start_date: '',
+    alt_phone: '',
+    aadhaar_no: '',
+    permanent_address: '',
+    current_address: '',
+    account_no: '',
+    ifsc_detail: '',
+    salary: '',
+    documents: []
+  });
+
   // Handle Authentication Subscription
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -160,6 +185,172 @@ const Admin = () => {
       setLoading(false);
     }
   };
+
+
+
+  const saveEmployeeSingle = async (updatedEmployee) => {
+    const updatedList = employees.map(emp => emp.id === updatedEmployee.id ? updatedEmployee : emp);
+    setEmployees(updatedList);
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .upsert(updatedEmployee);
+      if (error) console.error('Supabase sync failed:', error.message);
+    } catch (err) {
+      console.error('Supabase sync exception:', err);
+    }
+  };
+
+  const handleDeleteEmployee = async (empId, empName) => {
+    if (!confirm(`Are you sure you want to remove employee ${empName}?`)) return;
+
+    const updated = employees.filter(item => item.id !== empId);
+    setEmployees(updated);
+
+    if (selectedEmployee && selectedEmployee.id === empId) {
+      setSelectedEmployee(null);
+    }
+
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .delete()
+        .eq('id', empId);
+      if (error) {
+        console.warn('Failed to delete employee from Supabase:', error.message);
+      }
+    } catch (err) {
+      console.warn('Supabase delete exception:', err);
+    }
+  };
+
+  const handleAddEmployee = async (e) => {
+    e.preventDefault();
+    const newEmp = {
+      ...newEmployeeForm,
+      id: 'emp_' + Date.now(),
+      documents: []
+    };
+    
+    const updated = [newEmp, ...employees];
+    setEmployees(updated);
+
+    setNewEmployeeForm({
+      registration_no: '',
+      name: '',
+      father_name: '',
+      dob: '',
+      email: '',
+      contact_number: '',
+      role: '',
+      department: '',
+      start_date: '',
+      alt_phone: '',
+      aadhaar_no: '',
+      permanent_address: '',
+      current_address: '',
+      account_no: '',
+      ifsc_detail: '',
+      salary: '',
+      documents: []
+    });
+
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .insert(newEmp);
+      if (error) {
+        console.warn('Failed to insert employee into Supabase:', error.message);
+      } else {
+        alert('Employee profile created successfully!');
+      }
+    } catch (err) {
+      console.warn('Supabase insert exception:', err);
+    }
+  };
+
+  const handleSaveEmployeeEdit = async (e) => {
+    e.preventDefault();
+    if (!editEmployeeForm) return;
+    
+    const updated = employees.map(emp => 
+      emp.id === editEmployeeForm.id ? editEmployeeForm : emp
+    );
+    setEmployees(updated);
+    setSelectedEmployee(editEmployeeForm);
+    setIsEditingEmployee(false);
+
+    try {
+      const { error } = await supabase
+        .from('employees')
+        .upsert(editEmployeeForm);
+      if (error) {
+        console.warn('Failed to update employee in Supabase:', error.message);
+      } else {
+        alert('Employee profile updated successfully!');
+      }
+    } catch (err) {
+      console.warn('Supabase update exception:', err);
+    }
+  };
+
+  const handleDocumentUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !selectedEmployee) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${selectedEmployee.id}-${Date.now()}.${fileExt}`;
+      let publicUrl = '';
+      
+      try {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('employee-docs')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl: url } } = supabase.storage
+          .from('employee-docs')
+          .getPublicUrl(fileName);
+        
+        publicUrl = url;
+      } catch (storageErr) {
+        console.warn('Supabase storage upload failed, using Object URL fallback', storageErr);
+        publicUrl = URL.createObjectURL(file);
+      }
+
+      const newDoc = { name: file.name, url: publicUrl };
+      const updatedDocs = [...(selectedEmployee.documents || []), newDoc];
+      const updatedEmployee = { ...selectedEmployee, documents: updatedDocs };
+      await saveEmployeeSingle(updatedEmployee);
+      setSelectedEmployee(updatedEmployee);
+      alert('Document uploaded successfully!');
+    } catch (err) {
+      console.error(err);
+      alert('Failed to upload document: ' + err.message);
+    }
+  };
+
+  // Load employees from Supabase
+  useEffect(() => {
+    if (user) {
+      const loadEmployees = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('employees')
+            .select('*');
+          if (error) throw error;
+          setEmployees(data || []);
+        } catch (err) {
+          console.error('Failed to load employees from database:', err.message);
+          setEmployees([]);
+        }
+      };
+
+      loadEmployees();
+    }
+  }, [user]);
 
   // Trigger data fetching on user login
   useEffect(() => {
@@ -579,6 +770,7 @@ const Admin = () => {
               { id: 'Jobs', icon: "💼" },
               { id: 'Applications', icon: "📋" },
               { id: 'Resume Manager', icon: "🔍" },
+              { id: 'Employees', icon: "👥" },
               { id: 'Analytics', icon: "📈" }
             ].map(item => (
               <button
@@ -1400,6 +1592,178 @@ const Admin = () => {
             </div>
           )}
 
+          {/* Tab: Employees Management */}
+          {activeTab === 'Employees' && (
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
+              {/* Left Side: Add Employee Form */}
+              <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
+                <div>
+                  <h4 className="text-2xl font-black text-black tracking-tight">Add Employee</h4>
+                  <p className="text-xs font-semibold text-black/45 uppercase tracking-wide mt-1">Create a new company record</p>
+                </div>
+
+                <form onSubmit={handleAddEmployee} className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Registration No.</label>
+                    <input
+                      type="text"
+                      value={newEmployeeForm.registration_no}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, registration_no: e.target.value})}
+                      placeholder="e.g. EMP-003"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={newEmployeeForm.name}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})}
+                      placeholder="e.g. John Doe"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Father's Name</label>
+                    <input
+                      type="text"
+                      value={newEmployeeForm.father_name}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, father_name: e.target.value})}
+                      placeholder="e.g. Richard Doe"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Birth</label>
+                    <input
+                      type="date"
+                      value={newEmployeeForm.dob}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, dob: e.target.value})}
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Email ID</label>
+                    <input
+                      type="email"
+                      value={newEmployeeForm.email}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})}
+                      placeholder="e.g. john@macenza.com"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Contact Number</label>
+                    <input
+                      type="text"
+                      value={newEmployeeForm.contact_number}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, contact_number: e.target.value})}
+                      placeholder="e.g. +1 555 0103"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Role / Designation</label>
+                    <input
+                      type="text"
+                      value={newEmployeeForm.role}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})}
+                      placeholder="e.g. Fullstack Engineer"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
+                    <input
+                      type="text"
+                      value={newEmployeeForm.department}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})}
+                      placeholder="e.g. Engineering"
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
+                    <input
+                      type="date"
+                      value={newEmployeeForm.start_date}
+                      onChange={(e) => setNewEmployeeForm({...newEmployeeForm, start_date: e.target.value})}
+                      className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full py-4 mt-2 bg-primary text-white rounded-full font-black text-xs tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 active:scale-95 flex items-center justify-center gap-2"
+                  >
+                    Create Employee Profile
+                  </button>
+                </form>
+              </div>
+
+              {/* Right Side: Employees List */}
+              <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
+                <h4 className="text-xl font-black text-black flex items-center gap-2">
+                  <Users className="w-5 h-5 text-primary" /> Employees ({employees.length})
+                </h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {employees.map(emp => (
+                    <div
+                      key={emp.id}
+                      onClick={() => {
+                        setSelectedEmployee(emp);
+                        setEditEmployeeForm(emp);
+                      }}
+                      className="bg-white border border-[#BFDBFE] rounded-[2rem] p-5 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between relative group"
+                    >
+                      <div className="flex justify-between items-start gap-4 mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-11 h-11 bg-primary rounded-full flex items-center justify-center text-white font-black text-lg shadow-sm">
+                            {emp.name ? emp.name.charAt(0).toUpperCase() : 'E'}
+                          </div>
+                          <div>
+                            <h5 className="font-bold text-black text-base">{emp.name}</h5>
+                            <p className="text-xs font-semibold text-black/50">{emp.role} • {emp.department}</p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteEmployee(emp.id, emp.name);
+                          }}
+                          className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors active:scale-90"
+                          title="Delete Employee"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-[10px] text-black/50 font-bold uppercase mt-2 pt-2 border-t border-[#BFDBFE]/40">
+                        <MapPin className="w-3.5 h-3.5 text-black/40" />
+                        <span className="truncate">{emp.permanent_address || 'Address Not Provided'}</span>
+                      </div>
+                    </div>
+                  ))}
+                  {employees.length === 0 && (
+                    <div className="col-span-2 p-8 text-center text-black/50 italic bg-white border border-[#BFDBFE] rounded-[2rem]">
+                      No employee records found.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Tab 5: Analytics */}
           {activeTab === 'Analytics' && (
             <div className="flex flex-col gap-8">
@@ -1487,6 +1851,399 @@ const Admin = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Employee Details Modal */}
+          {selectedEmployee && !isEditingEmployee && (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div data-lenis-prevent className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedEmployee(null)}
+                  className="absolute top-6 right-6 w-10 h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                <h3 className="text-2xl font-black text-black mb-6">Employee Details</h3>
+
+                {/* Profile Header */}
+                <div className="bg-white border border-[#BFDBFE] rounded-[2rem] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-black text-2xl shadow-md">
+                      {selectedEmployee.name ? selectedEmployee.name.charAt(0).toUpperCase() : 'E'}
+                    </div>
+                    <div>
+                      <h4 className="text-2xl font-black text-black">{selectedEmployee.name}</h4>
+                      <p className="text-sm font-semibold text-black/55">{selectedEmployee.role} in {selectedEmployee.department}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setEditEmployeeForm(selectedEmployee);
+                      setIsEditingEmployee(true);
+                    }}
+                    className="px-5 py-2.5 bg-white border border-[#BFDBFE] hover:bg-[#EFF6FF] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
+                  >
+                    <Edit3 className="w-4 h-4 text-primary" /> Edit Profile
+                  </button>
+                </div>
+
+                {/* Information Panels */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  {/* Personal Details */}
+                  <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Personal Details</h5>
+                    
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Registration No.</span>
+                      <span className="text-black font-bold">{selectedEmployee.registration_no || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Father's Name</span>
+                      <span className="text-black font-bold">{selectedEmployee.father_name || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Date of Birth</span>
+                      <span className="text-black font-bold">{selectedEmployee.dob || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Aadhaar No.</span>
+                      <span className="text-black font-bold">{selectedEmployee.aadhaar_no || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Email ID</span>
+                      <span className="text-black font-bold">{selectedEmployee.email || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Contact No.</span>
+                      <span className="text-black font-bold">{selectedEmployee.contact_number || '-'}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1">
+                      <span className="text-black/50">Alt Phone No.</span>
+                      <span className="text-black font-bold">{selectedEmployee.alt_phone || '-'}</span>
+                    </div>
+
+                    <div className="text-xs font-semibold mt-3 pt-3 border-t border-[#BFDBFE]/60">
+                      <span className="text-black/50 uppercase text-[9px] tracking-wider block mb-1">Permanent Address:</span>
+                      <span className="text-black font-bold block leading-relaxed">{selectedEmployee.permanent_address || 'Not Provided'}</span>
+                    </div>
+                    <div className="text-xs font-semibold mt-2">
+                      <span className="text-black/50 uppercase text-[9px] tracking-wider block mb-1">Current Address:</span>
+                      <span className="text-black font-bold block leading-relaxed">{selectedEmployee.current_address || 'Not Provided'}</span>
+                    </div>
+                  </div>
+
+                  {/* Right Column Panels */}
+                  <div className="flex flex-col gap-6">
+                    {/* Professional Details */}
+                    <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
+                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Professional Details</h5>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">Start Date</span>
+                        <span className="text-black font-bold">{selectedEmployee.start_date || '-'}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">Base Salary</span>
+                        <span className="text-black font-bold">{selectedEmployee.salary || '-'}</span>
+                      </div>
+                    </div>
+
+                    {/* Bank Details */}
+                    <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
+                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Bank Details</h5>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">Account No.</span>
+                        <span className="text-black font-bold">{selectedEmployee.account_no || '-'}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">IFSC Detail</span>
+                        <span className="text-black font-bold">{selectedEmployee.ifsc_detail || '-'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Employee Documents */}
+                <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-4">
+                  <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-primary" /> Employee Documents
+                  </h5>
+                  
+                  <div className="flex flex-wrap gap-3 items-center">
+                    {selectedEmployee.documents && selectedEmployee.documents.map((doc, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE]/45 px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-xs font-bold text-black group transition-all"
+                      >
+                        <a
+                          href={doc.url}
+                          onClick={(e) => handleDownloadResume(e, doc.url, `${selectedEmployee.name}_${doc.name}`)}
+                          className="flex items-center gap-2 hover:underline"
+                        >
+                          <FileText className="w-4 h-4 text-primary" />
+                          <span>{doc.name}</span>
+                        </a>
+                        
+                        <div className="flex items-center gap-1">
+                          <a
+                            href={doc.url}
+                            onClick={(e) => handleDownloadResume(e, doc.url, `${selectedEmployee.name}_${doc.name}`)}
+                            className="p-1 hover:bg-[#DBEAFE] rounded-md transition-colors text-black/60"
+                            title="Download Document"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
+                          
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (confirm(`Remove document ${doc.name}?`)) {
+                                const updatedDocs = selectedEmployee.documents.filter((_, dIdx) => dIdx !== idx);
+                                const updatedEmp = { ...selectedEmployee, documents: updatedDocs };
+                                saveEmployeeSingle(updatedEmp);
+                                setSelectedEmployee(updatedEmp);
+                              }
+                            }}
+                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40"
+                            title="Remove Document"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    
+                    <label className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
+                      <Plus className="w-4 h-4" /> Upload Document
+                      <input
+                        type="file"
+                        onChange={handleDocumentUpload}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          )}
+
+          {/* Edit Employee Profile Modal */}
+          {isEditingEmployee && editEmployeeForm && (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <form
+                onSubmit={handleSaveEmployeeEdit}
+                data-lenis-prevent
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative"
+              >
+                {/* Close Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsEditingEmployee(false)}
+                  className="absolute top-6 right-6 w-10 h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+
+                <h3 className="text-2xl font-black text-black mb-8 border-b border-[#BFDBFE] pb-4">Edit Employee Profile</h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+                  {/* Left Column: Personal Info */}
+                  <div className="flex flex-col gap-5">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-2 border-b border-[#BFDBFE]/40 pb-1">Personal Info</h5>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Registration No.</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.registration_no}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, registration_no: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Full Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={editEmployeeForm.name}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, name: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Father's Name</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.father_name}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, father_name: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Birth</label>
+                      <input
+                        type="date"
+                        value={editEmployeeForm.dob}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, dob: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Email ID</label>
+                      <input
+                        type="email"
+                        value={editEmployeeForm.email}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, email: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Contact Number</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.contact_number}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, contact_number: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Alternative Phone No.</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.alt_phone}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, alt_phone: e.target.value})}
+                        placeholder="e.g. +1 555 0109"
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Aadhaar No.</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.aadhaar_no}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, aadhaar_no: e.target.value})}
+                        placeholder="e.g. 1234-5678-9012"
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Permanent Address</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.permanent_address}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, permanent_address: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Current Address</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.current_address}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, current_address: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right Column: Professional & Bank */}
+                  <div className="flex flex-col gap-5">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-2 border-b border-[#BFDBFE]/40 pb-1">Professional & Bank</h5>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Account No.</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.account_no}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, account_no: e.target.value})}
+                        placeholder="e.g. 0987654321"
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">IFSC Detail</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.ifsc_detail}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, ifsc_detail: e.target.value})}
+                        placeholder="e.g. CHAS0001"
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Role / Designation</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.role}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, role: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.department}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, department: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
+                      <input
+                        type="date"
+                        value={editEmployeeForm.start_date}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, start_date: e.target.value})}
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Salary</label>
+                      <input
+                        type="text"
+                        value={editEmployeeForm.salary}
+                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, salary: e.target.value})}
+                        placeholder="e.g. $120,000"
+                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-4 mt-8 border-t border-[#BFDBFE]/60 pt-6">
+                  <button
+                    type="submit"
+                    className="bg-primary hover:bg-primary-dark text-white font-black text-sm tracking-wider uppercase py-4 px-8 rounded-full shadow-lg shadow-primary/20 hover:shadow-2xl transition-all duration-300 active:scale-95"
+                  >
+                    SAVE CHANGES
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingEmployee(false)}
+                    className="bg-white border-2 border-primary/20 hover:border-primary text-black font-black text-sm tracking-wider uppercase py-4 px-8 rounded-full transition-all duration-300 active:scale-95"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>
