@@ -782,8 +782,8 @@ const Admin = () => {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className="flex items-center gap-4 py-4 px-5 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-6 active:scale-95 group"
-                style={activeTab === item.id ? { backgroundColor: '#DBEAFE', color: 'black', paddingLeft: '24px', borderLeft: '4px solid #2563eb' } : {}}
+                className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-5 active:scale-95 group whitespace-nowrap"
+                style={activeTab === item.id ? { backgroundColor: '#DBEAFE', color: 'black', paddingLeft: '20px', borderLeft: '4px solid #2563eb' } : {}}
               >
                 <span className="text-xl group-hover:scale-125 transition-transform duration-300">{item.icon}</span>
                 {item.id}
