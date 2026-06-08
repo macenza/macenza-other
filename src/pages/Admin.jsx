@@ -903,9 +903,9 @@ const Admin = () => {
 
           {/* Tab 2: Job Posting CRUD Manager */}
           {activeTab === 'Jobs' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
               {/* Left Column: Form to create/edit jobs */}
-              <div className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 sticky top-24">
+              <div data-lenis-prevent className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
                 <h4 className="text-2xl font-black text-black">
                   {editingJobId ? 'Edit Job Posting' : 'Create New Job'}
                 </h4>
@@ -915,7 +915,7 @@ const Admin = () => {
                   </div>
                 )}
 
-                <form data-lenis-prevent className="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-2" onSubmit={(e) => e.preventDefault()}>
+                <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
                       <label className="text-xs font-black uppercase text-black/60">Job Title</label>
@@ -1138,7 +1138,7 @@ const Admin = () => {
               </div>
 
               {/* Right Column: List of posted jobs */}
-              <div className="xl:col-span-7 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
+              <div data-lenis-prevent className="xl:col-span-7 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
                 <h4 className="text-2xl font-black text-black">Active Postings List</h4>
                 <div className="flex flex-col gap-4">
                   {jobs.map(job => (
@@ -1191,7 +1191,7 @@ const Admin = () => {
 
           {/* Tab 3: Candidate Applications & Filters */}
           {activeTab === 'Applications' && (
-            <div className="flex flex-col gap-8">
+            <div data-lenis-prevent className="flex flex-col gap-8 h-[80vh] overflow-y-auto pr-2">
               {/* Filtering Suite */}
               <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-[#BFDBFE] pb-4">
