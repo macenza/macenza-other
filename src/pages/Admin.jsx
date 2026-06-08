@@ -367,6 +367,42 @@ const Admin = () => {
     }
   };
 
+  const handleDownloadResume = async (e, url, candidateName) => {
+    e.preventDefault();
+    if (!url) return;
+
+    const filename = candidateName
+      ? `${candidateName.replace(/\s+/g, '_')}_Resume.${url.split('.').pop().split('?')[0] || 'pdf'}`
+      : 'Resume.pdf';
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Fetch failed');
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.warn('Direct download via fetch failed, trying query parameter fallback', error);
+      if (url.includes('supabase.co')) {
+        const downloadUrl = url.includes('?') ? `${url}&download=` : `${url}?download=`;
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.target = '_self';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+  };
+
   // Filter Applications
   const filteredApplications = applications.filter(app => {
     // Name / Email search
@@ -1231,9 +1267,7 @@ const Admin = () => {
                         )}
                         <a
                           href={selectedApp.resume}
-                          download
-                          target="_blank"
-                          rel="noreferrer"
+                          onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
                           className="px-5 py-3 bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
                         >
                           <Download className="w-4 h-4" /> Download Resume
@@ -1314,7 +1348,7 @@ const Admin = () => {
                               </p>
                               <a
                                 href={selectedApp.resume}
-                                download
+                                onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
                                 className="px-6 py-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all"
                               >
                                 <Download className="w-4 h-4" /> Download Resume Document
