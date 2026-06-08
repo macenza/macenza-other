@@ -239,16 +239,16 @@ const Home = () => {
       </Section>
 
       <Section id="contact" className="text-center bg-white">
-        <div className="max-w-4xl mx-auto py-20 px-10 rounded-[4rem] bg-black text-white relative overflow-hidden">
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px]"></div>
-          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px]"></div>
+        <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
+          <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
+          <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
           <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Build the <span className="text-primary">Future</span> with Macenza
+            Build the Future with Macenza
           </h2>
-          <p className="text-xl text-white/60 font-light mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
             Ready to transform your ideas into reality? Our team of experts is standing by to help you build the next big thing.
           </p>
-          <Link to="/contact" className="inline-block px-12 py-5 bg-white text-black rounded-full font-bold text-lg hover:bg-primary hover:text-white transition-all duration-300 shadow-xl shadow-white/5 text-center">
+          <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Get in Touch
           </Link>
         </div>
