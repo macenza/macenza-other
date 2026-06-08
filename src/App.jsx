@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="relative">
-      <SmoothScroll />
+      {!isAdmin && <SmoothScroll />}
       {!isAdmin && <Navbar />}
       {!isAdmin && <ChatWidget />}
       <Routes>
