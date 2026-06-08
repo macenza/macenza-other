@@ -8,6 +8,7 @@ import HeroOverlay from '../components/HeroOverlay';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
 import LogoLoop from '../components/LogoLoop';
+import ScrollVelocity from '../components/ScrollVelocity';
 
 const Home = () => {
   useEffect(() => {
@@ -180,6 +181,19 @@ const Home = () => {
         </div>
       </Section>
 
+      <div className="py-10 bg-white overflow-hidden border-t border-black/5 flex flex-col gap-4">
+        <ScrollVelocity
+          texts={['Website Development • IT Services • Web App Development • AI Solutions • Custom Software •']}
+          velocity={40}
+          className="text-black/10 uppercase font-black"
+        />
+        <ScrollVelocity
+          texts={['Cloud Infrastructure • Automation • UI/UX Design • Mobile Apps • Data Science •']}
+          velocity={-40}
+          className="text-black/5 uppercase font-black"
+        />
+      </div>
+
       <Section
         id="portfolio"
         title="Selected Works"
@@ -190,7 +204,7 @@ const Home = () => {
           {portfolioProjects.map((project, index) => {
             const isExternal = project.url.startsWith('http');
             const CardLink = isExternal ? 'a' : Link;
-            const linkProps = isExternal 
+            const linkProps = isExternal
               ? { href: project.url, target: '_blank', rel: 'noopener noreferrer' }
               : { to: project.url };
 
