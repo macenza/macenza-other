@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { toast } from 'react-toastify';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -193,7 +194,9 @@ const Careers = () => {
         setResumeFile(file);
         setSubmitError('');
       } else {
-        setSubmitError('Invalid file format. Please upload PDF, DOC, or DOCX resumes.');
+        const errorMsg = 'Invalid file format. Please upload PDF, DOC, or DOCX resumes.';
+        setSubmitError(errorMsg);
+        toast.error(errorMsg);
       }
     }
   };
@@ -250,11 +253,14 @@ const Careers = () => {
       }
 
       setSubmitSuccess(true);
+      toast.success('Application submitted successfully!');
       setFormData(initialFormState);
       setResumeFile(null);
     } catch (err) {
       console.error(err);
-      setSubmitError(err.message || 'Submission failed. Please check entries.');
+      const errorMsg = err.message || 'Submission failed. Please check entries.';
+      setSubmitError(errorMsg);
+      toast.error(errorMsg);
     } finally {
       setSubmitting(false);
     }

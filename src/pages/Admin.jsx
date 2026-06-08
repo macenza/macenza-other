@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
+import { toast } from 'react-toastify';
 
 const Admin = () => {
   // Authentication states
@@ -293,7 +294,7 @@ const Admin = () => {
       } else {
         const orderIds = updated.map(emp => emp.id);
         localStorage.setItem('macenza_employee_order', JSON.stringify(orderIds));
-        alert('Employee profile created successfully!');
+        toast.success('Employee profile created successfully!');
       }
     } catch (err) {
       console.warn('Supabase insert exception:', err);
@@ -318,7 +319,7 @@ const Admin = () => {
       if (error) {
         console.warn('Failed to update employee in Supabase:', error.message);
       } else {
-        alert('Employee profile updated successfully!');
+        toast.success('Employee profile updated successfully!');
       }
     } catch (err) {
       console.warn('Supabase update exception:', err);
@@ -356,10 +357,10 @@ const Admin = () => {
       const updatedEmployee = { ...selectedEmployee, documents: updatedDocs };
       await saveEmployeeSingle(updatedEmployee);
       setSelectedEmployee(updatedEmployee);
-      alert('Document uploaded successfully!');
+      toast.success('Document uploaded successfully!');
     } catch (err) {
       console.error(err);
-      alert('Failed to upload document: ' + err.message);
+      toast.error('Failed to upload document: ' + err.message);
     }
   };
 
@@ -499,7 +500,7 @@ const Admin = () => {
       setTimeout(() => setJobFormSuccess(''), 4000);
     } catch (err) {
       console.error(err);
-      alert('Error: ' + err.message);
+      toast.error('Error: ' + err.message);
     }
   };
 
@@ -533,7 +534,7 @@ const Admin = () => {
       fetchData();
     } catch (err) {
       console.error(err);
-      alert('Could not delete job: ' + err.message);
+      toast.error('Could not delete job: ' + err.message);
     }
   };
 
@@ -571,7 +572,7 @@ const Admin = () => {
       setSelectedApp(mapped);
     } catch (err) {
       console.error(err);
-      alert('Error updating status: ' + err.message);
+      toast.error('Error updating status: ' + err.message);
     }
   };
 
@@ -606,10 +607,10 @@ const Admin = () => {
 
       setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? mapped : a));
       setSelectedApp(mapped);
-      alert('Recruiter notes saved!');
+      toast.success('Recruiter notes saved!');
     } catch (err) {
       console.error(err);
-      alert('Error saving notes: ' + err.message);
+      toast.error('Error saving notes: ' + err.message);
     }
   };
 
