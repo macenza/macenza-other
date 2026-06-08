@@ -22,7 +22,7 @@ function App() {
 
   return (
     <div className="relative">
-      <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar theme="colored" />
+      <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar theme="colored" />
       {!isAdmin && <SmoothScroll />}
       {!isAdmin && <Navbar />}
       {!isAdmin && <ChatWidget />}
