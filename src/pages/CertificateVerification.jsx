@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 const CertificateVerification = () => {
   const pageRef = useRef(null);
   const [certNumber, setCertNumber] = useState('');
+  const [searchedCertNumber, setSearchedCertNumber] = useState('');
   const [loading, setLoading] = useState(false);
   const [certificate, setCertificate] = useState(null);
   const [searched, setSearched] = useState(false);
@@ -47,7 +48,8 @@ const CertificateVerification = () => {
 
   const handleVerify = async (e) => {
     e?.preventDefault();
-    if (!certNumber.trim()) {
+    const cleanCertNum = certNumber.trim().toUpperCase();
+    if (!cleanCertNum) {
       toast.error('Please enter a certification number.');
       return;
     }
@@ -55,13 +57,14 @@ const CertificateVerification = () => {
     setLoading(true);
     setCertificate(null);
     setSearched(true);
+    setSearchedCertNumber(cleanCertNum);
 
     try {
       // Query certificates table and join employees table
       const { data, error } = await supabase
         .from('certificates')
         .select('*, employee:employees(*)')
-        .eq('certification_number', certNumber.trim().toUpperCase())
+        .eq('certification_number', cleanCertNum)
         .maybeSingle();
 
       if (error) throw error;
@@ -231,7 +234,7 @@ const CertificateVerification = () => {
                   </div>
                   <h3 className="text-2xl font-black text-rose-950 tracking-tight">Credential Not Found</h3>
                   <p className="text-rose-900/60 max-w-md text-sm font-light leading-relaxed">
-                    The certification number <strong className="font-bold text-rose-950 uppercase">"{certNumber}"</strong> could not be verified in our public registry. Please check for spelling mistakes and try again.
+                    The certification number <strong className="font-bold text-rose-950 uppercase">"{searchedCertNumber}"</strong> could not be verified in our public registry. Please check for spelling mistakes and try again.
                   </p>
                 </div>
               )}
