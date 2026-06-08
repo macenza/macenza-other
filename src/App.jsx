@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Policy from './pages/Policy';
 import Terms from './pages/Terms';
 import Admin from './pages/Admin';
+import CertificateVerification from './pages/CertificateVerification';
 
 function App() {
   const location = useLocation();
@@ -35,6 +36,7 @@ function App() {
         <Route path="/privacy" element={<Policy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/certificateverification" element={<CertificateVerification />} />
       </Routes>
     </div>
   );

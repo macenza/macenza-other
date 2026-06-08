@@ -22,7 +22,8 @@ import {
   ArrowRight,
   TrendingUp,
   FileSpreadsheet,
-  GripVertical
+  GripVertical,
+  Award
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
@@ -82,6 +83,7 @@ const Admin = () => {
   const [isEditingEmployee, setIsEditingEmployee] = useState(false);
   const [editEmployeeForm, setEditEmployeeForm] = useState(null);
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const [pendingCertNumber, setPendingCertNumber] = useState('');
   const [newEmployeeForm, setNewEmployeeForm] = useState({
     registration_no: '',
     name: '',
@@ -227,6 +229,86 @@ const Admin = () => {
       }
     } catch (err) {
       console.warn('Supabase delete exception:', err);
+    }
+  };
+
+  const loadEmployeeCertificates = async (employeeId) => {
+    try {
+      const { data, error } = await supabase
+        .from('certificates')
+        .select('*')
+        .eq('employee_id', employeeId);
+      if (error) throw error;
+      setSelectedEmployee(prev => prev && prev.id === employeeId ? { ...prev, certificates: data || [] } : prev);
+    } catch (err) {
+      console.warn('Failed to load certificates:', err.message);
+    }
+  };
+
+  const handleUploadCertificateClick = () => {
+    const certNum = prompt("Please enter the unique Certification Number:");
+    if (!certNum) {
+      toast.error("Certification Number is required to upload a certificate.");
+      return;
+    }
+    setPendingCertNumber(certNum.trim().toUpperCase());
+    
+    const input = document.getElementById('certificate-file-input');
+    if (input) {
+      input.value = '';
+      input.click();
+    }
+  };
+
+  const handleCertificateFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file || !selectedEmployee || !pendingCertNumber) return;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${selectedEmployee.id}-${pendingCertNumber}-${Date.now()}.${fileExt}`;
+      let publicUrl = '';
+
+      try {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('employee-certs')
+          .upload(fileName, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl: url } } = supabase.storage
+          .from('employee-certs')
+          .getPublicUrl(fileName);
+
+        publicUrl = url;
+      } catch (storageErr) {
+        console.warn('Supabase storage upload failed, using Object URL fallback', storageErr);
+        publicUrl = URL.createObjectURL(file);
+      }
+
+      const newCert = {
+        id: 'cert_' + Date.now(),
+        employee_id: selectedEmployee.id,
+        certification_number: pendingCertNumber,
+        name: file.name,
+        url: publicUrl
+      };
+
+      const { error: insertError } = await supabase
+        .from('certificates')
+        .insert(newCert);
+
+      if (insertError) throw insertError;
+
+      const updatedCerts = [...(selectedEmployee.certificates || []), newCert];
+      setSelectedEmployee({ ...selectedEmployee, certificates: updatedCerts });
+
+      toast.success('Certificate uploaded and registered successfully!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to upload certificate: ' + err.message);
+    } finally {
+      setPendingCertNumber('');
     }
   };
 
@@ -1783,6 +1865,7 @@ const Admin = () => {
                       onClick={() => {
                         setSelectedEmployee(emp);
                         setEditEmployeeForm(emp);
+                        loadEmployeeCertificates(emp.id);
                       }}
                       className={`bg-white border border-[#BFDBFE] rounded-[2rem] p-5 cursor-grab active:cursor-grabbing hover:border-primary/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between relative group ${
                         draggedIndex === index ? 'opacity-40 border-dashed border-primary' : ''
@@ -2030,13 +2113,14 @@ const Admin = () => {
                   </div>
                 </div>
 
-                {/* Employee Documents */}
+                {/* Employee Documents & Certifications */}
                 <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-4">
                   <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-primary" /> Employee Documents
+                    <FileText className="w-4 h-4 text-primary" /> Employee Documents & Certifications
                   </h5>
                   
                   <div className="flex flex-wrap gap-3 items-center">
+                    {/* General Documents */}
                     {selectedEmployee.documents && selectedEmployee.documents.map((doc, idx) => (
                       <div
                         key={idx}
@@ -2079,15 +2163,86 @@ const Admin = () => {
                         </div>
                       </div>
                     ))}
+
+                    {/* Certificates */}
+                    {selectedEmployee.certificates && selectedEmployee.certificates.map((cert, idx) => (
+                      <div
+                        key={'cert_' + cert.id}
+                        className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/50 px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-xs font-bold text-black group transition-all"
+                      >
+                        <a
+                          href={cert.url}
+                          onClick={(e) => handleDownloadResume(e, cert.url, `${selectedEmployee.name}_${cert.name}`)}
+                          className="flex items-center gap-2 hover:underline"
+                        >
+                          <Award className="w-4 h-4 text-emerald-600" />
+                          <span>{cert.name} <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-1.5 py-0.5 rounded font-black uppercase ml-1">{cert.certification_number}</span></span>
+                        </a>
+                        
+                        <div className="flex items-center gap-1">
+                          <a
+                            href={cert.url}
+                            onClick={(e) => handleDownloadResume(e, cert.url, `${selectedEmployee.name}_${cert.name}`)}
+                            className="p-1 hover:bg-emerald-200 rounded-md transition-colors text-black/60"
+                            title="Download Certificate"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
+                          
+                          <button
+                            type="button"
+                            onClick={async () => {
+                              if (confirm(`Remove certificate ${cert.name}?`)) {
+                                try {
+                                  const { error } = await supabase
+                                    .from('certificates')
+                                    .delete()
+                                    .eq('id', cert.id);
+                                  if (error) throw error;
+                                  
+                                  const updatedCerts = selectedEmployee.certificates.filter(c => c.id !== cert.id);
+                                  setSelectedEmployee({ ...selectedEmployee, certificates: updatedCerts });
+                                  toast.success('Certificate removed successfully!');
+                                } catch (err) {
+                                  toast.error('Failed to remove certificate: ' + err.message);
+                                }
+                              }
+                            }}
+                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40"
+                            title="Remove Certificate"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                     
-                    <label className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
-                      <Plus className="w-4 h-4" /> Upload Document
+                    {/* Action Upload Triggers */}
+                    <div className="flex gap-3 items-center flex-wrap w-full mt-2 pt-2 border-t border-[#BFDBFE]/40">
+                      <label className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
+                        <Plus className="w-4 h-4" /> Upload Document
+                        <input
+                          type="file"
+                          onChange={handleDocumentUpload}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                      </label>
+
+                      <button
+                        type="button"
+                        onClick={handleUploadCertificateClick}
+                        className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                      >
+                        <Award className="w-4 h-4 text-emerald-600" /> Upload Certificate
+                      </button>
                       <input
                         type="file"
-                        onChange={handleDocumentUpload}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        id="certificate-file-input"
+                        onChange={handleCertificateFileChange}
+                        className="hidden"
+                        accept=".pdf,.jpg,.jpeg,.png"
                       />
-                    </label>
+                    </div>
                   </div>
                 </div>
 
