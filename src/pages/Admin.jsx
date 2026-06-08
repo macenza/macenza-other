@@ -21,7 +21,8 @@ import {
   UserCheck,
   ArrowRight,
   TrendingUp,
-  FileSpreadsheet
+  FileSpreadsheet,
+  GripVertical
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
@@ -79,6 +80,7 @@ const Admin = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isEditingEmployee, setIsEditingEmployee] = useState(false);
   const [editEmployeeForm, setEditEmployeeForm] = useState(null);
+  const [draggedIndex, setDraggedIndex] = useState(null);
   const [newEmployeeForm, setNewEmployeeForm] = useState({
     registration_no: '',
     name: '',
@@ -218,10 +220,37 @@ const Admin = () => {
         .eq('id', empId);
       if (error) {
         console.warn('Failed to delete employee from Supabase:', error.message);
+      } else {
+        const orderIds = updated.map(emp => emp.id);
+        localStorage.setItem('macenza_employee_order', JSON.stringify(orderIds));
       }
     } catch (err) {
       console.warn('Supabase delete exception:', err);
     }
+  };
+
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const list = [...employees];
+    const draggedItem = list[draggedIndex];
+    list.splice(draggedIndex, 1);
+    list.splice(index, 0, draggedItem);
+
+    setEmployees(list);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    const orderIds = employees.map(emp => emp.id);
+    localStorage.setItem('macenza_employee_order', JSON.stringify(orderIds));
   };
 
   const handleAddEmployee = async (e) => {
@@ -262,6 +291,8 @@ const Admin = () => {
       if (error) {
         console.warn('Failed to insert employee into Supabase:', error.message);
       } else {
+        const orderIds = updated.map(emp => emp.id);
+        localStorage.setItem('macenza_employee_order', JSON.stringify(orderIds));
         alert('Employee profile created successfully!');
       }
     } catch (err) {
@@ -341,7 +372,25 @@ const Admin = () => {
             .from('employees')
             .select('*');
           if (error) throw error;
-          setEmployees(data || []);
+          
+          let loaded = data || [];
+          const savedOrder = localStorage.getItem('macenza_employee_order');
+          if (savedOrder) {
+            try {
+              const orderIds = JSON.parse(savedOrder);
+              loaded.sort((a, b) => {
+                const indexA = orderIds.indexOf(a.id);
+                const indexB = orderIds.indexOf(b.id);
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+              });
+            } catch (jsonErr) {
+              console.warn('Failed to parse employee sort order:', jsonErr);
+            }
+          }
+          setEmployees(loaded);
         } catch (err) {
           console.error('Failed to load employees from database:', err.message);
           setEmployees([]);
@@ -1723,18 +1772,27 @@ const Admin = () => {
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {employees.map(emp => (
+                  {employees.map((emp, index) => (
                     <div
                       key={emp.id}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, index)}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragEnd={handleDragEnd}
                       onClick={() => {
                         setSelectedEmployee(emp);
                         setEditEmployeeForm(emp);
                       }}
-                      className="bg-white border border-[#BFDBFE] rounded-[2rem] p-5 cursor-pointer hover:border-primary/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between relative group"
+                      className={`bg-white border border-[#BFDBFE] rounded-[2rem] p-5 cursor-grab active:cursor-grabbing hover:border-primary/40 hover:shadow-md transition-all duration-300 flex flex-col justify-between relative group ${
+                        draggedIndex === index ? 'opacity-40 border-dashed border-primary' : ''
+                      }`}
                     >
                       <div className="flex justify-between items-start gap-4 mb-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-11 h-11 bg-primary rounded-full flex items-center justify-center text-white font-black text-lg shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="text-black/30 group-hover:text-black/60 transition-colors cursor-grab p-1 hover:bg-[#EFF6FF] rounded-md">
+                            <GripVertical className="w-4 h-4" />
+                          </div>
+                          <div className="w-11 h-11 bg-primary rounded-full flex items-center justify-center text-white font-black text-lg shadow-sm flex-shrink-0">
                             {emp.name ? emp.name.charAt(0).toUpperCase() : 'E'}
                           </div>
                           <div>
