@@ -197,9 +197,10 @@ const Admin = () => {
     const updatedList = employees.map(emp => emp.id === updatedEmployee.id ? updatedEmployee : emp);
     setEmployees(updatedList);
     try {
+      const { certificates, ...employeeData } = updatedEmployee;
       const { error } = await supabase
         .from('employees')
-        .upsert(updatedEmployee);
+        .upsert(employeeData);
       if (error) console.error('Supabase sync failed:', error.message);
     } catch (err) {
       console.error('Supabase sync exception:', err);
@@ -395,16 +396,19 @@ const Admin = () => {
     setIsEditingEmployee(false);
 
     try {
+      const { certificates, ...employeeData } = editEmployeeForm;
       const { error } = await supabase
         .from('employees')
-        .upsert(editEmployeeForm);
+        .upsert(employeeData);
       if (error) {
         console.warn('Failed to update employee in Supabase:', error.message);
+        toast.error('Failed to update employee: ' + error.message);
       } else {
         toast.success('Employee profile updated successfully!');
       }
     } catch (err) {
       console.warn('Supabase update exception:', err);
+      toast.error('Failed to update employee: ' + err.message);
     }
   };
 
@@ -2278,7 +2282,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Registration No.</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.registration_no}
+                        value={editEmployeeForm.registration_no || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, registration_no: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2289,7 +2293,7 @@ const Admin = () => {
                       <input
                         type="text"
                         required
-                        value={editEmployeeForm.name}
+                        value={editEmployeeForm.name || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, name: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2299,7 +2303,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Father's Name</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.father_name}
+                        value={editEmployeeForm.father_name || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, father_name: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2309,7 +2313,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Birth</label>
                       <input
                         type="date"
-                        value={editEmployeeForm.dob}
+                        value={editEmployeeForm.dob || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, dob: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2319,7 +2323,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Email ID</label>
                       <input
                         type="email"
-                        value={editEmployeeForm.email}
+                        value={editEmployeeForm.email || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, email: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2329,7 +2333,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Contact Number</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.contact_number}
+                        value={editEmployeeForm.contact_number || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, contact_number: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2339,7 +2343,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Alternative Phone No.</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.alt_phone}
+                        value={editEmployeeForm.alt_phone || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, alt_phone: e.target.value})}
                         placeholder="e.g. +1 555 0109"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
@@ -2350,7 +2354,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Aadhaar No.</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.aadhaar_no}
+                        value={editEmployeeForm.aadhaar_no || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, aadhaar_no: e.target.value})}
                         placeholder="e.g. 1234-5678-9012"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
@@ -2361,7 +2365,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Permanent Address</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.permanent_address}
+                        value={editEmployeeForm.permanent_address || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, permanent_address: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2371,7 +2375,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Current Address</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.current_address}
+                        value={editEmployeeForm.current_address || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, current_address: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2386,7 +2390,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Account No.</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.account_no}
+                        value={editEmployeeForm.account_no || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, account_no: e.target.value})}
                         placeholder="e.g. 0987654321"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
@@ -2397,7 +2401,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">IFSC Detail</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.ifsc_detail}
+                        value={editEmployeeForm.ifsc_detail || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, ifsc_detail: e.target.value})}
                         placeholder="e.g. CHAS0001"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
@@ -2408,7 +2412,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Role / Designation</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.role}
+                        value={editEmployeeForm.role || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, role: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2418,7 +2422,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.department}
+                        value={editEmployeeForm.department || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, department: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2428,7 +2432,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
                       <input
                         type="date"
-                        value={editEmployeeForm.start_date}
+                        value={editEmployeeForm.start_date || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, start_date: e.target.value})}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -2438,7 +2442,7 @@ const Admin = () => {
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Salary</label>
                       <input
                         type="text"
-                        value={editEmployeeForm.salary}
+                        value={editEmployeeForm.salary || ''}
                         onChange={(e) => setEditEmployeeForm({...editEmployeeForm, salary: e.target.value})}
                         placeholder="e.g. $120,000"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
