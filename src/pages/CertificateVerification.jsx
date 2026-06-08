@@ -63,7 +63,7 @@ const CertificateVerification = () => {
       // Query certificates table and join employees table
       const { data, error } = await supabase
         .from('certificates')
-        .select('*, employee:employees(*)')
+        .select('*, employee:employees(id, name, role, department)')
         .eq('certification_number', cleanCertNum)
         .maybeSingle();
 
