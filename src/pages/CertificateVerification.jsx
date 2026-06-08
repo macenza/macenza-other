@@ -234,7 +234,7 @@ const CertificateVerification = () => {
                   </div>
                   <h3 className="text-2xl font-black text-rose-950 tracking-tight">Credential Not Found</h3>
                   <p className="text-rose-900/60 max-w-md text-sm font-light leading-relaxed">
-                    The certification number <strong className="font-bold text-rose-950 uppercase">"{searchedCertNumber}"</strong> could not be verified in our registry. Please check for spelling mistakes and try again.
+                    The certification number <strong className="font-bold text-rose-950 uppercase">"{searchedCertNumber}"</strong> could not be verified in our registry. <br />Please check for spelling mistakes and try again.
                   </p>
                 </div>
               )}
