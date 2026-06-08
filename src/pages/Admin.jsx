@@ -399,6 +399,12 @@ const Admin = () => {
     }
   }, [selectedApp]);
 
+  // Reset scroll position of active scrollable areas when active tab changes
+  useEffect(() => {
+    const scrollContainers = document.querySelectorAll('.overflow-y-auto');
+    scrollContainers.forEach(el => el.scrollTo(0, 0));
+  }, [activeTab]);
+
   // Handle Job Form Actions
   const handleJobFormChange = (e) => {
     const { name, value } = e.target;
@@ -806,9 +812,9 @@ const Admin = () => {
       </aside>
 
       {/* Main Workspace */}
-      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
+      <main className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="h-20 bg-white border-b border-[#BFDBFE] px-10 flex items-center justify-between sticky top-0 z-10">
+        <header className="h-20 bg-white border-b border-[#BFDBFE] px-10 flex items-center justify-between z-10">
           <h2 className="text-2xl font-black tracking-tight text-black flex items-center gap-2">
             MACENZA CAREERS HUB <span className="text-black/40 font-normal">|</span> <span className="text-primary italic text-lg font-bold">{activeTab}</span>
           </h2>
@@ -820,7 +826,7 @@ const Admin = () => {
         </header>
 
         {/* Work Area */}
-        <div className="flex-1 p-10 bg-white">
+        <div className="flex-1 p-10 bg-white overflow-y-auto" data-lenis-prevent>
           {error && (
             <div className="bg-[#EFF6FF] border border-amber-300 p-5 rounded-2xl mb-8 flex items-center gap-3 text-amber-950 font-bold text-sm">
               <span className="w-3 h-3 bg-amber-500 rounded-full animate-ping"></span>
@@ -903,7 +909,7 @@ const Admin = () => {
 
           {/* Tab 2: Job Posting CRUD Manager */}
           {activeTab === 'Jobs' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-200px)]">
               {/* Left Column: Form to create/edit jobs */}
               <div data-lenis-prevent className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
                 <h4 className="text-2xl font-black text-black">
@@ -1191,7 +1197,7 @@ const Admin = () => {
 
           {/* Tab 3: Candidate Applications & Filters */}
           {activeTab === 'Applications' && (
-            <div data-lenis-prevent className="flex flex-col gap-8 h-[80vh] overflow-y-auto pr-2">
+            <div className="flex flex-col gap-8">
               {/* Filtering Suite */}
               <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-[#BFDBFE] pb-4">
@@ -1373,7 +1379,7 @@ const Admin = () => {
 
           {/* Tab 4: Resume Manager & Preview Panel */}
           {activeTab === 'Resume Manager' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-200px)]">
               {/* Candidates Side Drawer List */}
               <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-6 flex flex-col gap-4 overflow-y-auto">
                 <h4 className="text-xl font-black text-black mb-2 flex items-center gap-2">
@@ -1594,7 +1600,7 @@ const Admin = () => {
 
           {/* Tab: Employees Management */}
           {activeTab === 'Employees' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[80vh]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-200px)]">
               {/* Left Side: Add Employee Form */}
               <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
                 <div>
