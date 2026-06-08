@@ -1190,7 +1190,7 @@ const Admin = () => {
               {/* Recruitment Review Panel & Resume Viewer */}
               <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
                 {selectedApp ? (
-                  <div className="flex flex-col gap-6 h-full">
+                  <div className="flex flex-col gap-6 w-full">
                     {/* Header Info */}
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-[#BFDBFE] pb-6">
                       <div className="flex flex-col gap-2">
@@ -1295,7 +1295,7 @@ const Admin = () => {
                           <span className="text-xs font-black uppercase text-black">Interactive Resume Viewer</span>
                           <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded font-black uppercase">Live Embed</span>
                         </div>
-                        <div className="flex-1 w-full h-full bg-slate-100 relative min-h-[350px]">
+                        <div className="flex-1 w-full bg-slate-100 relative min-h-[350px]">
                           {/* Attempt to preview PDF. Fallback dynamically to card if not PDF or offline */}
                           {selectedApp.resume && selectedApp.resume.toLowerCase().endsWith('.pdf') ? (
                             <iframe
