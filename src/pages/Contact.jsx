@@ -3,8 +3,10 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
-import { Send, ChevronDown } from 'lucide-react';
+import { Send, ChevronDown, Loader2 } from 'lucide-react';
 import ReactGlobe from 'react-globe.gl';
+import { supabase } from '../supabaseClient';
+import { toast } from 'react-toastify';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,6 +65,58 @@ const Contact = () => {
   const globeRef = useRef(null);
   const [activeFaq, setActiveFaq] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    company: '',
+    project_type: 'AI Development',
+    budget: '$10k - $25k',
+    details: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim()) {
+      toast.error('Name and Email are required.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          company: formData.company.trim(),
+          project_type: formData.project_type,
+          budget: formData.budget,
+          details: formData.details.trim()
+        });
+
+      if (error) throw error;
+
+      toast.success('Message sent successfully! We will contact you soon.');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        project_type: 'AI Development',
+        budget: '$10k - $25k',
+        details: ''
+      });
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to send message: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (containerRef.current) {
@@ -262,31 +316,61 @@ const Contact = () => {
 
           <div className="reveal-up">
             <div className="glass-morphism rounded-[3rem] p-10 md:p-14 border border-black/5 shadow-2xl shadow-primary/5">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Full Name</label>
-                    <input type="text" className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none" placeholder="John Doe" />
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
+                      placeholder="John Doe"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Email Address</label>
-                    <input type="email" className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none" placeholder="john@example.com" />
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
+                      placeholder="john@example.com"
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Phone Number</label>
-                    <input type="text" className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none" placeholder="+1 234 567 890" />
+                    <input
+                      type="text"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
+                      placeholder="+1 234 567 890"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Company Name</label>
-                    <input type="text" className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none" placeholder="Acme Inc." />
+                    <input
+                      type="text"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
+                      placeholder="Acme Inc."
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Project Type</label>
-                    <select className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer">
+                    <select
+                      value={formData.project_type}
+                      onChange={(e) => setFormData({ ...formData, project_type: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer"
+                    >
                       <option>AI Development</option>
                       <option>Software Development</option>
                       <option>Automation</option>
@@ -296,7 +380,11 @@ const Contact = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Budget Range</label>
-                    <select className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer">
+                    <select
+                      value={formData.budget}
+                      onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer"
+                    >
                       <option>$10k - $25k</option>
                       <option>$25k - $50k</option>
                       <option>$50k - $100k</option>
@@ -306,10 +394,27 @@ const Contact = () => {
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Project Details</label>
-                  <textarea className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none min-h-[150px] resize-none" placeholder="Describe your project vision..."></textarea>
+                  <textarea
+                    value={formData.details}
+                    onChange={(e) => setFormData({ ...formData, details: e.target.value })}
+                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none min-h-[150px] resize-none"
+                    placeholder="Describe your project vision..."
+                  ></textarea>
                 </div>
-                <button type="submit" className="w-full py-5 bg-primary text-white rounded-2xl font-bold text-lg hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98]">
-                  Send Message <Send className="w-5 h-5" />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-5 bg-primary text-white rounded-2xl font-bold text-lg hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
+                >
+                  {loading ? (
+                    <>
+                      Sending... <Loader2 className="w-5 h-5 animate-spin" />
+                    </>
+                  ) : (
+                    <>
+                      Send Message <Send className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
               </form>
             </div>
