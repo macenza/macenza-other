@@ -2008,8 +2008,15 @@ const Admin = () => {
 
           {/* Employee Details Modal */}
           {selectedEmployee && !isEditingEmployee && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div data-lenis-prevent className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+            <div
+              onClick={() => setSelectedEmployee(null)}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 cursor-pointer"
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                data-lenis-prevent
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative cursor-default"
+              >
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedEmployee(null)}
