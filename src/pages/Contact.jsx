@@ -65,14 +65,14 @@ const Contact = () => {
   const globeRef = useRef(null);
   const [activeFaq, setActiveFaq] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
-  
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     company: '',
     project_type: 'AI Development',
-    budget: '$10k - $25k',
+    budget: '',
     details: ''
   });
   const [loading, setLoading] = useState(false);
@@ -107,7 +107,7 @@ const Contact = () => {
         phone: '',
         company: '',
         project_type: 'AI Development',
-        budget: '$10k - $25k',
+        budget: '',
         details: ''
       });
     } catch (err) {
@@ -380,16 +380,13 @@ const Contact = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Budget Range</label>
-                    <select
+                    <input
+                      type="text"
                       value={formData.budget}
                       onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer"
-                    >
-                      <option>$10k - $25k</option>
-                      <option>$25k - $50k</option>
-                      <option>$50k - $100k</option>
-                      <option>$100k+</option>
-                    </select>
+                      className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
+                      placeholder="Enter your budget range"
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
