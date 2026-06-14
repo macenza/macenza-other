@@ -295,7 +295,7 @@ const Careers = () => {
               </button>
               <button
                 onClick={() => handleOpenModal()}
-                className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-white/40 transition-all duration-300 border border-black/5 text-center"
+                className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-black hover:text-white hover:!border-black transition-all duration-300 border !border-black/15 text-center"
               >
                 Join Our Mission
               </button>
