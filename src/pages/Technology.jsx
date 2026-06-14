@@ -87,7 +87,7 @@ const metrics = [
 
 const partners = ["OpenAI", "AWS", "Microsoft Azure", "Google Cloud", "Docker", "NVIDIA", "GitHub", "MongoDB"];
 
-const devTools = ["VS Code", "GitHub", "Postman", "Docker Desktop", "Jupyter", "Figma", "Vercel", "Netlify"];
+const devTools = ["Supabase", "GitHub", "Postman", "Docker Desktop", "Jupyter", "Figma", "Vercel", "Netlify"];
 
 const Technology = () => {
   const pageRef = useRef(null);
