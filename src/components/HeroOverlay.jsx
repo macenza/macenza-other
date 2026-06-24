@@ -7,7 +7,6 @@ const HeroOverlay = () => {
   const overlayRef = useRef(null);
   const leftContentRef = useRef(null);
   const rightStatsRef = useRef(null);
-  const brandStripRef = useRef(null);
   const scrollIndicatorRef = useRef(null);
 
   useEffect(() => {
@@ -45,12 +44,6 @@ const HeroOverlay = () => {
         1.2
       );
 
-      tl.fromTo(brandStripRef.current,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1.2 },
-        1.4
-      );
-
       tl.fromTo(scrollIndicatorRef.current,
         { y: 50, opacity: 0 },
         { y: 0, opacity: 1, duration: 1.2 },
@@ -67,8 +60,6 @@ const HeroOverlay = () => {
     { icon: <Globe className="w-5 h-5 text-accent" />, title: "25+", subtitle: "Countries" },
     { icon: <Shield className="w-5 h-5 text-accent" />, title: "99.9%", subtitle: "Uptime" },
   ];
-
-  const brands = ["Aether", "Symmetry", "Neuralis", "Vortex", "Zentry", "Axiom"];
 
   return (
     <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 pb-3 md:p-12 overflow-hidden">
@@ -121,24 +112,7 @@ const HeroOverlay = () => {
       </div>
 
       {/* Bottom Area */}
-      <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-4 md:gap-8 mt-auto w-full">
-
-        <div
-          ref={brandStripRef}
-          className="mx-auto md:mx-0 glass-morphism rounded-[2rem] md:rounded-full px-8 py-4 flex flex-col md:flex-row items-center gap-4 md:gap-6 pointer-events-auto shadow-lg w-[92%] sm:w-auto"
-        >
-          <span className="text-xs font-bold text-dark/40 uppercase tracking-[0.2em] whitespace-nowrap text-center">
-            Trusted by Industry Leaders
-          </span>
-          <div className="h-4 w-[1px] bg-dark/10 hidden md:block" />
-          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 md:gap-x-8 md:gap-y-0 items-center">
-            {brands.map((brand) => (
-              <span key={brand} className="text-sm font-black text-dark/30 hover:text-dark/60 transition-colors cursor-default">
-                {brand}
-              </span>
-            ))}
-          </div>
-        </div>
+      <div className="flex flex-col md:flex-row items-center md:items-end justify-end gap-4 md:gap-8 mt-auto w-full">
 
         {/* Scroll Indicator */}
         <div

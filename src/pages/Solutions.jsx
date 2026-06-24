@@ -314,32 +314,6 @@ const Solutions = () => {
         </div>
       </Section>
 
-      {/* Case Studies */}
-      <Section id="cases" title="Success Stories" subtitle="Real-world impact delivered through intelligent design.">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 reveal-up">
-          <CaseStudyCard
-            title="Healthcare AI Assistant"
-            description="A specialized LLM-powered assistant for patient triage and support, reducing administrative load by 65%."
-            image="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200"
-          />
-          <CaseStudyCard
-            title="Manufacturing ERP System"
-            description="Custom enterprise platform for real-time inventory tracking and predictive maintenance in multi-site facilities."
-            image="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=1200"
-          />
-          <CaseStudyCard
-            title="Retail Automation Platform"
-            description="Automated workflow engine for multi-channel e-commerce stores, managing everything from stock to shipping."
-            image="https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1200"
-          />
-          <CaseStudyCard
-            title="SaaS CRM Platform"
-            description="A highly scalable CRM with integrated AI lead scoring and automated sales pipelines for growing startups."
-            image="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200"
-          />
-        </div>
-      </Section>
-
       {/* Tech Stack */}
       <section id="stack" className="py-20 border-y border-black/5 overflow-hidden relative w-full marquee-container">
         {/* Edge Fades for premium high-end look */}

@@ -39,7 +39,8 @@ const teamMembers = [
   { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.png" },
   { name: "Preeti Kumari", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.png" },
   { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.png" },
-  { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.png" }
+  { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.png" },
+  { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.jpg" }
 
 ];
 
@@ -212,7 +213,7 @@ const About = () => {
           <div className="relative aspect-square rounded-[3rem] overflow-hidden group reveal-up">
             <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700"></div>
             <img
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000"
+              src="/Team/who-we-are.jpg"
               alt="Macenza Team"
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
             />

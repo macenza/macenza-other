@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
 import Footer from '../components/Footer';
 import { Send, ChevronDown, Loader2 } from 'lucide-react';
-import ReactGlobe from 'react-globe.gl';
+const ReactGlobe = lazy(() => import('react-globe.gl'));
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 
@@ -61,10 +61,25 @@ const faqs = [
 
 const Contact = () => {
   const pageRef = useRef(null);
-  const containerRef = useRef(null);
+  const globeContainerRef = useRef(null);
   const globeRef = useRef(null);
   const [activeFaq, setActiveFaq] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
+  const [isGlobeVisible, setIsGlobeVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsGlobeVisible(true);
+        observer.disconnect();
+      }
+    }, { rootMargin: '300px' });
+    
+    if (globeContainerRef.current) {
+      observer.observe(globeContainerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -119,17 +134,17 @@ const Contact = () => {
   };
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (globeContainerRef.current) {
       setDimensions({
-        width: containerRef.current.clientWidth,
-        height: containerRef.current.clientHeight || 700
+        width: globeContainerRef.current.clientWidth,
+        height: globeContainerRef.current.clientHeight || 700
       });
 
       const handleResize = () => {
-        if (containerRef.current) {
+        if (globeContainerRef.current) {
           setDimensions({
-            width: containerRef.current.clientWidth,
-            height: containerRef.current.clientHeight || 700
+            width: globeContainerRef.current.clientWidth,
+            height: globeContainerRef.current.clientHeight || 700
           });
         }
       };
@@ -137,7 +152,7 @@ const Contact = () => {
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
-  }, []);
+  }, [isGlobeVisible]);
 
   useEffect(() => {
     if (globeRef.current) {
@@ -428,46 +443,50 @@ const Contact = () => {
           </p>
         </div>
 
-        <div ref={containerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
-          <ReactGlobe
-            ref={globeRef}
-            width={dimensions.width}
-            height={dimensions.height}
-            globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-            bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-            backgroundImageUrl=""
-            backgroundColor="rgba(0,0,0,0)"
-            showAtmosphere={true}
-            atmosphereColor="#2563eb"
-            atmosphereAltitude={0.18}
+        <div ref={globeContainerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
+          {isGlobeVisible && (
+            <Suspense fallback={<div className="animate-pulse w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>}>
+              <ReactGlobe
+                ref={globeRef}
+                width={dimensions.width}
+                height={dimensions.height}
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+                backgroundImageUrl=""
+                backgroundColor="rgba(0,0,0,0)"
+                showAtmosphere={true}
+                atmosphereColor="#2563eb"
+                atmosphereAltitude={0.18}
 
-            // Arcs
-            arcsData={arcsData}
-            arcColor="color"
-            arcDashLength={0.45}
-            arcDashGap={2}
-            arcDashAnimateTime={2000}
-            arcStroke={0.8}
-            arcAltitude={0.28}
+                // Arcs
+                arcsData={arcsData}
+                arcColor="color"
+                arcDashLength={0.45}
+                arcDashGap={2}
+                arcDashAnimateTime={2000}
+                arcStroke={0.8}
+                arcAltitude={0.28}
 
-            // Points (Rippling or glowing landmarks)
-            pointsData={countries}
-            pointLat="lat"
-            pointLng="lng"
-            pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
-            pointAltitude={d => d.isHQ ? 0.09 : 0.06}
-            pointRadius={d => d.isHQ ? 0.8 : 0.5}
+                // Points (Rippling or glowing landmarks)
+                pointsData={countries}
+                pointLat="lat"
+                pointLng="lng"
+                pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
+                pointAltitude={d => d.isHQ ? 0.09 : 0.06}
+                pointRadius={d => d.isHQ ? 0.8 : 0.5}
 
-            // Labels
-            labelsData={countries}
-            labelLat="lat"
-            labelLng="lng"
-            labelText="city"
-            labelSize={d => d.isHQ ? 2.0 : 1.5}
-            labelColor={d => d.isHQ ? '#fff' : '#fff'}
-            labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
-            labelResolution={2}
-          />
+                // Labels
+                labelsData={countries}
+                labelLat="lat"
+                labelLng="lng"
+                labelText="city"
+                labelSize={d => d.isHQ ? 2.0 : 1.5}
+                labelColor={d => d.isHQ ? '#fff' : '#fff'}
+                labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
+                labelResolution={2}
+              />
+            </Suspense>
+          )}
         </div>
       </Section>
 

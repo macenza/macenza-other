@@ -11,11 +11,17 @@ const Navbar = () => {
     setIsMobileMenuOpen(false);
   }, [currentPath]);
 
-  const navItems = ["Home", "About", "Solutions", "Technology", "Careers", "Contact"];
+  const navItems = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+    { name: "Solutions", path: "/solutions" },
+    { name: "Technology", path: "/technology" },
+    { name: "Careers", path: "/careers" },
+    { name: "Contact", path: "/contact" }
+  ];
 
   const isActive = (item) => {
-    if (item === "Home") return currentPath === "/";
-    return currentPath === `/${item.toLowerCase()}`;
+    return currentPath === item.path;
   };
 
   return (
@@ -24,9 +30,7 @@ const Navbar = () => {
         {/* Brand Logo */}
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center glow-blue">
-              <span className="text-white font-black text-xl">M</span>
-            </div>
+            <img src="/logo.png" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-xl glow-blue bg-white p-1" />
             <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
           </Link>
         </div>
@@ -35,15 +39,15 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-8">
           {navItems.map((item) => (
             <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
+              key={item.name} 
+              to={item.path} 
               className={`text-sm font-medium transition-all duration-300 hover:scale-105 ${
                 isActive(item) 
                   ? "text-primary font-bold" 
                   : "text-black/70 hover:text-primary"
               }`}
             >
-              {item}
+              {item.name}
             </Link>
           ))}
         </div>
@@ -72,8 +76,8 @@ const Navbar = () => {
         <div className="fixed top-[114px] left-1/2 -translate-x-1/2 w-[92%] glass-morphism rounded-3xl p-6 flex flex-col gap-4 lg:hidden pointer-events-auto z-[9998] animate-in fade-in slide-in-from-top-4 duration-300 shadow-2xl">
           {navItems.map((item) => (
             <Link 
-              key={item} 
-              to={item === "Home" ? "/" : `/${item.toLowerCase()}`} 
+              key={item.name} 
+              to={item.path} 
               className={`text-lg font-bold transition-colors ${
                 isActive(item) 
                   ? "text-primary" 
@@ -81,7 +85,7 @@ const Navbar = () => {
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {item}
+              {item.name}
             </Link>
           ))}
           <Link 
