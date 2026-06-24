@@ -48,16 +48,16 @@ const benefits = [
 
 const testimonials = [
   {
-    name: "Elena Volkov",
-    role: "Senior AI Engineer",
-    content: "Working at Macenza feels like living in the future. We don't just use AI; we build the infrastructure that makes it meaningful.",
-    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&h=200&fit=crop"
+    name: "Divyanshi Sen",
+    role: "Full-Stack Developer",
+    content: "Macenza provided a great environment to work on real-world web applications. The team is supportive, and I gained valuable experience while delivering quality solutions to clients.",
+    image: "/review/divyanshi-review.jpeg"
   },
   {
-    name: "Marcus Thorne",
-    role: "Lead Designer",
-    content: "The creative freedom here is unmatched. Every pixel and interaction we design aims to redefine human-technology boundaries.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&h=200&fit=crop"
+    name: "Piyush Saini",
+    role: "Full-Stack Developer",
+    content: "Working at Macenza was an excellent experience. I had the opportunity to build scalable web solutions and collaborate with a talented and professional team.",
+    image: "/review/piyush-review.png"
   }
 ];
 

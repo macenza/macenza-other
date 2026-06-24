@@ -15,5 +15,23 @@ export default defineConfig({
         changeOrigin: true
       }
     }
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@supabase/supabase-js')) return 'vendor-supabase';
+            if (id.includes('@lottiefiles/dotlottie-react')) return 'vendor-lottie';
+            if (id.includes('react-globe.gl')) return 'vendor-globe';
+            if (id.includes('three') || id.includes('three-stdlib')) return 'vendor-three';
+            if (id.includes('gsap')) return 'vendor-gsap';
+            if (id.includes('lucide-react') || id.includes('react-icons')) return 'vendor-icons';
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
+            return 'vendor-core';
+          }
+        }
+      }
+    }
   }
 })

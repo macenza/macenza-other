@@ -387,17 +387,13 @@ const Technology = () => {
               ))}
             </div>
           </div>
-          <div className="relative aspect-video glass-morphism rounded-[3rem] border border-black/10 bg-black/90 shadow-2xl overflow-hidden reveal-up">
-            <div className="absolute inset-0 bg-primary/5 animate-pulse"></div>
-            <div className="p-10 font-mono text-xs text-primary/40 space-y-2">
-              <div>&gt; INITIALIZING NEURAL_LAYER...</div>
-              <div>&gt; CONNECTING TO CLOUD_CLUSTER_7...</div>
-              <div>&gt; RUNNING EXPERIMENT_42: ADAPTIVE_LEARNING_PROTOCOL</div>
-              <div className="text-white">&gt; SUCCESS: INTERFACE_ADAPTED</div>
-              <div className="mt-10 h-2 w-full bg-white/10 rounded-full overflow-hidden">
-                <div className="h-full bg-primary w-2/3 animate-pulse"></div>
-              </div>
-            </div>
+          <div className="relative glass-morphism rounded-[3rem] border border-black/10 shadow-2xl overflow-hidden reveal-up group">
+            <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700 pointer-events-none"></div>
+            <img
+              src="/Images/innovation-lab.jpg"
+              alt="Macenza Innovation Lab"
+              className="w-full h-auto transition-all duration-700 block group-hover:scale-[1.02]"
+            />
           </div>
         </div>
       </Section>

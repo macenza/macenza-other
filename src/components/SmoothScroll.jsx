@@ -17,7 +17,25 @@ const SmoothScroll = () => {
   }, [pathname]);
 
   useEffect(() => {
-    // Register ScrollTrigger plugin
+    // Disable smooth scroll on mobile devices for better performance
+    if (window.innerWidth < 768 || ('ontouchstart' in window)) {
+      // Still need scroll handler for navbar hiding
+      let lastScrollY = window.scrollY;
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        const navs = document.querySelectorAll('nav.fixed');
+        if (currentScrollY > 50) navs.forEach(nav => nav.classList.add('nav-transition'));
+        else navs.forEach(nav => nav.classList.remove('nav-transition'));
+        if (currentScrollY > lastScrollY && currentScrollY > 100) navs.forEach(nav => nav.classList.add('nav-hidden'));
+        else if (currentScrollY < lastScrollY) navs.forEach(nav => nav.classList.remove('nav-hidden'));
+        if (currentScrollY <= 10) navs.forEach(nav => nav.classList.remove('nav-hidden'));
+        lastScrollY = currentScrollY;
+      };
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+
+    // Register ScrollTrigger plugin for desktop
     gsap.registerPlugin(ScrollTrigger);
 
     const lenis = new Lenis({
