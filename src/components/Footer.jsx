@@ -37,11 +37,21 @@ const Footer = () => {
     <footer className="py-20 border-t border-black/5 bg-white">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
         <div className="flex flex-col items-center md:items-start gap-4">
-          <div className="text-2xl font-black tracking-tighter text-black">
-            MACENZA
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="Macenza Logo" className="w-8 h-8 object-contain rounded-lg bg-white p-0.5" />
+            <span className="text-2xl font-black tracking-tighter text-black">MACENZA</span>
           </div>
           <div className="text-sm text-black/30">
             © 2026 Macenza AI. All rights reserved.
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 hidden md:flex">
+          <h4 className="font-bold text-black">Our Services</h4>
+          <div className="flex flex-col gap-2 text-sm text-black/60">
+            <span>Website Development</span>
+            <span>Web Application Development</span>
+            <span>Custom HRMS Software</span>
           </div>
         </div>
         

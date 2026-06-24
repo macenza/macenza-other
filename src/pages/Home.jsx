@@ -10,82 +10,53 @@ import Footer from '../components/Footer';
 import LogoLoop from '../components/LogoLoop';
 import ScrollVelocity from '../components/ScrollVelocity';
 
-const Home = () => {
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
+const services = [
+  { icon: "🌐", title: "Website Development", desc: "High-performance enterprise websites and headless CMS architectures.", bgClass: "bg-teal-500/10", link: "/solutions" },
+  { icon: "💻", title: "Web Applications", desc: "Custom SaaS platforms and internal web tools built with React.", bgClass: "bg-blue-500/10", link: "/solutions" },
+  { icon: "👥", title: "HRMS Software", desc: "Automate your workforce management with custom HR software.", bgClass: "bg-purple-500/10", link: "/solutions" },
+  { icon: "🧠", title: "AI Development", desc: "Custom machine learning models and neural networks.", bgClass: "bg-violet-500/10", link: "/solutions" },
+  { icon: "⚡", title: "Automation Solutions", desc: "Streamline workflows with intelligent process automation.", bgClass: "bg-amber-500/10", link: "/solutions" },
+  { icon: "☁️", title: "Cloud Infrastructure", desc: "Secure, scalable cloud architectures for digital products.", bgClass: "bg-sky-500/10", link: "/solutions" },
+];
 
-    const ctx = gsap.context(() => {
-      // Portfolio Cards Reveal Animation
-      gsap.from(".portfolio-card", {
-        y: 20,
-        opacity: 0,
-        duration: 0.4,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: "#portfolio",
-          start: "top 96%",
-          toggleActions: "play none none none"
-        }
-      });
-    });
+const portfolioProjects = [
+  {
+    name: "DIPLIM.COM",
+    category: "AI Fashion / Digital Creative Platform",
+    desc: "AI-powered fashion visualization, futuristic branding, and premium digital creative experiences.",
+    image: "/portfolio/diplim_fashion.png",
+    buttonText: "View Project",
+    url: "https://diplim.com"
+  },
+  {
+    name: "HRMS Platform",
+    category: "Human Resource Management System",
+    desc: "Complete employee management platform with payroll, attendance, leave tracking, recruitment, and analytics dashboards.",
+    image: "/portfolio/hrms_saas.png",
+    buttonText: "View Project",
+    url: "/contact"
+  }
+];
 
-    // Refresh ScrollTrigger after a timeout to fix late rendering layout shifts
-    const timer = setTimeout(() => {
-      ScrollTrigger.refresh();
-    }, 1500);
+const techLogos = [
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">React</span>, title: "React", href: "https://react.dev" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Next.js</span>, title: "Next.js", href: "https://nextjs.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TypeScript</span>, title: "TypeScript", href: "https://www.typescriptlang.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Tailwind CSS</span>, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Node.js</span>, title: "Node.js", href: "https://nodejs.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Python</span>, title: "Python", href: "https://www.python.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">OpenAI</span>, title: "OpenAI", href: "https://openai.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TensorFlow</span>, title: "TensorFlow", href: "https://www.tensorflow.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">AWS</span>, title: "AWS", href: "https://aws.amazon.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Docker</span>, title: "Docker", href: "https://www.docker.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">PostgreSQL</span>, title: "PostgreSQL", href: "https://www.postgresql.org" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">NVIDIA</span>, title: "NVIDIA", href: "https://www.nvidia.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Figma</span>, title: "Figma", href: "https://www.figma.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">GitHub</span>, title: "GitHub", href: "https://github.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span>, title: "Google", href: "https://google.com" },
+];
 
-    return () => {
-      ctx.revert();
-      clearTimeout(timer);
-    };
-  }, []);
-
-  const services = [
-    { icon: "🧠", title: "AI Development", desc: "Custom machine learning models and neural networks tailored to your business needs.", bgClass: "bg-violet-500/10" },
-    { icon: "💻", title: "Custom Software", desc: "Enterprise-grade software solutions built with scalability and performance in mind.", bgClass: "bg-blue-500/10" },
-    { icon: "🌐", title: "Web Applications", desc: "Next-generation web experiences using the latest frontend and backend technologies.", bgClass: "bg-teal-500/10" },
-    { icon: "📱", title: "Mobile Apps", desc: "High-performance iOS and Android applications with seamless user interfaces.", bgClass: "bg-rose-500/10" },
-    { icon: "⚡", title: "Automation Solutions", desc: "Streamline your workflows with intelligent RPA and process automation.", bgClass: "bg-amber-500/10" },
-    { icon: "☁️", title: "Cloud Infrastructure", desc: "Secure, scalable, and resilient cloud architectures for modern digital products.", bgClass: "bg-sky-500/10" },
-  ];
-
-  const portfolioProjects = [
-    {
-      name: "DIPLIM.COM",
-      category: "AI Fashion / Digital Creative Platform",
-      desc: "AI-powered fashion visualization, futuristic branding, and premium digital creative experiences.",
-      image: "/portfolio/diplim_fashion.png",
-      buttonText: "View Project",
-      url: "https://diplim.com"
-    },
-    {
-      name: "HRMS Platform",
-      category: "Human Resource Management System",
-      desc: "Complete employee management platform with payroll, attendance, leave tracking, recruitment, and analytics dashboards.",
-      image: "/portfolio/hrms_saas.png",
-      buttonText: "View Project",
-      url: "/contact"
-    }
-  ];
-
-  const techLogos = [
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">React</span>, title: "React", href: "https://react.dev" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Next.js</span>, title: "Next.js", href: "https://nextjs.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TypeScript</span>, title: "TypeScript", href: "https://www.typescriptlang.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Tailwind CSS</span>, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Node.js</span>, title: "Node.js", href: "https://nodejs.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Python</span>, title: "Python", href: "https://www.python.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">OpenAI</span>, title: "OpenAI", href: "https://openai.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TensorFlow</span>, title: "TensorFlow", href: "https://www.tensorflow.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">AWS</span>, title: "AWS", href: "https://aws.amazon.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Docker</span>, title: "Docker", href: "https://www.docker.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">PostgreSQL</span>, title: "PostgreSQL", href: "https://www.postgresql.org" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">NVIDIA</span>, title: "NVIDIA", href: "https://www.nvidia.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Figma</span>, title: "Figma", href: "https://www.figma.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">GitHub</span>, title: "GitHub", href: "https://github.com" },
-    { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span>, title: "Google", href: "https://google.com" },
-  ];
+const Home = React.memo(() => {
 
   const handleLoadingComplete = () => {
     ScrollTrigger.refresh();
@@ -129,9 +100,10 @@ const Home = () => {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <div
+            <Link
               key={index}
-              className="p-10 rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group"
+              to={service.link}
+              className="p-10 rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block"
             >
               <div className={`mb-6 p-4 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${service.bgClass}`}>
                 {service.icon}
@@ -140,7 +112,7 @@ const Home = () => {
               <p className="text-black/60 font-light leading-relaxed">
                 {service.desc}
               </p>
-            </div>
+            </Link>
           ))}
         </div>
       </Section>
@@ -175,6 +147,10 @@ const Home = () => {
             <img
               src="/macenza-ad.png"
               alt="AI Technology"
+              width={800}
+              height={800}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
             />
           </div>
@@ -271,6 +247,6 @@ const Home = () => {
       <Footer />
     </div>
   );
-};
+});
 
 export default Home;
