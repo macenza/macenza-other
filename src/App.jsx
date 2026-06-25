@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,6 +28,23 @@ const PageLoader = () => (
 function App() {
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    //  pre-fetching
+    const preloadPages = () => {
+      import('./pages/About').catch(() => { });
+      import('./pages/Solutions').catch(() => { });
+      import('./pages/Technology').catch(() => { });
+      import('./pages/Careers').catch(() => { });
+      import('./pages/Contact').catch(() => { });
+    };
+
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(preloadPages);
+    } else {
+      setTimeout(preloadPages, 2000);
+    }
+  }, []);
 
   return (
     <div className="relative">
