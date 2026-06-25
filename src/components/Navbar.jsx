@@ -30,7 +30,7 @@ const Navbar = () => {
         {/* Brand Logo */}
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-xl glow-blue bg-white p-1" />
+            <img src="/logo.svg" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-xl glow-blue bg-white p-1" />
             <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
           </Link>
         </div>

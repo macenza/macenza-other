@@ -38,7 +38,7 @@ const Footer = () => {
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
         <div className="flex flex-col items-center md:items-start gap-4">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Macenza Logo" className="w-8 h-8 object-contain rounded-lg bg-white p-0.5" />
+            <img src="/logo.svg" alt="Macenza Logo" className="w-8 h-8 object-contain rounded-lg bg-white p-0.5" />
             <span className="text-2xl font-black tracking-tighter text-black">MACENZA</span>
           </div>
           <div className="text-sm text-black/30">

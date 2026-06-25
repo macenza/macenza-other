@@ -1191,7 +1191,7 @@ const Admin = () => {
 
         {/* Brand Header */}
         <div className="flex items-center gap-3 mb-10 relative z-10">
-          <img src="/logo.png" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-2xl shadow-lg shadow-primary/20 bg-white p-1" />
+          <img src="/logo.svg" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-2xl shadow-lg shadow-primary/20 bg-white p-1" />
           <span className="text-2xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
         </div>
 
@@ -1278,7 +1278,7 @@ const Admin = () => {
         <div className="flex flex-col gap-12">
           {/* Brand Logo */}
           <div className="flex items-center gap-3 pl-2">
-            <img src="/logo.png" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-white p-0.5" />
+            <img src="/logo.svg" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-white p-0.5" />
             <span className="text-xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
           </div>
 
