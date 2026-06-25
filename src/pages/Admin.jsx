@@ -36,7 +36,6 @@ import {
 import { supabase } from '../supabaseClient';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { seedEmployees, employeesList } from '../seedEmployees';
 
 const Admin = () => {
   // Authentication states
@@ -810,31 +809,7 @@ const Admin = () => {
             .select('*');
           if (error) throw error;
           
-          let loaded = data || [];
-          if (loaded.length === 0) {
-            toast.info('Database empty. Automatically importing employee records...', { autoClose: 3000 });
-            // Insert into Supabase
-            let addedCount = 0;
-            for (const emp of employeesList) {
-              const newEmpData = {
-                ...emp,
-                id: 'emp_' + Date.now() + Math.floor(Math.random() * 1000),
-                role: 'Employee',
-                department: 'General'
-              };
-              if (!newEmpData.dob) delete newEmpData.dob;
-              
-              const { error: insertErr } = await supabase.from('employees').insert([newEmpData]);
-              if (!insertErr) addedCount++;
-            }
-            
-            // Re-fetch from DB
-            if (addedCount > 0) {
-              const { data: newData } = await supabase.from('employees').select('*');
-              loaded = newData || [];
-              toast.success(`Successfully saved ${addedCount} employees to the database!`);
-            }
-          }
+          const loaded = data || [];
           const savedPics = JSON.parse(localStorage.getItem('macenza_employee_pics') || '{}');
           const loadedWithPics = loaded.map(emp => ({
             ...emp,
