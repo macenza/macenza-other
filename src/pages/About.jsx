@@ -37,7 +37,6 @@ const teamMembers = [
   { name: "Devendra Singh", role: "Backend Engineer", image: "/Team/Devendra Singh Backend Engineer.webp" },
   { name: "Kavita Yadhav", role: "Frontend Engineer", image: "/Team/Kavita Yadhav Frontend Engineer.webp" },
   { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.webp" },
-  { name: "Preeti Kumari", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.webp" },
   { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.webp" },
   { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.webp" },
   { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" }
