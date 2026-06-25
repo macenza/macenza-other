@@ -39,20 +39,18 @@ function App() {
           <ChatWidget />
         </Suspense>
       )}
-      <Suspense fallback={<PageLoader />}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/technology" element={<Technology />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/privacy" element={<Policy />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/certificateverification" element={<CertificateVerification />} />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<Suspense fallback={<PageLoader />}><About /></Suspense>} />
+        <Route path="/solutions" element={<Suspense fallback={<PageLoader />}><Solutions /></Suspense>} />
+        <Route path="/technology" element={<Suspense fallback={<PageLoader />}><Technology /></Suspense>} />
+        <Route path="/careers" element={<Suspense fallback={<PageLoader />}><Careers /></Suspense>} />
+        <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
+        <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><Policy /></Suspense>} />
+        <Route path="/terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />
+        <Route path="/admin" element={<Suspense fallback={<PageLoader />}><Admin /></Suspense>} />
+        <Route path="/certificateverification" element={<Suspense fallback={<PageLoader />}><CertificateVerification /></Suspense>} />
+      </Routes>
     </div>
   );
 }
