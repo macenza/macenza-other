@@ -518,22 +518,6 @@ const Careers = () => {
         </div>
       </Section>
 
-      {/* Team Gallery Placeholder */}
-      <Section id="gallery" title="Meet the Builders" subtitle="A diverse team united by a singular vision.">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 reveal-up">
-          {[
-            "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600",
-            "https://images.unsplash.com/photo-1556761175-b413da4baf72?q=80&w=600",
-            "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600",
-            "https://images.unsplash.com/photo-1531482615713-2afd69097998?q=80&w=600"
-          ].map((img, i) => (
-            <div key={i} className="aspect-[4/3] rounded-[2rem] overflow-hidden group">
-              <img src={img} alt="Team Gallery" className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000" />
-            </div>
-          ))}
-        </div>
-      </Section>
-
       {/* Final CTA */}
       <Section id="final-cta" className="text-center">
         <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
