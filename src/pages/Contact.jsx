@@ -61,25 +61,10 @@ const faqs = [
 
 const Contact = () => {
   const pageRef = useRef(null);
-  const globeContainerRef = useRef(null);
-  const globeRef = useRef(null);
+  const containerRef = useRef(null);
+  const [globeInstance, setGlobeInstance] = useState(null);
   const [activeFaq, setActiveFaq] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
-  const [isGlobeVisible, setIsGlobeVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsGlobeVisible(true);
-        observer.disconnect();
-      }
-    }, { rootMargin: '300px' });
-    
-    if (globeContainerRef.current) {
-      observer.observe(globeContainerRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -134,17 +119,17 @@ const Contact = () => {
   };
 
   useEffect(() => {
-    if (globeContainerRef.current) {
+    if (containerRef.current) {
       setDimensions({
-        width: globeContainerRef.current.clientWidth,
-        height: globeContainerRef.current.clientHeight || 700
+        width: containerRef.current.clientWidth,
+        height: containerRef.current.clientHeight || 700
       });
 
       const handleResize = () => {
-        if (globeContainerRef.current) {
+        if (containerRef.current) {
           setDimensions({
-            width: globeContainerRef.current.clientWidth,
-            height: globeContainerRef.current.clientHeight || 700
+            width: containerRef.current.clientWidth,
+            height: containerRef.current.clientHeight || 700
           });
         }
       };
@@ -152,21 +137,24 @@ const Contact = () => {
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }
-  }, [isGlobeVisible]);
+  }, []);
 
   useEffect(() => {
-    if (globeRef.current) {
-      const controls = globeRef.current.controls();
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 1.0;
-      controls.enableZoom = false;
+    if (globeInstance) {
+      const controls = globeInstance.controls();
+      if (controls) {
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.0;
+        controls.enableZoom = false;
+        controls.enablePan = false;
+      }
 
       // Dynamically calculate the target camera zoom based on the viewport width
       const isMobile = window.innerWidth < 768;
       const targetAltitude = isMobile ? 2.5 : 1.8;
-      globeRef.current.pointOfView({ altitude: targetAltitude });
+      globeInstance.pointOfView({ altitude: targetAltitude });
     }
-  }, [globeRef.current, dimensions.width]);
+  }, [globeInstance, dimensions.width]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -443,50 +431,48 @@ const Contact = () => {
           </p>
         </div>
 
-        <div ref={globeContainerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
-          {isGlobeVisible && (
-            <Suspense fallback={<div className="animate-pulse w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>}>
-              <ReactGlobe
-                ref={globeRef}
-                width={dimensions.width}
-                height={dimensions.height}
-                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-                backgroundImageUrl=""
-                backgroundColor="rgba(0,0,0,0)"
-                showAtmosphere={true}
-                atmosphereColor="#2563eb"
-                atmosphereAltitude={0.18}
+        <div ref={containerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
+          <Suspense fallback={<div className="animate-pulse w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>}>
+            <ReactGlobe
+              ref={setGlobeInstance}
+              width={dimensions.width}
+              height={dimensions.height}
+              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+              bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+              backgroundImageUrl=""
+              backgroundColor="rgba(0,0,0,0)"
+              showAtmosphere={true}
+              atmosphereColor="#2563eb"
+              atmosphereAltitude={0.18}
 
-                // Arcs
-                arcsData={arcsData}
-                arcColor="color"
-                arcDashLength={0.45}
-                arcDashGap={2}
-                arcDashAnimateTime={2000}
-                arcStroke={0.8}
-                arcAltitude={0.28}
+              // Arcs
+              arcsData={arcsData}
+              arcColor="color"
+              arcDashLength={0.45}
+              arcDashGap={2}
+              arcDashAnimateTime={2000}
+              arcStroke={0.8}
+              arcAltitude={0.28}
 
-                // Points (Rippling or glowing landmarks)
-                pointsData={countries}
-                pointLat="lat"
-                pointLng="lng"
-                pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
-                pointAltitude={d => d.isHQ ? 0.09 : 0.06}
-                pointRadius={d => d.isHQ ? 0.8 : 0.5}
+              // Points (Rippling or glowing landmarks)
+              pointsData={countries}
+              pointLat="lat"
+              pointLng="lng"
+              pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
+              pointAltitude={d => d.isHQ ? 0.09 : 0.06}
+              pointRadius={d => d.isHQ ? 0.8 : 0.5}
 
-                // Labels
-                labelsData={countries}
-                labelLat="lat"
-                labelLng="lng"
-                labelText="city"
-                labelSize={d => d.isHQ ? 2.0 : 1.5}
-                labelColor={d => d.isHQ ? '#fff' : '#fff'}
-                labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
-                labelResolution={2}
-              />
-            </Suspense>
-          )}
+              // Labels
+              labelsData={countries}
+              labelLat="lat"
+              labelLng="lng"
+              labelText="city"
+              labelSize={d => d.isHQ ? 2.0 : 1.5}
+              labelColor={d => d.isHQ ? '#fff' : '#fff'}
+              labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
+              labelResolution={2}
+            />
+          </Suspense>
         </div>
       </Section>
 

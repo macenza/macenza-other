@@ -4,10 +4,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SmoothScroll from './components/SmoothScroll';
 import Navbar from './components/Navbar';
-import ChatWidget from './components/ChatWidget';
+import Home from './pages/Home';
 
 // Lazy load all pages
-const Home = lazy(() => import('./pages/Home'));
+const ChatWidget = lazy(() => import('./components/ChatWidget'));
 const About = lazy(() => import('./pages/About'));
 const Solutions = lazy(() => import('./pages/Solutions'));
 const Technology = lazy(() => import('./pages/Technology'));
@@ -34,7 +34,11 @@ function App() {
       <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar theme="colored" />
       {!isAdmin && <SmoothScroll />}
       {!isAdmin && <Navbar />}
-      {!isAdmin && <ChatWidget />}
+      {!isAdmin && (
+        <Suspense fallback={null}>
+          <ChatWidget />
+        </Suspense>
+      )}
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Home />} />
