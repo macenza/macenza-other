@@ -12,35 +12,35 @@ import { Link } from 'react-router-dom';
 
 const teamMembers = [
 
-  { name: "Shashank Shubham", role: "Founder & CEO", image: "/Team/Shashank Shubham Founder & CEO.jpeg" },
-  { name: "Garima", role: "CTO", image: "/Team/Garima CTO.png" },
-  { name: "Dipanshu Shubham", role: "CMO", image: "/Team/A Dipanshu Shubham CMO.png" },
-  { name: "Kavita", role: "Marketing", image: "/Team/A Kavita Markating.png" },
-  { name: "Divya Ghalot", role: "AI Engineer", image: "/Team/A Divya Ghalot AI Engineer.png" },
-  { name: "Priyanka Berwa", role: "HR", image: "/Team/Priyanka HR.png" },
-  { name: "Piyush Saini", role: "Fullstack Developer", image: "/Team/Piyush Saini Fullstack Developer.png" },
-  { name: "Neha Jaiswal", role: "Fullstack Developer", image: "/Team/NEHA JAISWAL Fullstack Developer.png" },
-  { name: "Riva Sha", role: "Fullstack Developer", image: "/Team/Riva Sha FullStack Developer.png" },
-  { name: "Khushboo Rawat", role: "Business Development Manager", image: "/Team/A Khushboo Rawat Business Development Manager.png" },
-  { name: "Aman Partha", role: "Full Stack Developer", image: "/Team/A Aman Partha Full Stack Developer.png" },
-  { name: "Gungun Rawat", role: "Frontend UI/UX Designer", image: "/Team/Gungun UI UX Designer.jpeg" },
-  { name: "Akshita Kumawat", role: "Full Stack Developer", image: "/Team/Akshita Kumawat Full Stack.jpeg" },
-  { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.png" },
-  { name: "Diksha Bansal", role: "AI/ML Engineer", image: "/Team/A Diksha Bansal AI ML.png" },
-  { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.png" },
-  { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.png" },
-  { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.png" },
-  { name: "Payal Meena", role: "UI/UX Designer", image: "/Team/A Payal Meena Ui Ux Designer.png" },
-  { name: "Santosh Rathore", role: "Sales", image: "/Team/A Santosh Rathore Salles.png" },
-  { name: "Anamika Sharma", role: "Frontend Developer", image: "/Team/Anamika Sharma Frontend Developer.png" },
-  { name: "Deepti Solanki", role: "AI/ML Engineer", image: "/Team/Deepti Solanki AI ML Engineer.png" },
-  { name: "Devendra Singh", role: "Backend Engineer", image: "/Team/Devendra Singh Backend Engineer.png" },
-  { name: "Kavita Yadhav", role: "Frontend Engineer", image: "/Team/Kavita Yadhav Frontend Engineer.png" },
-  { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.png" },
-  { name: "Preeti Kumari", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.png" },
-  { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.png" },
-  { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.png" },
-  { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.jpg" }
+  { name: "Shashank Shubham", role: "Founder & CEO", image: "/Team/Shashank Shubham Founder & CEO.webp" },
+  { name: "Garima", role: "CTO", image: "/Team/Garima CTO.webp" },
+  { name: "Dipanshu Shubham", role: "CMO", image: "/Team/A Dipanshu Shubham CMO.webp" },
+  { name: "Kavita", role: "Marketing", image: "/Team/A Kavita Markating.webp" },
+  { name: "Divya Ghalot", role: "AI Engineer", image: "/Team/A Divya Ghalot AI Engineer.webp" },
+  { name: "Priyanka Berwa", role: "HR", image: "/Team/Priyanka HR.webp" },
+  { name: "Piyush Saini", role: "Fullstack Developer", image: "/Team/Piyush Saini Fullstack Developer.webp" },
+  { name: "Neha Jaiswal", role: "Fullstack Developer", image: "/Team/NEHA JAISWAL Fullstack Developer.webp" },
+  { name: "Riva Sha", role: "Fullstack Developer", image: "/Team/Riva Sha FullStack Developer.webp" },
+  { name: "Khushboo Rawat", role: "Business Development Manager", image: "/Team/A Khushboo Rawat Business Development Manager.webp" },
+  { name: "Aman Partha", role: "Full Stack Developer", image: "/Team/A Aman Partha Full Stack Developer.webp" },
+  { name: "Gungun Rawat", role: "Frontend UI/UX Designer", image: "/Team/Gungun UI UX Designer.webp" },
+  { name: "Akshita Kumawat", role: "Full Stack Developer", image: "/Team/Akshita Kumawat Full Stack.webp" },
+  { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.webp" },
+  { name: "Diksha Bansal", role: "AI/ML Engineer", image: "/Team/A Diksha Bansal AI ML.webp" },
+  { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.webp" },
+  { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.webp" },
+  { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.webp" },
+  { name: "Payal Meena", role: "UI/UX Designer", image: "/Team/A Payal Meena Ui Ux Designer.webp" },
+  { name: "Santosh Rathore", role: "Sales", image: "/Team/A Santosh Rathore Salles.webp" },
+  { name: "Anamika Sharma", role: "Frontend Developer", image: "/Team/Anamika Sharma Frontend Developer.webp" },
+  { name: "Deepti Solanki", role: "AI/ML Engineer", image: "/Team/Deepti Solanki AI ML Engineer.webp" },
+  { name: "Devendra Singh", role: "Backend Engineer", image: "/Team/Devendra Singh Backend Engineer.webp" },
+  { name: "Kavita Yadhav", role: "Frontend Engineer", image: "/Team/Kavita Yadhav Frontend Engineer.webp" },
+  { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.webp" },
+  { name: "Preeti Kumari", role: "UI/UX Designer", image: "/Team/Preeti UI UX Designer.webp" },
+  { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.webp" },
+  { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.webp" },
+  { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" }
 
 ];
 
@@ -213,7 +213,7 @@ const About = () => {
           <div className="relative aspect-square rounded-[3rem] overflow-hidden group reveal-up">
             <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700"></div>
             <img
-              src="/Team/who-we-are.jpg"
+              src="/Team/who-we-are.webp"
               alt="Macenza Team"
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
             />
