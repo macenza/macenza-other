@@ -39,21 +39,21 @@ const portfolioProjects = [
 ];
 
 const techLogos = [
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">React</span>, title: "React", href: "https://react.dev" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Next.js</span>, title: "Next.js", href: "https://nextjs.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TypeScript</span>, title: "TypeScript", href: "https://www.typescriptlang.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Tailwind CSS</span>, title: "Tailwind CSS", href: "https://tailwindcss.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Node.js</span>, title: "Node.js", href: "https://nodejs.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Python</span>, title: "Python", href: "https://www.python.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">OpenAI</span>, title: "OpenAI", href: "https://openai.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TensorFlow</span>, title: "TensorFlow", href: "https://www.tensorflow.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">AWS</span>, title: "AWS", href: "https://aws.amazon.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Docker</span>, title: "Docker", href: "https://www.docker.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">PostgreSQL</span>, title: "PostgreSQL", href: "https://www.postgresql.org" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">NVIDIA</span>, title: "NVIDIA", href: "https://www.nvidia.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Figma</span>, title: "Figma", href: "https://www.figma.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">GitHub</span>, title: "GitHub", href: "https://github.com" },
-  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span>, title: "Google", href: "https://google.com" },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">React</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Next.js</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TypeScript</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Tailwind CSS</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Node.js</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Python</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">OpenAI</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">TensorFlow</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">AWS</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Docker</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">PostgreSQL</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">NVIDIA</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Figma</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">GitHub</span> },
+  { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span> },
 ];
 
 const Home = React.memo(() => {
