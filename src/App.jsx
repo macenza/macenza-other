@@ -17,6 +17,7 @@ const Policy = lazy(() => import('./pages/Policy'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Admin = lazy(() => import('./pages/Admin'));
 const CertificateVerification = lazy(() => import('./pages/CertificateVerification'));
+const JobDetails = lazy(() => import('./pages/JobDetails'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -37,6 +38,7 @@ function App() {
       import('./pages/Technology').catch(() => { });
       import('./pages/Careers').catch(() => { });
       import('./pages/Contact').catch(() => { });
+      import('./pages/JobDetails').catch(() => { });
     };
 
     if (window.requestIdleCallback) {
@@ -62,6 +64,7 @@ function App() {
         <Route path="/solutions" element={<Suspense fallback={<PageLoader />}><Solutions /></Suspense>} />
         <Route path="/technology" element={<Suspense fallback={<PageLoader />}><Technology /></Suspense>} />
         <Route path="/careers" element={<Suspense fallback={<PageLoader />}><Careers /></Suspense>} />
+        <Route path="/careers/:id" element={<Suspense fallback={<PageLoader />}><JobDetails /></Suspense>} />
         <Route path="/contact" element={<Suspense fallback={<PageLoader />}><Contact /></Suspense>} />
         <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><Policy /></Suspense>} />
         <Route path="/terms" element={<Suspense fallback={<PageLoader />}><Terms /></Suspense>} />

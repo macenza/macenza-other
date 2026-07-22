@@ -62,7 +62,7 @@ const ChatWidget = () => {
       return "You can reach us through multiple channels:\n• Main Inquiries: info@macenza.com\n• Business Partnerships: shanki9414@gmail.com\n• Direct Hotline: +91 94146 60123\nOr drop a message on our Contact page and our systems team will respond within 24 hours!";
     }
     if (q.includes('tech') || q.includes('stack') || q.includes('react') || q.includes('database') || q.includes('postgres') || q.includes('node')) {
-      return "Our high-performance engineering stack comprises:\n• Frontend: React, Next.js, Vite, GSAP\n• Backend: Node.js, FastAPI, Python, Express\n• Databases: PostgreSQL, MongoDB, Redis, Firebase\n• Cloud & DevOps: AWS, Azure, GCP, Docker, Kubernetes, CI/CD pipelines.\nWe architect everything for maximum speed and infinite scaling!";
+      return "Our high-performance engineering stack comprises:\n• Frontend: React, Next.js, Vite, GSAP\n• Backend: Node.js, FastAPI, Python, Express\n• Databases: PostgreSQL, MongoDB, Redis, Firebase\n• Hotel Management Systems: Booking Engines, Property Management (PMS), POS Billing systems.\nWe architect everything for maximum speed and infinite scaling!";
     }
     if (q.includes('about') || q.includes('mission') || q.includes('vision') || q.includes('company')) {
       return "Macenza is a forward-thinking digital product and AI engineering studio. Our mission is to empower global businesses with intelligent infrastructure and premium, scalable software systems built for absolute resilience.";

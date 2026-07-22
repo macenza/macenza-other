@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import {
   Users, Rocket, Globe, Shield, Heart, Zap,
@@ -41,6 +42,14 @@ const teamMembers = [
   { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.webp" },
   { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" }
 
+];
+
+const statsItems = [
+  { value: "28", label: "Software Engineers" },
+  { value: "100%", label: "Code Ownership" },
+  { value: "AWS", label: "Cloud Platform" },
+  { value: "99.9%", label: "Host Uptime SLA" },
+  { value: "Git", label: "Version Control" }
 ];
 
 const About = () => {
@@ -106,9 +115,9 @@ const About = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               Our Journey
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-              Building Smarter <br />
-              <span className="text-accent">Digital Futures.</span>
+            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+              <BouncyText text="Building Smarter " /> <br />
+              <BouncyText text="Digital Futures." className="text-accent" />
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
               Macenza is a next-generation AI and software company building digital products, automation systems, and transformative technology experiences.
@@ -195,18 +204,18 @@ const About = () => {
             </h2>
             <div className="space-y-6 text-black/70 text-lg font-light leading-relaxed">
               <p>
-                Founded at the intersection of human creativity and artificial intelligence, Macenza emerged from a singular vision: to bridge the gap between complex technology and meaningful human experiences. We are a collective of dreamers, engineers, and strategists dedicated to redefining what's possible.
+                Macenza was founded to help growing businesses replace manual administrative tasks, fragmented spreadsheets, and slow legacy applications with fast, reliable web software. We believe that business software should be straightforward to navigate, quick to load, and easy to maintain over the long term.
               </p>
               <p>
-                As a futuristic startup, we specialize in building AI-first products that don't just solve problems—they anticipate them. From enterprise-grade web platforms to bespoke automation solutions, our work is defined by speed, precision, and an unwavering commitment to excellence.
+                Our engineering philosophy centers on code simplicity and database normalization. We prefer writing clean, native JavaScript and well-structured SQL queries over adding unnecessary framework layers or complex server abstractions that make software difficult to debug and expensive to host.
               </p>
               <p>
-                Today, Macenza stands as a beacon of digital transformation, helping businesses worldwide navigate the rapidly evolving technological landscape with confidence and clarity.
+                When working with clients, we operate as an extension of their technical team. We write comprehensive API specifications, build containerized test environments, and deliver full code ownership upon project completion. This ensures your internal team can easily take over the codebase whenever you are ready.
               </p>
             </div>
             <div className="mt-12 flex items-center gap-6">
               <div className="w-16 h-[1px] bg-primary"></div>
-              <span className="text-primary font-bold uppercase tracking-widest text-sm">Founded in 2024</span>
+              <span className="text-primary font-bold uppercase tracking-widest text-sm">Founded in 2025</span>
             </div>
           </div>
           <div className="relative aspect-square rounded-[3rem] overflow-hidden group reveal-up">
@@ -229,7 +238,7 @@ const About = () => {
             </div>
             <h3 className="text-3xl font-bold mb-6">Our Mission</h3>
             <p className="text-black/60 font-light leading-relaxed">
-              To empower every business with intelligent technology that amplifies human potential and drives sustainable global innovation.
+              To build practical, high-performance web software and automated data pipelines that solve concrete administrative bottlenecks for growing operations.
             </p>
           </div>
           <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 bg-primary/5 hover:border-amber-500/20 group">
@@ -238,16 +247,16 @@ const About = () => {
             </div>
             <h3 className="text-3xl font-bold mb-6">Our Vision</h3>
             <p className="text-black/60 font-light leading-relaxed">
-              To become the world's most trusted partner in AI-driven digital transformation, building the foundations for a smarter tomorrow.
+              To establish a software studio where code quality, database speed, and clear API documentation form the absolute baseline of every client project.
             </p>
           </div>
           <div className="p-12 rounded-[3rem] glass-morphism border border-dark/5 reveal-up hover:shadow-2xl transition-colors transition-shadow duration-500 hover:border-rose-500/20 group">
             <div className="w-16 h-16 bg-rose-500/10 rounded-2xl flex items-center justify-center text-4xl mb-8 group-hover:scale-110 transition-transform duration-300">
               ❤️
             </div>
-            <h3 className="text-3xl font-bold mb-6">Our Values</h3>
+            <h3 className="text-3xl font-bold mb-6">Our Principles</h3>
             <div className="flex flex-wrap gap-3">
-              {["Innovation", "Speed", "Trust", "Creativity", "Excellence", "Ownership"].map((v) => (
+              {["Maintainability", "Performance", "Transparency", "Simple Architecture", "Code Ownership"].map((v) => (
                 <span key={v} className="px-4 py-2 bg-white rounded-full text-sm font-bold text-black/70 border border-dark/5 shadow-sm">
                   {v}
                 </span>
@@ -261,25 +270,138 @@ const About = () => {
       <Section id="culture" className="bg-white text-black relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[150px] -rotate-12 translate-x-1/2"></div>
         <div className="max-w-4xl mx-auto text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Startup Culture at <span className="text-primary">Macenza</span></h2>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Work Environment at <span className="text-primary">Macenza</span></h2>
           <p className="text-xl text-black/60 font-light leading-relaxed">
-            We don't just build software; we build a culture of relentless innovation and radical ownership. At Macenza, every engineer is a founder, and every designer is an architect of the future.
+            Our workspace runs on clear project task queues and open documentation. We eliminate layers of middle management so engineers can focus directly on writing high-quality code and delivering working features.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 reveal-up">
           {[
-            { title: "Fast-paced innovation", icon: "⚡", bg: "bg-amber-500/10" },
-            { title: "Remote-first collaboration", icon: "🌐", bg: "bg-sky-500/10" },
-            { title: "AI-first mindset", icon: "✨", bg: "bg-violet-500/10" },
-            { title: "Creative engineering", icon: "💡", bg: "bg-pink-500/10" },
-            { title: "Startup ownership culture", icon: "🎯", bg: "bg-rose-500/10" },
-            { title: "Rapid experimentation", icon: "🚀", bg: "bg-indigo-500/10" },
+            { title: "Written specifications & demos", icon: "⚡", bg: "bg-amber-500/10" },
+            { title: "Async Git-based collaboration", icon: "🌐", bg: "bg-sky-500/10" },
+            { title: "Automation of routine testing", icon: "✨", bg: "bg-violet-500/10" },
+            { title: "Code modularity & reuse", icon: "💡", bg: "bg-pink-500/10" },
+            { title: "Direct client code reviews", icon: "🎯", bg: "bg-rose-500/10" },
+            { title: "Frequent staging releases", icon: "🚀", bg: "bg-indigo-500/10" },
           ].map((item, i) => (
             <div key={i} className="p-8 rounded-3xl bg-white/50 border border-dark/5 flex items-center gap-6 hover:bg-white/80 transition-all duration-300 shadow-sm group">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 ${item.bg} group-hover:scale-110`}>{item.icon}</div>
               <span className="text-lg font-bold text-black">{item.title}</span>
             </div>
           ))}
+        </div>
+      </Section>
+
+      {/* Our Workspace */}
+      <Section id="workspace" title="Our Workspace" subtitle="Step inside the environment where our teams collaborate, create, and build next-generation tech.">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 reveal-up">
+          {/* Main big image (1) */}
+          <div className="md:col-span-6 md:row-span-2 rounded-[2.5rem] overflow-hidden aspect-[4/3] md:aspect-auto group relative shadow-lg">
+            <img 
+              src="/portfolio/1.webp" 
+              alt="Macenza Office Space" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-8">
+              <span className="text-white font-bold text-lg">Main Collaboration Area</span>
+            </div>
+          </div>
+          
+          {/* Small image 2 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/2.webp" 
+              alt="Macenza Meeting Room" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Meeting Room</span>
+            </div>
+          </div>
+          
+          {/* Small image 3 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/3.webp" 
+              alt="Macenza Ideation Zone" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Ideation Zone</span>
+            </div>
+          </div>
+          
+          {/* Small image 4 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/4.webp" 
+              alt="Macenza Desk Setups" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Creative Desk Setups</span>
+            </div>
+          </div>
+          
+          {/* Small image 5 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/5.webp" 
+              alt="Macenza Lounge Area" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Lounge Area</span>
+            </div>
+          </div>
+
+          {/* Image 6 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/6.webp" 
+              alt="Macenza Engineering Hub" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Engineering Hub</span>
+            </div>
+          </div>
+
+          {/* Image 7 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/7.webp" 
+              alt="Macenza Executive Suite" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Executive Suite</span>
+            </div>
+          </div>
+
+          {/* Image 8 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/8.webp" 
+              alt="Macenza Innovation Lab" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Innovation Lab</span>
+            </div>
+          </div>
+
+          {/* Image 9 */}
+          <div className="md:col-span-3 rounded-[2rem] overflow-hidden aspect-square group relative shadow-md">
+            <img 
+              src="/portfolio/9.webp" 
+              alt="Macenza Breakout Zone" 
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+              <span className="text-white font-bold text-sm">Breakout Zone</span>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -293,13 +415,7 @@ const About = () => {
         <div className="flex w-max select-none animate-marquee-stats">
           {/* Group 1 */}
           <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0">
-            {[
-              { value: "120+", label: "AI Solutions" },
-              { value: "500+", label: "Happy Clients" },
-              { value: "25+", label: "Countries Served" },
-              { value: "99.9%", label: "Uptime" },
-              { value: "50+", label: "Products Delivered" },
-            ].map((stat, i) => (
+            {statsItems.map((stat, i) => (
               <div key={i} className="text-center min-w-[200px] flex-shrink-0 select-none">
                 <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
                 <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
@@ -309,13 +425,7 @@ const About = () => {
 
           {/* Group 2 */}
           <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
-            {[
-              { value: "120+", label: "AI Solutions" },
-              { value: "500+", label: "Happy Clients" },
-              { value: "25+", label: "Countries Served" },
-              { value: "99.9%", label: "Uptime" },
-              { value: "50+", label: "Products Delivered" },
-            ].map((stat, i) => (
+            {statsItems.map((stat, i) => (
               <div key={`g2-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
                 <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
                 <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
@@ -325,13 +435,7 @@ const About = () => {
 
           {/* Group 3 */}
           <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
-            {[
-              { value: "120+", label: "AI Solutions" },
-              { value: "500+", label: "Happy Clients" },
-              { value: "25+", label: "Countries Served" },
-              { value: "99.9%", label: "Uptime" },
-              { value: "50+", label: "Products Delivered" },
-            ].map((stat, i) => (
+            {statsItems.map((stat, i) => (
               <div key={`g3-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
                 <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
                 <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
@@ -341,13 +445,7 @@ const About = () => {
 
           {/* Group 4 */}
           <div className="flex gap-12 md:gap-24 pr-12 md:pr-24 flex-shrink-0" aria-hidden="true">
-            {[
-              { value: "120+", label: "AI Solutions" },
-              { value: "500+", label: "Happy Clients" },
-              { value: "25+", label: "Countries Served" },
-              { value: "99.9%", label: "Uptime" },
-              { value: "50+", label: "Products Delivered" },
-            ].map((stat, i) => (
+            {statsItems.map((stat, i) => (
               <div key={`g4-${i}`} className="text-center min-w-[200px] flex-shrink-0 select-none">
                 <div className="text-5xl md:text-7xl font-black text-primary mb-3 tracking-tighter transition-all duration-300 hover:scale-105 hover:text-blue-700">{stat.value}</div>
                 <div className="text-xs md:text-sm font-bold text-black/40 uppercase tracking-widest">{stat.label}</div>
@@ -361,7 +459,7 @@ const About = () => {
       <Section
         id="team"
         title="Meet Our Team"
-        subtitle="The brilliant minds behind Macenza's technological breakthroughs."
+        subtitle="The developers, designers, and systems architects who build and maintain our client applications."
         className=""
       >
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 team-grid">
@@ -389,12 +487,12 @@ const About = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "AI-first engineering", desc: "Every solution is built with artificial intelligence at its core." },
-            { title: "Fast product delivery", desc: "We move at the speed of thought to bring your ideas to market." },
-            { title: "Scalable architecture", desc: "Cloud-native systems designed to grow with your ambition." },
-            { title: "Startup agility", desc: "Lean, efficient, and focused on results over bureaucracy." },
-            { title: "Global innovation", desc: "Drawing talent and inspiration from around the world." },
-            { title: "Enterprise-ready solutions", desc: "Robust, secure, and reliable for high-stakes environments." },
+            { title: "Transparent Development Process", desc: "We provide clients direct access to their project's Git repository and schedule weekly video demos to review code progress." },
+            { title: "Scalable Architecture", desc: "We design normalized database schemas, write optimized SQL queries, and implement cache stores to prevent system slowdowns." },
+            { title: "Dedicated Engineering Support", desc: "Our clients collaborate directly with the software developers writing their code, avoiding communication layers." },
+            { title: "Production-Ready Deployment", desc: "We write robust server configurations, Docker files, and automated deployment pipelines to ensure stable application rollouts." },
+            { title: "Long-Term Code Maintenance", desc: "We offer monthly service contracts to monitor server application logs, update dependencies, patch security vulnerability issues, and fix bugs." },
+            { title: "Full Code Ownership", desc: "All repository permissions, documentation, and cloud configuration ownership are transferred to your organization upon project completion." },
           ].map((item, i) => (
             <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-dark/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300">
               <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center text-primary mb-6">
@@ -413,11 +511,11 @@ const About = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Join Us in Building Tomorrow
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Macenza is creating the future of intelligent digital experiences. Are you ready to be part of the journey?
+            Contact our engineering team to discuss your application architecture requirements, schedule a database schema consultation, or review a code audit.
           </p>
           <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Contact Us

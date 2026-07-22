@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, Suspense, lazy } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import { Send, ChevronDown, Loader2 } from 'lucide-react';
 const ReactGlobe = lazy(() => import('react-globe.gl'));
@@ -43,19 +44,19 @@ const arcsData = [
 const faqs = [
   {
     question: "How quickly can Macenza start a project?",
-    answer: "We typically initiate projects within 1-2 weeks after the initial strategy session. Our agile onboarding process ensures that we align on goals and technical requirements rapidly to move from concept to development at startup speed."
+    answer: "We typically initiate projects within 1-2 weeks after the initial strategy session. Our onboarding process ensures that we align on database requirements and software structures rapidly to move to active development."
   },
   {
     question: "Do you work with international clients?",
-    answer: "Yes, Macenza operates on a global scale. We have successfully delivered AI and software solutions to clients across the US, Europe, Middle East, and Asia-Pacific. Our remote-first culture ensures seamless collaboration regardless of time zones."
+    answer: "Yes, Macenza works with international clients. We coordinate updates and reviews using Git and async tools to ensure collaboration regardless of time zones."
   },
   {
-    question: "Can Macenza build AI products from scratch?",
-    answer: "Absolutely. We specialize in end-to-end AI product development. From R&D and data modeling to deploying scalable LLM-powered applications and autonomous agents, we provide the full engineering stack required for intelligent innovation."
+    question: "Can Macenza build custom web apps from scratch?",
+    answer: "Yes, we specialize in custom web application development. From database modeling and API scripting to front-end development, we build complete functional systems."
   },
   {
-    question: "Do you offer dedicated teams?",
-    answer: "Yes, we offer dedicated development teams for long-term partnerships. This model allows businesses to extend their internal capabilities with our specialized AI engineers, developers, and designers working exclusively on their product roadmap."
+    question: "Do you offer post-launch maintenance?",
+    answer: "Yes, we offer monthly maintenance plans to monitor application logs, patch packages, and write code adjustments as your system requirements shift."
   }
 ];
 
@@ -213,12 +214,12 @@ const Contact = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               Connect With Macenza
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-              Let's connect. <br />
-              <span className="text-primary italic">Create the future.</span>
+            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+              <BouncyText text="Let's discuss. " /> <br />
+              <BouncyText text="Build your project." className="text-primary italic" />
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-              Connect with Macenza to build AI solutions, software platforms, automation systems, and next-generation digital products.
+              Get in touch with our engineering team to review system specifications, discuss database schemas, and request project quotes.
             </p>
             <div className="flex justify-start reveal-up">
               <button
@@ -301,7 +302,7 @@ const Contact = () => {
               Get <span className="text-primary">In Touch</span>
             </h2>
             <p className="text-black/60 text-lg font-light mb-12 leading-relaxed">
-              Have a visionary project in mind? Our team of engineers and AI experts is ready to transform your ideas into scalable reality. Fill out the form, and we'll get back to you within 24 hours.
+              Have a custom software project in mind? Our developers are ready to discuss your database schemas and API integrations. Fill out the form, and we'll reply within 24 hours.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -425,9 +426,9 @@ const Contact = () => {
       {/* Global Presence Map */}
       <Section id="global-presence" className="bg-white overflow-hidden">
         <div className="text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Our <span className="text-primary italic">Global Customers</span></h2>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Our <span className="text-primary italic">Global Clients</span></h2>
           <p className="text-xl text-black/60 font-light max-w-3xl mx-auto leading-relaxed">
-            Macenza works with clients and businesses across multiple international markets, bringing intelligent solutions to the world's most innovative regions.
+            Macenza develops software for businesses across multiple international markets, delivering web applications and automated tools to local and global teams.
           </p>
         </div>
 
@@ -477,15 +478,15 @@ const Contact = () => {
       </Section>
 
       {/* Why Businesses Choose Us */}
-      <Section id="why-choose" title="Why Businesses Choose Us" subtitle="Excellence in engineering, driven by intelligence.">
+      <Section id="why-choose" title="Why Businesses Choose Us" subtitle="We prioritize simple architecture, fast response times, and full client transparency.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "AI-first engineering", icon: "🧠", desc: "Every solution is built with artificial intelligence at its core.", bg: "bg-violet-500/10" },
-            { title: "Fast startup execution", icon: "⚡", desc: "We move at the speed of thought to bring your ideas to market.", bg: "bg-amber-500/10" },
-            { title: "Enterprise-grade solutions", icon: "🛡️", desc: "Robust, secure, and reliable for high-stakes environments.", bg: "bg-blue-500/10" },
-            { title: "Global delivery capability", icon: "🌐", desc: "Delivering world-class products across international borders.", bg: "bg-teal-500/10" },
-            { title: "Scalable architecture", icon: "🚀", desc: "Cloud-native systems designed to grow with your ambition.", bg: "bg-pink-500/10" },
-            { title: "Future-ready technology", icon: "🎯", desc: "Building the foundations for a smarter, digital tomorrow.", bg: "bg-rose-500/10" }
+            { title: "Transparent Development", icon: "🧠", desc: "Access your project's code repository from day one and review weekly sprint updates.", bg: "bg-violet-500/10" },
+            { title: "Scalable Database Setups", icon: "⚡", desc: "We design normalized relational database schemas to manage transactional load.", bg: "bg-amber-500/10" },
+            { title: "Direct Developer Contact", icon: "🛡️", desc: "Collaborate directly with the engineers writing your application code.", bg: "bg-blue-500/10" },
+            { title: "Containerized Deployments", icon: "🌐", desc: "We pack our applications into Docker container units to ensure hosting stability.", bg: "bg-teal-500/10" },
+            { title: "Continuous Maintenance", icon: "🚀", desc: "We offer support contracts to monitor server performance and install security updates.", bg: "bg-pink-500/10" },
+            { title: "Full Code Ownership", icon: "🎯", desc: "We transfer all repository permissions and system account access upon project sign-off.", bg: "bg-rose-500/10" }
           ].map((item, i) => (
             <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-colors duration-300 flex gap-6 items-start group">
               <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110 ${item.bg}`}>
@@ -501,7 +502,7 @@ const Contact = () => {
       </Section>
 
       {/* FAQ Section */}
-      <Section id="faq" title="Frequently Asked Questions" subtitle="Quick answers to common inquiries about working with Macenza.">
+      <Section id="faq" title="Frequently Asked Questions" subtitle="Quick answers to common questions about our development workflow.">
         <div className="max-w-4xl mx-auto space-y-4 reveal-up">
           {faqs.map((faq, i) => (
             <div key={i} className="rounded-3xl border border-black/5 overflow-hidden transition-all duration-300 hover:border-primary/20">
@@ -528,11 +529,11 @@ const Contact = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Ready to Launch Your <br /> Next Big Idea?
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Partner with Macenza and build future-ready digital solutions.
+            Get in touch with our engineering team to review system requirements and plan your application.
           </p>
           <button
             onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}

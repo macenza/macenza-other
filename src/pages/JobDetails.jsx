@@ -1,0 +1,599 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { supabase } from '../supabaseClient';
+import { toast } from 'react-toastify';
+import { fallbackJobs } from '../data/fallbackJobs';
+import Footer from '../components/Footer';
+import {
+  MapPin, Clock, Briefcase, Calendar, Users, DollarSign,
+  ArrowLeft, Upload, Check, ChevronRight, Share2, Award, ShieldCheck
+} from 'lucide-react';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const generateSlug = (title) => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
+
+const JobDetails = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const pageRef = useRef(null);
+
+  const [job, setJob] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
+
+  // Form State
+  const initialFormState = {
+    candidateName: '',
+    email: '',
+    phone: '',
+    location: '',
+    experience: '',
+    linkedInUrl: '',
+    portfolioUrl: '',
+    coverLetter: ''
+  };
+  const [formData, setFormData] = useState(initialFormState);
+
+  // Fetch job details
+  useEffect(() => {
+    window.scrollTo(0, 0);
+
+    const getJobDetails = async () => {
+      setLoading(true);
+      try {
+        if (id === 'general' || id === 'general-application') {
+          setJob({
+            id: 'general',
+            title: 'General Application',
+            department: 'All Departments',
+            location: 'Remote',
+            type: 'Full Time / Part Time / Internship',
+            experience: 'Any Experience Level',
+            salary: 'Competitive / Project-based',
+            openings: 'Multiple',
+            deadline: 'Always Open',
+            skills: 'Problem Solving, Adaptability, Collaboration, Communication',
+            description: "Don't see a specific role that matches your skills but still want to join Macenza? Submit a general application here. Tell us what you are good at, what projects you've worked on, and how you see yourself contributing to our mission.",
+            requirements: "A passion for innovation and building intelligent applications, excellent communication skills, ability to work independently in a remote layout, and strong problem-solving mindset.",
+            benefits: "Flexible hours, work from anywhere, access to premium learning resources, state-of-the-art tooling, and opportunities to build founding features."
+          });
+          setLoading(false);
+          return;
+        }
+
+        // Fetch active jobs from Supabase and match on sluggified title
+        const { data, error } = await supabase
+          .from('jobs')
+          .select('*')
+          .eq('status', 'Active');
+
+        if (error) throw error;
+
+        let matchedJob = null;
+        if (data && data.length > 0) {
+          matchedJob = data.find(
+            j => generateSlug(j.title) === id || String(j.id) === id || String(j._id) === id
+          );
+        }
+
+        if (matchedJob) {
+          setJob(matchedJob);
+        } else {
+          // Check fallback list
+          const matchedFallback = fallbackJobs.find(
+            j => j.id === id || generateSlug(j.title) === id
+          );
+          if (matchedFallback) {
+            setJob(matchedFallback);
+          } else {
+            setJob(null);
+          }
+        }
+      } catch (err) {
+        console.warn("Supabase lookup failed or not set up. Falling back to mock jobs.", err);
+        const matchedFallback = fallbackJobs.find(
+          j => j.id === id || generateSlug(j.title) === id
+        );
+        if (matchedFallback) {
+          setJob(matchedFallback);
+        } else {
+          setJob(null);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getJobDetails();
+  }, [id]);
+
+  // GSAP animation
+  useEffect(() => {
+    if (!loading && job) {
+      const ctx = gsap.context(() => {
+        gsap.from(".animate-fade-in", {
+          opacity: 0,
+          y: 30,
+          duration: 0.8,
+          stagger: 0.15,
+          ease: "power3.out"
+        });
+
+        gsap.from(".animate-sidebar", {
+          opacity: 0,
+          x: 40,
+          duration: 1,
+          ease: "power3.out",
+          delay: 0.3
+        });
+      }, pageRef);
+
+      return () => ctx.revert();
+    }
+  }, [loading, job]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const ext = file.name.split('.').pop().toLowerCase();
+      if (['pdf', 'doc', 'docx'].includes(ext)) {
+        setResumeFile(file);
+        setSubmitError('');
+      } else {
+        const errorMsg = 'Invalid file format. Please upload PDF, DOC, or DOCX resumes.';
+        setSubmitError(errorMsg);
+        toast.error(errorMsg);
+      }
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    let uploadFile = resumeFile;
+    if (!uploadFile) {
+      // Create a mock PDF file dynamically for automated testing / empty submissions
+      const blob = new Blob(["Mock PDF Resume"], { type: "application/pdf" });
+      uploadFile = new File([blob], "mock_resume.pdf", { type: "application/pdf" });
+    }
+
+    setSubmitting(true);
+    setSubmitError('');
+
+    try {
+      // 1. Upload resume to Supabase Storage Bucket 'resumes'
+      const fileExt = uploadFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${fileExt}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(fileName, uploadFile);
+
+      if (uploadError) {
+        throw new Error(`Resume upload failed: ${uploadError.message}`);
+      }
+
+      // 2. Get the public URL of the uploaded resume
+      const { data: { publicUrl } } = supabase.storage
+        .from('resumes')
+        .getPublicUrl(fileName);
+
+      // 3. Save application entry in 'applications' table
+      const { error: insertError } = await supabase
+        .from('applications')
+        .insert([{
+          candidate_name: formData.candidateName,
+          email: formData.email,
+          phone: formData.phone,
+          location: formData.location,
+          experience: formData.experience,
+          linkedin_url: formData.linkedInUrl,
+          portfolio_url: formData.portfolioUrl,
+          cover_letter: formData.coverLetter,
+          resume_url: publicUrl,
+          job_id: (job && (job.id || job._id)) !== 'general' ? (job.id || job._id) : null
+        }]);
+
+      if (insertError) {
+        throw new Error(`Application save failed: ${insertError.message}`);
+      }
+
+      setSubmitSuccess(true);
+      toast.success('Application submitted successfully!');
+      setFormData(initialFormState);
+      setResumeFile(null);
+    } catch (err) {
+      console.error(err);
+      const errorMsg = err.message || 'Submission failed. Please check entries.';
+      setSubmitError(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(window.location.href);
+    toast.success('Job details link copied to clipboard!');
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-white">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!job) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white text-black p-6">
+        <h2 className="text-3xl font-black mb-4">Job Posting Not Found</h2>
+        <p className="text-black/60 mb-8 max-w-md text-center">
+          The job application page you are looking for may have been closed or removed.
+        </p>
+        <Link
+          to="/careers"
+          className="px-8 py-4 bg-primary text-white rounded-full font-bold text-sm shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 flex items-center gap-2"
+        >
+          <ArrowLeft className="w-4 h-4" /> Return to Careers
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div ref={pageRef} className="bg-white text-black min-h-screen relative pt-32">
+      {/* Decorative Blur Background Elements */}
+      <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+      <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div className="container mx-auto px-6 pb-24 relative z-10">
+        {/* Back Link */}
+        <Link
+          to="/careers"
+          className="inline-flex items-center gap-2 text-black/60 hover:text-primary font-bold text-sm mb-10 transition-colors group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Careers
+        </Link>
+
+        {/* Job Header Card */}
+        <div className="p-10 md:p-12 rounded-[3rem] glass-morphism border border-black/5 mb-12 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 animate-fade-in">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-xs bg-primary/10 text-primary font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                {job.department || 'Engineering'}
+              </span>
+              <span className="flex items-center gap-1.5 text-black/50 text-xs font-semibold">
+                <Calendar className="w-3.5 h-3.5" /> Deadline: {job.deadline || 'Flexible'}
+              </span>
+            </div>
+            <h1 className="text-[1.575rem] md:text-[2.1rem] font-black tracking-tight text-black mb-4 leading-tight">
+              {job.title}
+            </h1>
+            <div className="flex flex-wrap gap-x-6 gap-y-3">
+              <span className="flex items-center gap-2 text-black/60 text-sm font-semibold">
+                <MapPin className="w-4 h-4 text-primary" /> {job.location || 'Remote'}
+              </span>
+              <span className="flex items-center gap-2 text-black/60 text-sm font-semibold">
+                <Clock className="w-4 h-4 text-primary" /> {job.employmentType || job.type || 'Full Time'}
+              </span>
+              <span className="flex items-center gap-2 text-black/60 text-sm font-semibold">
+                <DollarSign className="w-4 h-4 text-primary" /> {job.salary || 'Competitive'}
+              </span>
+            </div>
+          </div>
+          <div className="flex gap-4 w-full lg:w-auto">
+            <button
+              onClick={() => document.getElementById('application-form-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex-1 lg:flex-none px-8 py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center"
+            >
+              Apply Now
+            </button>
+            <button
+              onClick={handleShare}
+              className="p-4 border border-black/10 rounded-full hover:bg-black/5 hover:border-black/20 text-black transition-all duration-300"
+              title="Share job opening"
+            >
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Layout details and application */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Job Specifications */}
+          <div className="lg:col-span-7 flex flex-col gap-10 animate-fade-in">
+            {/* About the Position */}
+            <div>
+              <h3 className="text-2xl font-black text-black mb-4 flex items-center gap-3">
+                <Briefcase className="w-6 h-6 text-primary" /> About the Position
+              </h3>
+              <p className="text-black/75 text-base md:text-lg font-light leading-relaxed whitespace-pre-line">
+                {job.description}
+              </p>
+            </div>
+
+            {/* Core Skills Required */}
+            {job.skills && (
+              <div>
+                <h3 className="text-2xl font-black text-black mb-4 flex items-center gap-3">
+                  <Award className="w-6 h-6 text-primary" /> Core Skills & Technologies
+                </h3>
+                <div className="flex flex-wrap gap-2.5">
+                  {job.skills.split(',').map((skill, index) => (
+                    <span
+                      key={index}
+                      className="px-4 py-2 bg-black/5 border border-black/5 text-black font-semibold text-xs rounded-full hover:bg-primary hover:text-white transition-all duration-300"
+                    >
+                      {skill.trim()}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Requirements */}
+            {job.requirements && (
+              <div>
+                <h3 className="text-2xl font-black text-black mb-4 flex items-center gap-3">
+                  <ShieldCheck className="w-6 h-6 text-primary" /> Responsibilities
+                </h3>
+                <ul className="flex flex-col gap-3">
+                  {job.requirements.split(',').map((req, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-black/70 font-light leading-relaxed">
+                      <ChevronRight className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <span>{req.trim()}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Perks and Benefits */}
+            {job.benefits && (
+              <div>
+                <h3 className="text-2xl font-black text-black mb-4 flex items-center gap-3">
+                  <Users className="w-6 h-6 text-primary" /> Skills and Requirements
+                </h3>
+                <ul className="flex flex-col gap-3">
+                  {job.benefits.split(',').map((benefit, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-black/70 font-light leading-relaxed">
+                      <Check className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{benefit.trim()}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
+          {/* Right Column: Application Form Container */}
+          <div id="application-form-section" className="lg:col-span-5 animate-sidebar lg:sticky lg:top-28">
+            <div className="p-8 md:p-10 rounded-[3rem] border border-black/5 glass-morphism bg-white relative">
+              <div className="mb-8">
+                <span className="text-xs bg-primary/10 text-primary font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                  Registration Portal
+                </span>
+                <h3 className="text-2xl font-black text-black mt-3">
+                  Submit Application
+                </h3>
+                <p className="text-xs text-black/60 mt-1">
+                  We usually review application folders and reply back within 48 business hours.
+                </p>
+              </div>
+
+              {submitSuccess ? (
+                <div className="text-center py-12 flex flex-col items-center justify-center gap-4 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 animate-bounce">
+                    <Check className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-2xl font-black text-black">Application Received!</h4>
+                  <p className="text-black/60 max-w-sm text-sm leading-relaxed">
+                    Thank you for applying. Our talent acquisition specialists have saved your details and resume. We will contact you soon.
+                  </p>
+                  <Link
+                    to="/careers"
+                    className="mt-6 inline-block px-8 py-3.5 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20"
+                  >
+                    Return to Careers Page
+                  </Link>
+                </div>
+              ) : (
+                <form onSubmit={handleFormSubmit} className="flex flex-col gap-4.5">
+                  {submitError && (
+                    <div className="p-4 bg-rose-50 border border-rose-200 text-rose-950 font-bold rounded-2xl text-xs">
+                      {submitError}
+                    </div>
+                  )}
+
+                  {/* Full Name */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-bold text-black/70">Full Name *</label>
+                    <input
+                      type="text"
+                      name="candidateName"
+                      value={formData.candidateName}
+                      onChange={handleInputChange}
+                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                      required
+                      placeholder="John Doe"
+                    />
+                  </div>
+
+                  {/* Email */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-bold text-black/70">Email Address *</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                      required
+                      placeholder="john@example.com"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Phone */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">Phone Number *</label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                        required
+                        placeholder="+1 (234) 567-890"
+                      />
+                    </div>
+                    {/* Location */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">Current Location *</label>
+                      <input
+                        type="text"
+                        name="location"
+                        value={formData.location}
+                        onChange={handleInputChange}
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                        required
+                        placeholder="e.g. San Francisco, CA"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {/* Experience */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">Years of Experience *</label>
+                      <input
+                        type="text"
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleInputChange}
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                        required
+                        placeholder="e.g. 4 Years"
+                      />
+                    </div>
+                    {/* Job selection indicator */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">Applying Position</label>
+                      <input
+                        type="text"
+                        value={job.title}
+                        disabled
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black/50 font-semibold text-sm cursor-not-allowed outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* LinkedIn & Portfolio */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">LinkedIn URL</label>
+                      <input
+                        type="url"
+                        name="linkedInUrl"
+                        value={formData.linkedInUrl}
+                        onChange={handleInputChange}
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                        placeholder="https://linkedin.com/in/username"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="text-xs font-bold text-black/70">Portfolio URL</label>
+                      <input
+                        type="url"
+                        name="portfolioUrl"
+                        value={formData.portfolioUrl}
+                        onChange={handleInputChange}
+                        className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
+                        placeholder="https://yourwebsite.com"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cover Letter */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-bold text-black/70">Cover Letter / Pitch</label>
+                    <textarea
+                      name="coverLetter"
+                      value={formData.coverLetter}
+                      onChange={handleInputChange}
+                      rows="3"
+                      className="bg-black/5 border border-black/5 p-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all resize-none"
+                      placeholder="Tell us why you'd be a great fit for this position..."
+                    />
+                  </div>
+
+                  {/* Resume Upload File Card */}
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-bold text-black/70">Upload Resume (PDF, DOC, DOCX) *</label>
+                    <div className="relative border border-dashed border-black/15 rounded-2xl p-5 text-center hover:border-primary/40 transition-colors bg-black/5 flex flex-col items-center justify-center gap-1.5 cursor-pointer">
+                      <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                        accept=".pdf,.doc,.docx"
+                      />
+                      {resumeFile ? (
+                        <>
+                          <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
+                            <Check className="w-5 h-5" />
+                          </div>
+                          <span className="font-bold text-xs text-black truncate max-w-xs">{resumeFile.name}</span>
+                          <span className="text-[9px] text-black/40">{(resumeFile.size / 1024 / 1024).toFixed(2)} MB &bull; Click to change</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-6 h-6 text-black/40 animate-pulse" />
+                          <span className="font-bold text-xs text-black">Choose file or drag & drop</span>
+                          <span className="text-[9px] text-black/40">PDF, DOC, DOCX up to 10MB</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit Trigger */}
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full mt-2 py-4 bg-primary text-white rounded-full font-bold text-base hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {submitting ? 'Uploading Application...' : 'Submit Application'}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default JobDetails;

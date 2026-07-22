@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Link } from 'react-router-dom';
 import Section from '../components/Section';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 
 const Policy = () => {
@@ -87,8 +88,9 @@ const Policy = () => {
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
             Legal & Compliance
           </div>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-black mb-6 reveal-up">
-            Privacy <span className="text-primary italic">Policy</span>
+          <h1 className="text-[1.575rem] md:text-[2.625rem] font-black tracking-tighter text-black mb-6 reveal-up">
+            <BouncyText text="Privacy " />
+            <BouncyText text="Policy" className="text-primary italic" />
           </h1>
           <p className="text-black/40 text-sm font-bold tracking-widest uppercase reveal-up">
             Last Updated: 29th July 2025

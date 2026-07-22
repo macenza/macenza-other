@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, Cpu, Code, Globe, Smartphone, Zap, Cloud, ArrowRight } from 'lucide-react';
 import HeroSequence from '../components/HeroSequence';
 import HeroOverlay from '../components/HeroOverlay';
@@ -9,32 +9,34 @@ import Section from '../components/Section';
 import Footer from '../components/Footer';
 import LogoLoop from '../components/LogoLoop';
 import ScrollVelocity from '../components/ScrollVelocity';
+import { TestimonialCard } from '../components/ui/testimonial-cards';
+import { cn } from '../lib/utils';
 
 const services = [
-  { icon: "🌐", title: "Website Development", desc: "High-performance enterprise websites and headless CMS architectures.", bgClass: "bg-teal-500/10", link: "/solutions" },
-  { icon: "💻", title: "Web Applications", desc: "Custom SaaS platforms and internal web tools built with React.", bgClass: "bg-blue-500/10", link: "/solutions" },
-  { icon: "👥", title: "HRMS Software", desc: "Automate your workforce management with custom HR software.", bgClass: "bg-purple-500/10", link: "/solutions" },
-  { icon: "🧠", title: "AI Development", desc: "Custom machine learning models and neural networks.", bgClass: "bg-violet-500/10", link: "/solutions" },
-  { icon: "⚡", title: "Automation Solutions", desc: "Streamline workflows with intelligent process automation.", bgClass: "bg-amber-500/10", link: "/solutions" },
-  { icon: "☁️", title: "Cloud Infrastructure", desc: "Secure, scalable cloud architectures for digital products.", bgClass: "bg-sky-500/10", link: "/solutions" },
+  { image: "/portfolio/website_development.webp", title: "Website Development", desc: "We design and build custom frontend websites and headless CMS integrations. We use Next.js and Tailwind CSS to ensure rapid load times, responsive layouts, and search engine optimization, resolving slow load speeds and high bounce rates for consumer brands.", link: "/solutions" },
+  { image: "/portfolio/web_applications.webp", title: "Web Applications", desc: "We build tailored SaaS platforms and internal business portals. Using React, TypeScript, and PostgreSQL, we consolidate spreadsheets, legacy databases, and separate APIs into a single secure web system tailored for your specific operating workflow.", link: "/solutions" },
+  { image: "/portfolio/hrms_software.webp", title: "HRMS Software", desc: "We engineer customized human resource management dashboards. We use Node.js and React to integrate time tracking, automated payroll calculations, and job applicant queues, preventing human entry errors and database sync conflicts.", link: "https://www.hrenso.com/" },
+  { image: "/portfolio/ai_development.webp", title: "AI Development", desc: "We integrate custom machine learning algorithms and language model APIs into existing applications. Using Python, PyTorch, and OpenAI API, we automate document categorization and customer service routing to lower manual operations cost.", link: "/solutions" },
+  { image: "/portfolio/automation_solutions.webp", title: "Automation Solutions", desc: "We write custom scripts and scheduled background pipelines. Using Node.js, cron jobs, and webhooks, we automate data synchronization between inventory tools, accounting databases, and CRMs, removing manual file copying tasks.", link: "/solutions" },
+  { image: "/portfolio/hotel_management.webp", title: "Hotel Management Software", desc: "We build custom hotel management software that helps hotels manage bookings, guests, rooms, billing, and staff from one easy-to-use system.", link: "/solutions" },
 ];
 
 const portfolioProjects = [
   {
     name: "DIPLIM.COM",
     category: "AI Fashion / Digital Creative Platform",
-    desc: "AI-powered fashion visualization, futuristic branding, and premium digital creative experiences.",
-    image: "/portfolio/diplim_fashion.png",
+    desc: "Diplim is a web tool apparel brands use to create product photos without physical photoshoots. Brands upload flat garment images, and the system processes and projects the clothing onto photorealistic digital models. Workflow yields downloadable, high-resolution marketing-ready assets, reducing agency coordination time and model casting costs.",
+    image: "/portfolio/diplim_fashion.webp",
     buttonText: "View Project",
     url: "https://diplim.com"
   },
   {
     name: "HRMS Platform",
     category: "Human Resource Management System",
-    desc: "Complete employee management platform with payroll, attendance, leave tracking, recruitment, and analytics dashboards.",
-    image: "/portfolio/hrms_saas.png",
+    desc: "A unified portal connecting timesheet logging, payroll calculations, and applicant tracking. Employees log hours, managers approve timesheets via web dashboard, and payroll reports generate automatically using PostgreSQL calculations, resolving payroll discrepancies and admin bottlenecking.",
+    image: "/portfolio/hrms_saas.webp",
     buttonText: "View Project",
-    url: "/contact"
+    url: "https://www.hrenso.com/"
   }
 ];
 
@@ -56,10 +58,219 @@ const techLogos = [
   { node: <span className="text-3xl font-black text-black/30 hover:text-primary transition-all duration-300 tracking-tight">Google</span> },
 ];
 
+const globalTestimonials = [
+  {
+    name: "Harrison M.",
+    country: "Australia",
+    flag: "🇦🇺",
+    industry: "Healthcare Services",
+    project: "HRMS Platform",
+    avatar: "/review/client_1.webp",
+    rating: 5,
+    outcome: "We migrated our workforce scheduling and automated payroll tracking to the new HRMS platform. The integration resolved our shift overlapping errors and cut weekly payroll processing time by over 12 hours."
+  },
+  {
+    name: "Sarah K.",
+    country: "USA",
+    flag: "🇺🇸",
+    industry: "Legal Operations",
+    project: "Custom AI Development",
+    avatar: "/review/client_2.webp",
+    rating: 5,
+    outcome: "The custom text-parsing pipeline categorizes client file uploads and maps key metadata fields directly into our database. This reduced document classification bottlenecks, allowing our paralegals to process cases twice as fast."
+  },
+  {
+    name: "Tomas V.",
+    country: "Czech Republic",
+    flag: "🇨🇿",
+    industry: "Information Technology",
+    project: "Enterprise RAG System",
+    avatar: "/review/client_3.webp",
+    rating: 5,
+    outcome: "By indexing our documentation repository with the custom RAG system, our service representatives can query product manuals via natural language. Customer ticket resolution speed increased by 35% within the first month."
+  },
+  {
+    name: "Dilrabo S.",
+    country: "Uzbekistan",
+    flag: "🇺🇿",
+    industry: "Hospitality",
+    project: "Hotel Management System",
+    avatar: "/review/client_4.webp",
+    rating: 5,
+    outcome: "Our receptionist staff now uses the unified ledger to check guest check-ins, process room changes, and invoice cleanings. The live room-state dashboard has completely eliminated double-booking reservation errors."
+  },
+  {
+    name: "Olivia P.",
+    country: "Canada",
+    flag: "🇨🇦",
+    industry: "Financial Advisory",
+    project: "CRM Platform",
+    avatar: "/review/client_5.webp",
+    rating: 5,
+    outcome: "The custom relationship portal consolidates our client history files, task logs, and meeting reminders into a single layout. The system saves our advisors hours of spreadsheet management each week."
+  },
+  {
+    name: "James R.",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    industry: "Logistics & Distribution",
+    project: "Business Automation",
+    avatar: "/review/client_6.webp",
+    rating: 5,
+    outcome: "We automated our ordering system to sync incoming email orders directly with our warehouse inventory records. The pipeline removed manual transcription checks and accelerated order packing speed."
+  },
+  {
+    name: "Elena B.",
+    country: "Germany",
+    flag: "🇩🇪",
+    industry: "Industrial Manufacturing",
+    project: "Manufacturing Dashboard",
+    avatar: "/review/client_7.webp",
+    rating: 5,
+    outcome: "The live dashboard aggregates sensor logs and displays machine load rates on the assembly line in real time. The alert triggers help our shift supervisors identify and resolve bottleneck jams immediately."
+  },
+  {
+    name: "Tariq A.",
+    country: "UAE",
+    flag: "🇦🇪",
+    industry: "Commercial Real Estate",
+    project: "ERP Solution",
+    avatar: "/review/client_8.webp",
+    rating: 5,
+    outcome: "Our property managers now coordinate tenant contracts, service invoices, and maintenance logs in a single web ledger. The database schema has simplified reporting, reducing contract administrative overhead by 40%."
+  },
+  {
+    name: "Mei Ling T.",
+    country: "Singapore",
+    flag: "🇸🇬",
+    industry: "Trade Finance",
+    project: "AI Document Processing",
+    avatar: "/review/client_9.webp",
+    rating: 5,
+    outcome: "The document ingestion software automatically reads vendor invoices, formats currency values, and validates tax codes. It processes thousands of bills daily with zero manual intervention required."
+  },
+  {
+    name: "Sophie de J.",
+    country: "Netherlands",
+    flag: "🇳🇱",
+    industry: "Digital Publishing",
+    project: "Custom SaaS Platform",
+    avatar: "/review/client_10.webp",
+    rating: 5,
+    outcome: "We replaced our separate billing plug-ins with a custom unified billing platform. The dashboard handles monthly renewals and subscription plan changes, eliminating billing coordination disputes."
+  }
+];
+
+const Marquee = ({ items }) => {
+  const containerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStartX, setTouchStartX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [baseOffset, setBaseOffset] = useState(0);
+
+  const handleTouchStart = (e) => {
+    setIsPaused(true);
+    setTouchStartX(e.touches[0].clientX);
+    if (containerRef.current) {
+      const style = window.getComputedStyle(containerRef.current);
+      const matrix = new WebKitCSSMatrix(style.transform);
+      setBaseOffset(matrix.m41);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - touchStartX;
+    setDragOffset(diff);
+  };
+
+  const handleTouchEnd = () => {
+    setIsPaused(false);
+    setDragOffset(0);
+  };
+
+  const duplicatedItems = [...items, ...items];
+
+  const trackStyle = {
+    animationPlayState: isPaused ? 'paused' : 'running',
+    transform: dragOffset !== 0 ? `translateX(${baseOffset + dragOffset}px)` : undefined,
+  };
+
+  return (
+    <div className="relative w-full overflow-hidden py-12 select-none">
+      <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+      <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+
+      <div
+        ref={containerRef}
+        className="flex gap-6 w-max animate-marquee-left hover:[animation-play-state:paused]"
+        style={trackStyle}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {duplicatedItems.map((item, idx) => (
+          <div
+            key={idx}
+            className="w-[320px] md:w-[380px] flex-shrink-0 p-8 rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] hover:-translate-y-[6px] transition-all duration-500 ease-out flex flex-col justify-between text-left group cursor-default"
+          >
+            <div>
+              <div className="flex items-center gap-4 mb-6">
+                <img
+                  src={item.avatar}
+                  alt={item.name}
+                  className="w-16 h-16 rounded-full object-cover border border-black/5 shadow-sm group-hover:scale-105 transition-transform duration-500"
+                />
+                <div>
+                  <h4 className="text-xl font-bold text-black leading-tight tracking-tight">{item.name}</h4>
+                  <div className="flex items-center gap-1.5 text-xs text-black/40 font-bold uppercase tracking-wider mt-1">
+                    <span>{item.flag}</span>
+                    <span>{item.country}</span>
+                  </div>
+                </div>
+              </div>
+
+              <span className="text-primary text-xs font-black tracking-[0.2em] uppercase block mb-3">
+                {item.project}
+              </span>
+
+              <div className="flex gap-1 text-amber-500 text-sm mb-4">
+                {Array.from({ length: item.rating }).map((_, i) => (
+                  <span key={i}>★</span>
+                ))}
+              </div>
+
+              <p className="text-black/60 font-light leading-relaxed text-sm md:text-base">
+                "{item.outcome}"
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const Home = React.memo(() => {
+  const navigate = useNavigate();
 
   const handleLoadingComplete = () => {
     ScrollTrigger.refresh();
+  };
+
+  const [positions, setPositions] = useState([
+    "front",
+    "middle",
+    "back",
+    ...Array(globalTestimonials.length - 3).fill("back")
+  ]);
+
+  const handleShuffle = () => {
+    setPositions((prev) => {
+      const copy = [...prev];
+      copy.unshift(copy.pop());
+      return copy;
+    });
   };
 
   return (
@@ -76,7 +287,7 @@ const Home = React.memo(() => {
       <div className="py-16 bg-white border-y border-black/5 overflow-hidden">
         <div className="container mx-auto px-6 mb-8">
           <p className="text-xs font-bold text-center text-black/40 uppercase tracking-[0.25em]">
-            Empowering Next-Gen AI & Core Tech Stacks
+            Programming Languages, Frameworks, and Tools We Use
           </p>
         </div>
         <LogoLoop
@@ -95,24 +306,41 @@ const Home = React.memo(() => {
 
       <Section
         id="services"
-        title="Our Expertise"
-        subtitle="We combine deep technical knowledge with creative thinking to solve the world's most complex digital challenges."
+        title="Our Capabilities"
+        subtitle="We build custom software, modern web applications, and smart automation that fits your business needs."
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Link
+            <div
               key={index}
-              to={service.link}
-              className="p-10 rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block"
+              onClick={() => {
+                const selection = window.getSelection().toString();
+                if (!selection) {
+                  if (service.link.startsWith('http')) {
+                    window.open(service.link, '_blank', 'noopener,noreferrer');
+                  } else {
+                    navigate(service.link);
+                  }
+                }
+              }}
+              className="rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block overflow-hidden bg-white/50 backdrop-blur-sm cursor-pointer select-text"
             >
-              <div className={`mb-6 p-4 rounded-2xl w-fit transition-all duration-500 text-4xl group-hover:scale-110 ${service.bgClass}`}>
-                {service.icon}
+              <div className="aspect-video w-full overflow-hidden relative border-b border-dark/5">
+                <img 
+                  src={service.image} 
+                  alt={service.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  draggable="false"
+                />
               </div>
-              <h3 className="text-2xl font-bold text-black mb-4">{service.title}</h3>
-              <p className="text-black/60 font-light leading-relaxed">
-                {service.desc}
-              </p>
-            </Link>
+              <div className="p-8">
+                <h3 className="text-2xl font-bold text-black mb-4 group-hover:text-primary transition-colors duration-300">{service.title}</h3>
+                <p className="text-black/60 font-light leading-relaxed text-sm md:text-base">
+                  {service.desc}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </Section>
@@ -125,10 +353,10 @@ const Home = React.memo(() => {
             </h2>
             <div className="space-y-8">
               {[
-                { title: "AI-First Engineering", desc: "We don't just add AI; we build systems from the ground up with artificial intelligence at the core." },
-                { title: "Fast Product Delivery", desc: "Our agile methodology ensures your product goes from concept to launch in record time without compromising quality." },
-                { title: "Scalable Architecture", desc: "We build for tomorrow, ensuring your infrastructure grows seamlessly with your user base." },
-                { title: "Enterprise-Grade Systems", desc: "Security and reliability are non-negotiable. We deliver production-ready code for the most demanding environments." }
+                { title: "Transparent Development Process", desc: "We provide clients with direct access to their project's Git repository and schedule weekly video reviews to demo codebase updates." },
+                { title: "Scalable Relational Databases", desc: "We write clean database schemas with proper foreign keys, indexing, and query optimizations to keep response times low under high user concurrency." },
+                { title: "Automated Deployment Pipelines", desc: "We containerize applications using Docker and write configuration scripts for automated server updates, minimizing staging and production downtime." },
+                { title: "Long-Term Code Maintenance", desc: "We offer monthly maintenance plans to monitor server error logs, update outdated libraries, patch security issues, and fix user bugs." }
               ].map((item, i) => (
                 <div key={i} className="flex gap-6">
                   <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
@@ -145,7 +373,7 @@ const Home = React.memo(() => {
           <div className="relative aspect-square rounded-3xl overflow-hidden group">
             <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700"></div>
             <img
-              src="/macenza-ad.png"
+              src="/macenza-ad.webp"
               alt="AI Technology"
               width={800}
               height={800}
@@ -172,23 +400,29 @@ const Home = React.memo(() => {
 
       <Section
         id="portfolio"
-        title="Selected Works"
-        subtitle="Explore our portfolio of groundbreaking projects across various industries."
+        title="Products."
+        subtitle="Explore software projects we have designed, built, and deployed for client organizations."
         className="bg-white text-black"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
           {portfolioProjects.map((project, index) => {
             const isExternal = project.url.startsWith('http');
-            const CardLink = isExternal ? 'a' : Link;
-            const linkProps = isExternal
-              ? { href: project.url, target: '_blank', rel: 'noopener noreferrer' }
-              : { to: project.url };
+            const handlePortfolioClick = () => {
+              const selection = window.getSelection().toString();
+              if (!selection) {
+                if (isExternal) {
+                  window.open(project.url, '_blank', 'noopener,noreferrer');
+                } else {
+                  navigate(project.url);
+                }
+              }
+            };
 
             return (
-              <CardLink
+              <div
                 key={index}
-                {...linkProps}
-                className="portfolio-card group relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-6 md:p-8 transition-colors transition-shadow duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer"
+                onClick={handlePortfolioClick}
+                className="portfolio-card group relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-6 md:p-8 transition-colors transition-shadow duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer select-text"
               >
                 <div>
                   <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-[0_15px_35px_rgba(0,0,0,0.05)] border border-black/5">
@@ -196,6 +430,7 @@ const Home = React.memo(() => {
                       src={project.image}
                       alt={project.name}
                       className="w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-[800ms] ease-out"
+                      draggable="false"
                     />
                     <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all duration-500">
                       <span className="px-6 py-3 bg-white/95 backdrop-blur-md text-black rounded-full font-bold text-sm shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-75">
@@ -222,9 +457,151 @@ const Home = React.memo(() => {
                 </div>
 
                 <div className="absolute bottom-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-primary to-transparent transform scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out" />
-              </CardLink>
+              </div>
             );
           })}
+        </div>
+      </Section>
+
+      {/* Testimonials Section */}
+      <Section
+        id="testimonials-section"
+        className="bg-white text-black relative overflow-hidden"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          {/* Column 1: Copy/Info */}
+          <div className="flex flex-col items-start text-left max-w-xl">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-black mb-6">
+              Trusted by Businesses Worldwide
+            </h2>
+            <p className="text-lg md:text-xl text-black/60 font-light leading-relaxed mb-8">
+              Discover some of the software solutions we've delivered for businesses across multiple industries and countries. Drag the top card left/right or click the button to cycle through client success stories.
+            </p>
+            <button
+              onClick={handleShuffle}
+              className="px-8 py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-black transition-all duration-300 shadow-lg hover:shadow-primary/20"
+            >
+              Next Story
+            </button>
+          </div>
+
+          {/* Column 2: Testimonial Card Stack */}
+          <div className="relative h-[480px] w-full flex justify-center items-center overflow-visible">
+            <div className="relative h-[450px] w-[320px] md:w-[350px] select-none">
+              {globalTestimonials.map((t, index) => (
+                <TestimonialCard
+                  key={index}
+                  id={index + 1}
+                  testimonial={t.outcome}
+                  author={`${t.name} — ${t.project} @ ${t.industry}`}
+                  avatar={t.avatar}
+                  handleShuffle={handleShuffle}
+                  position={positions[index]}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Founder Section */}
+      <Section
+        id="founder"
+        title="Meet the Founder"
+        subtitle="The vision behind Macenza and the principles that guide every software solution we build."
+        className="bg-white text-black relative overflow-hidden"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch reveal-up">
+          {/* Left Column: Portrait and Stats */}
+          <div className="lg:col-span-5 flex flex-col gap-8">
+            <div className="portfolio-card relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-6 flex flex-col justify-between overflow-hidden h-full">
+              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-black/5">
+                <img
+                  src="/review/founder.webp"
+                  alt="Shashank Shubham"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="text-center md:text-left px-2">
+                <h3 className="text-3xl font-bold text-black tracking-tight mb-1">Shashank Shubham</h3>
+                <span className="text-primary text-xs font-black tracking-[0.2em] uppercase">Founder & CEO</span>
+              </div>
+            </div>
+
+            {/* Stats list */}
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { title: "Founded", value: "2025" },
+                { title: "Specialization", value: "AI & SaaS" },
+                { title: "Focus", value: "Custom Software" },
+                { title: "Mission", value: "Practical Tech" }
+              ].map((stat, i) => (
+                <div key={i} className="p-6 rounded-[2rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.02)] text-center">
+                  <div className="text-2xl font-bold text-primary mb-1">{stat.value}</div>
+                  <div className="text-xs text-black/55 uppercase font-black tracking-wider">{stat.title}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column: Founder content and quote */}
+          <div className="lg:col-span-7 flex flex-col justify-between gap-8">
+            {/* Main content card */}
+            <div className="portfolio-card relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-8 md:p-10 flex flex-col gap-8 h-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">About</h4>
+                  <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
+                    Macenza was founded with a simple belief: technology should solve real business problems, not create unnecessary complexity. From AI-powered applications to enterprise software and SaaS platforms, every solution is designed with long-term scalability, performance, and usability in mind.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Why Macenza Was Started</h4>
+                  <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
+                    Many businesses struggle with software that is difficult to use, expensive to maintain, or doesn't truly fit their workflows. Macenza was created to build practical software that helps companies automate operations, improve efficiency, and grow with confidence.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Our Philosophy</h4>
+                  <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
+                    We believe great software starts by understanding the business before writing a single line of code. Every project begins with discovery, thoughtful planning, clean architecture, and transparent collaboration. Our focus is on building software that delivers long-term value rather than unnecessary complexity.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Our Vision</h4>
+                  <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
+                    To build intelligent software and AI solutions that help businesses around the world innovate, automate, and scale. We aim to create reliable digital products that make advanced technology practical, accessible, and impactful.
+                  </p>
+                </div>
+              </div>
+
+              {/* Founder quote */}
+              <div className="border-t border-black/5 pt-8 mt-4">
+                <blockquote className="text-xl md:text-2xl text-black/80 font-light italic leading-relaxed mb-4">
+                  "The best software isn't the one with the most features—it's the one that solves the right problem in the simplest possible way."
+                </blockquote>
+                <cite className="text-xs font-bold text-black/55 uppercase tracking-wider not-italic">
+                  — Shashank Shubham, Founder & CEO
+                </cite>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-wrap gap-4 mt-4">
+                <Link
+                  to="/contact"
+                  className="px-8 py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-md flex items-center gap-2"
+                >
+                  Let's Build Together
+                </Link>
+                <Link
+                  to="/solutions"
+                  className="px-8 py-4 bg-white text-black border border-black/10 rounded-full font-bold text-sm hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
+                >
+                  View Our Work
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -232,11 +609,11 @@ const Home = React.memo(() => {
         <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Build the Future with Macenza
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Ready to transform your ideas into reality? Our team of experts is standing by to help you build the next big thing.
+            Get in touch with our engineering team to discuss your application requirements, database schema design, and cloud hosting specifications.
           </p>
           <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Get in Touch

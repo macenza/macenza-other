@@ -1,8 +1,21 @@
-import React from 'react';
-import { Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { BackgroundBeamsWithCollision } from './ui/background-beams-with-collision';
 
 const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    if (email) {
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => setSubscribed(false), 3000);
+    }
+  };
+
   const socials = [
     { 
       icon: (
@@ -34,49 +47,138 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="py-20 border-t border-black/5 bg-white">
-      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-10">
-        <div className="flex flex-col items-center md:items-start gap-4">
-          <div className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Macenza Logo" className="w-8 h-8 object-contain rounded-lg bg-white p-0.5" />
-            <span className="text-2xl font-black tracking-tighter text-black">MACENZA</span>
-          </div>
-          <div className="text-sm text-black/30">
-            © 2026 Macenza AI. All rights reserved.
-          </div>
-        </div>
+    <footer className="border-t border-black/5 bg-white relative overflow-hidden">
+      <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-950 dark:to-neutral-900">
+        <div className="container mx-auto px-6 relative z-10 w-full">
+          {/* Main Footer Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            
+            {/* Column 1: Brand Info */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-3">
+                <img src="/logo.svg" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-xl glow-blue bg-white p-1" />
+                <span className="text-2xl font-black tracking-tighter text-black">MACENZA</span>
+              </div>
+              <p className="text-sm text-black/60 leading-relaxed max-w-sm">
+                Empowering businesses through cutting-edge AI integration, high-performance web applications, and custom digital transformation solutions.
+              </p>
+              
+              {/* Social Links */}
+              <div className="flex items-center gap-3 mt-2">
+                {socials.map((social, i) => (
+                  <a 
+                    key={i} 
+                    href={social.href} 
+                    target={social.href.startsWith('mailto:') ? undefined : "_blank"}
+                    rel={social.href.startsWith('mailto:') ? undefined : "noopener noreferrer"}
+                    className="p-3 bg-black/5 rounded-full text-black/60 hover:bg-primary hover:text-white hover:scale-110 transition-all duration-300 shadow-sm flex items-center justify-center"
+                    aria-label={social.label}
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
+            </div>
 
-        <div className="flex flex-col gap-4 hidden md:flex">
-          <h4 className="font-bold text-black">Our Services</h4>
-          <div className="flex flex-col gap-2 text-sm text-black/60">
-            <span>Website Development</span>
-            <span>Web Application Development</span>
-            <span>Custom HRMS Software</span>
+            {/* Column 2: Our Services */}
+            <div className="flex flex-col gap-5">
+              <h4 className="font-bold text-black text-lg tracking-tight">Our Services</h4>
+              <div className="flex flex-col gap-3 text-sm text-black/60">
+                <span className="hover:text-primary transition-colors cursor-pointer flex items-center gap-1.5 group">
+                  Website Development
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-300"></span>
+                </span>
+                <span className="hover:text-primary transition-colors cursor-pointer flex items-center gap-1.5 group">
+                  Web Application Development
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-300"></span>
+                </span>
+                <a 
+                  href="https://www.hrenso.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-primary transition-colors flex items-center gap-1.5 group"
+                >
+                  Custom HRMS Software
+                  <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" />
+                </a>
+                <span className="hover:text-primary transition-colors cursor-pointer flex items-center gap-1.5 group">
+                  AI Integration & Solutions
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-300"></span>
+                </span>
+              </div>
+            </div>
+
+            {/* Column 3: Quick Links */}
+            <div className="flex flex-col gap-5">
+              <h4 className="font-bold text-black text-lg tracking-tight">Company</h4>
+              <div className="flex flex-col gap-3 text-sm text-black/60">
+                <Link to="/about" className="hover:text-primary hover:translate-x-1 transition-all duration-200">About Us</Link>
+                <Link to="/technology" className="hover:text-primary hover:translate-x-1 transition-all duration-200">Technology</Link>
+                <Link to="/careers" className="hover:text-primary hover:translate-x-1 transition-all duration-200">Careers</Link>
+                <Link to="/contact" className="hover:text-primary hover:translate-x-1 transition-all duration-200">Contact Us</Link>
+              </div>
+            </div>
+
+            {/* Column 4: Newsletter Widget */}
+            <div className="flex flex-col gap-5">
+              <h4 className="font-bold text-black text-lg tracking-tight">Newsletter</h4>
+              <p className="text-sm text-black/60 leading-relaxed">
+                Stay updated with the latest AI trends and product releases from Macenza.
+              </p>
+              <form onSubmit={handleSubscribe} className="flex gap-2 w-full mt-1">
+                <div className="relative flex-grow">
+                  <input
+                    type="email"
+                    placeholder={subscribed ? "Subscribed!" : "Enter your email"}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    disabled={subscribed}
+                    required
+                    className={`w-full px-4 py-2.5 bg-black/5 border border-black/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 ${
+                      subscribed ? "bg-green-50/50 text-green-700 border-green-200" : ""
+                    }`}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={subscribed}
+                  className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center shrink-0 ${
+                    subscribed 
+                      ? "bg-green-600 text-white cursor-default" 
+                      : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
+                  }`}
+                  aria-label="Subscribe to newsletter"
+                >
+                  {subscribed ? (
+                    <svg className="w-5 h-5 animate-in zoom-in" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <ArrowRight className="w-4 h-4" />
+                  )}
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+          {/* Bottom Footer Divider */}
+          <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-black/10 to-transparent mb-8" />
+
+          {/* Bottom Footer Row */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6 w-full text-sm">
+            <div className="text-black/40">
+              <span>© 2025 Macenza AI. All rights reserved.</span>
+            </div>
+
+            <div className="flex flex-wrap justify-center gap-6 text-sm font-medium text-black/50">
+              <Link to="/certificateverification" className="hover:text-primary transition-colors">Verify Certificate</Link>
+              <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+              <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+            </div>
           </div>
         </div>
-        
-        {/* Social Links */}
-        <div className="flex items-center gap-6">
-          {socials.map((social, i) => (
-            <a 
-              key={i} 
-              href={social.href} 
-              target={social.href.startsWith('mailto:') ? undefined : "_blank"}
-              rel={social.href.startsWith('mailto:') ? undefined : "noopener noreferrer"}
-              className="p-3 bg-black/5 rounded-full text-black/60 hover:bg-primary hover:text-white hover:scale-110 transition-all duration-300 shadow-sm flex items-center justify-center"
-              aria-label={social.label}
-            >
-              {social.icon}
-            </a>
-          ))}
-        </div>
-
-        <div className="flex gap-10 text-sm font-medium text-black/50">
-          <Link to="/certificateverification" className="hover:text-primary transition-colors">Verify Certificate</Link>
-          <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-          <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-        </div>
-      </div>
+      </BackgroundBeamsWithCollision>
     </footer>
   );
 };

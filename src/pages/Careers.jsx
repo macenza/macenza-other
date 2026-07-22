@@ -2,32 +2,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
+import ScrollJourney from '../components/ScrollJourney';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import {
   Rocket, Brain, Target, Zap, Lightbulb, Globe,
   Search, ArrowRight, CheckCircle2, Star, Users,
   Heart, Briefcase, MapPin, Clock, ArrowDown, X, Upload, Check
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
+import { fallbackJobs } from '../data/fallbackJobs';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const fallbackJobs = [
-  { title: "Frontend Engineer", location: "Remote", type: "Full Time" },
-  { title: "Backend Developer", location: "Remote", type: "Full Time" },
-  { title: "AI Engineer", location: "Remote", type: "Full Time" },
-  { title: "Machine Learning Engineer", location: "Remote", type: "Full Time" },
-  { title: "UI/UX Designer", location: "Remote", type: "Full Time" },
-  { title: "DevOps Engineer", location: "Remote", type: "Full Time" },
-  { title: "Mobile App Developer", location: "Remote", type: "Full Time" },
-  { title: "Product Manager", location: "Remote", type: "Full Time" },
-];
+const generateSlug = (title) => {
+  if (!title) return '';
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+};
 
 const culturePoints = [
-  "Fast-paced innovation", "AI-first mindset", "Remote collaboration",
-  "Creative engineering", "Rapid experimentation", "Startup ownership"
+  "Documented specs", "Asynchronous Git workflow", "No unnecessary meetings",
+  "Modular code reuse", "Staging server testing", "Direct client demos"
 ];
 
 const hiringSteps = [
@@ -36,14 +38,14 @@ const hiringSteps = [
 ];
 
 const benefits = [
-  { text: "Remote Work Flexibility", icon: "🏡", bg: "bg-sky-500/10", hoverBg: "group-hover:bg-sky-500/20" },
-  { text: "Competitive Salary", icon: "💰", bg: "bg-emerald-500/10", hoverBg: "group-hover:bg-emerald-500/20" },
-  { text: "Learning Budget", icon: "🎓", bg: "bg-violet-500/10", hoverBg: "group-hover:bg-violet-500/20" },
-  { text: "Innovation Projects", icon: "🧠", bg: "bg-amber-500/10", hoverBg: "group-hover:bg-amber-500/20" },
-  { text: "Flexible Work Hours", icon: "⏰", bg: "bg-rose-500/10", hoverBg: "group-hover:bg-rose-500/20" },
-  { text: "Global Collaboration", icon: "🌐", bg: "bg-teal-500/10", hoverBg: "group-hover:bg-teal-500/20" },
-  { text: "Career Growth", icon: "📈", bg: "bg-indigo-500/10", hoverBg: "group-hover:bg-indigo-500/20" },
-  { text: "Creative Work Culture", icon: "✨", bg: "bg-pink-500/10", hoverBg: "group-hover:bg-pink-500/20" }
+  { text: "Remote-First Options", icon: "🏡", bg: "bg-sky-500/10", hoverBg: "group-hover:bg-sky-500/20" },
+  { text: "Market-Aligned Pay", icon: "💰", bg: "bg-emerald-500/10", hoverBg: "group-hover:bg-emerald-500/20" },
+  { text: "Technical Learning Budget", icon: "🎓", bg: "bg-violet-500/10", hoverBg: "group-hover:bg-violet-500/20" },
+  { text: "Modern Dev Tools Access", icon: "🧠", bg: "bg-amber-500/10", hoverBg: "group-hover:bg-amber-500/20" },
+  { text: "Flexible Schedule Blocks", icon: "⏰", bg: "bg-rose-500/10", hoverBg: "group-hover:bg-rose-500/20" },
+  { text: "Async Collaboration Tools", icon: "🌐", bg: "bg-teal-500/10", hoverBg: "group-hover:bg-teal-500/20" },
+  { text: "Mentorship & Code Reviews", icon: "📈", bg: "bg-indigo-500/10", hoverBg: "group-hover:bg-indigo-500/20" },
+  { text: "Supportive Work Environment", icon: "✨", bg: "bg-pink-500/10", hoverBg: "group-hover:bg-pink-500/20" }
 ];
 
 const testimonials = [
@@ -51,38 +53,20 @@ const testimonials = [
     name: "Divyanshi Sen",
     role: "Full-Stack Developer",
     content: "Macenza provided a great environment to work on real-world web applications. The team is supportive, and I gained valuable experience while delivering quality solutions to clients.",
-    image: "/review/divyanshi-review.jpeg"
+    image: "/review/divyanshi-review.webp"
   },
   {
     name: "Piyush Saini",
     role: "Full-Stack Developer",
     content: "Working at Macenza was an excellent experience. I had the opportunity to build scalable web solutions and collaborate with a talented and professional team.",
-    image: "/review/piyush-review.png"
+    image: "/review/piyush-review.webp"
   }
 ];
 
 const Careers = () => {
   const pageRef = useRef(null);
+  const navigate = useNavigate();
   const [jobsList, setJobsList] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-
-  // Form State
-  const initialFormState = {
-    candidateName: '',
-    email: '',
-    phone: '',
-    location: '',
-    experience: '',
-    linkedInUrl: '',
-    portfolioUrl: '',
-    coverLetter: ''
-  };
-  const [formData, setFormData] = useState(initialFormState);
-  const [resumeFile, setResumeFile] = useState(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Fetch dynamic jobs from Supabase
   const fetchJobs = async () => {
@@ -161,111 +145,6 @@ const Careers = () => {
     }
   }, [jobsList]);
 
-  // Disable body scroll when modal is open (traps scroll inside modal and works with smooth scroll libraries)
-  useEffect(() => {
-    if (isModalOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isModalOpen]);
-
-  // Handle Modal Open
-  const handleOpenModal = (job = null) => {
-    setSelectedJob(job || (jobsList.length > 0 ? jobsList[0] : null));
-    setIsModalOpen(true);
-    setSubmitError('');
-    setSubmitSuccess(false);
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const ext = file.name.split('.').pop().toLowerCase();
-      if (['pdf', 'doc', 'docx'].includes(ext)) {
-        setResumeFile(file);
-        setSubmitError('');
-      } else {
-        const errorMsg = 'Invalid file format. Please upload PDF, DOC, or DOCX resumes.';
-        setSubmitError(errorMsg);
-        toast.error(errorMsg);
-      }
-    }
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
-    let uploadFile = resumeFile;
-    if (!uploadFile) {
-      // Create a mock PDF file dynamically for automated testing / empty submissions
-      const blob = new Blob(["Mock PDF Resume - Dr. Evelyn Martinez"], { type: "application/pdf" });
-      uploadFile = new File([blob], "mock_evelyn_resume.pdf", { type: "application/pdf" });
-    }
-
-    setSubmitting(true);
-    setSubmitError('');
-
-    try {
-      // 1. Upload resume to Supabase Storage Bucket 'resumes'
-      const fileExt = uploadFile.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${fileExt}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('resumes')
-        .upload(fileName, uploadFile);
-
-      if (uploadError) {
-        throw new Error(`Resume upload failed: ${uploadError.message}`);
-      }
-
-      // 2. Get the public URL of the uploaded resume
-      const { data: { publicUrl } } = supabase.storage
-        .from('resumes')
-        .getPublicUrl(fileName);
-
-      // 3. Save application entry in 'applications' table
-      const { error: insertError } = await supabase
-        .from('applications')
-        .insert([{
-          candidate_name: formData.candidateName,
-          email: formData.email,
-          phone: formData.phone,
-          location: formData.location,
-          experience: formData.experience,
-          linkedin_url: formData.linkedInUrl,
-          portfolio_url: formData.portfolioUrl,
-          cover_letter: formData.coverLetter,
-          resume_url: publicUrl,
-          job_id: (selectedJob && (selectedJob.id || selectedJob._id)) ? (selectedJob.id || selectedJob._id) : null
-        }]);
-
-      if (insertError) {
-        throw new Error(`Application save failed: ${insertError.message}`);
-      }
-
-      setSubmitSuccess(true);
-      toast.success('Application submitted successfully!');
-      setFormData(initialFormState);
-      setResumeFile(null);
-    } catch (err) {
-      console.error(err);
-      const errorMsg = err.message || 'Submission failed. Please check entries.';
-      setSubmitError(errorMsg);
-      toast.error(errorMsg);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen relative">
       {/* Hero Section */}
@@ -277,14 +156,14 @@ const Careers = () => {
         <div className="container mx-auto px-6 relative z-10 text-left w-full flex flex-col items-start justify-center">
           <div className="max-w-3xl">
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-              Join the Revolution
+              Join Macenza
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-              Build the Future <br />
-              <span className="text-primary italic">With Macenza.</span>
+            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+              <BouncyText text="Build Software. " /> <br />
+              <BouncyText text="With Macenza." className="text-primary italic" />
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-              Join a team of innovators, engineers, AI builders, and creators shaping the future of intelligent technology.
+              Join our team of backend engineers, frontend developers, and system designers building custom software for client businesses.
             </p>
             <div className="flex flex-wrap justify-start gap-6 reveal-up">
               <button
@@ -294,7 +173,7 @@ const Careers = () => {
                 View Open Positions <ArrowDown className="w-5 h-5" />
               </button>
               <button
-                onClick={() => handleOpenModal()}
+                onClick={() => navigate('/careers/general')}
                 className="px-10 py-5 glass-morphism text-black rounded-full font-bold text-lg hover:bg-black hover:text-white hover:!border-black transition-all duration-300 border !border-black/15 text-center"
               >
                 Join Our Mission
@@ -366,43 +245,43 @@ const Careers = () => {
       </section>
 
       {/* Why Join Macenza */}
-      <Section id="why-join" title="Why Work With Us" subtitle="Relentless innovation meets radical ownership.">
+      <Section id="why-join" title="Why Work With Us" subtitle="We maintain structured tasks, clear logic pipelines, and full developer code transparency.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
-              title: "Startup Speed",
+              title: "Structured Workflow",
               icon: "⚡",
-              desc: "Work in a fast-moving environment where ideas become products quickly.",
+              desc: "Work in a task-based environment where you focus directly on writing code and testing scripts.",
               bgClass: "bg-amber-500/10"
             },
             {
-              title: "AI Innovation",
+              title: "Code Focus",
               icon: "🧠",
-              desc: "Build cutting-edge AI systems, automation tools, and next-gen digital products.",
+              desc: "Write modular frontend components, construct database schemas, and deploy container applications.",
               bgClass: "bg-violet-500/10"
             },
             {
-              title: "Ownership Culture",
+              title: "Direct Ownership",
               icon: "🎯",
-              desc: "Take ownership like a founder and shape meaningful technology.",
+              desc: "Take ownership of your software features, schema designs, and API documentation.",
               bgClass: "bg-rose-500/10"
             },
             {
-              title: "Learning Growth",
+              title: "Skill Growth",
               icon: "🚀",
-              desc: "Continuous technical learning, mentorship, and innovation.",
+              desc: "Advance your knowledge in Next.js, FastAPI, Node.js, and server orchestration.",
               bgClass: "bg-pink-500/10"
             },
             {
-              title: "Creative Freedom",
+              title: "Code Quality Focus",
               icon: "💡",
-              desc: "Experiment, create, and solve problems without unnecessary barriers.",
+              desc: "Write testable functions, maintain clear specifications, and conduct collaborative code reviews.",
               bgClass: "bg-yellow-500/10"
             },
             {
-              title: "Global Opportunities",
+              title: "Global Collaboration",
               icon: "🌐",
-              desc: "Collaborate with international teams and global clients.",
+              desc: "Collaborate asynchronously with clients on multi-national software rollouts.",
               bgClass: "bg-teal-500/10"
             }
           ].map((feature, i) => (
@@ -425,7 +304,7 @@ const Careers = () => {
         <div className="max-w-4xl mx-auto text-center mb-20 reveal-up relative z-10">
           <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Life at <span className="text-primary italic">Macenza</span></h2>
           <p className="text-xl text-black/60 font-light leading-relaxed">
-            We don't just build software; we build a culture of relentless innovation. At Macenza, every engineer is a founder, and every designer is an architect of the future.
+            Our workspace runs on clear task queues, async coordination, and minimal meetings. We focus on shipping functional code and maintaining robust environments.
           </p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 reveal-up">
@@ -441,7 +320,7 @@ const Careers = () => {
       </Section>
 
       {/* Open Positions */}
-      <Section id="positions" title="Current Open Roles" subtitle="Find your place in the future of intelligence.">
+      <Section id="positions" title="Current Open Roles" subtitle="Find your role in our engineering and development team.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 job-grid">
           {jobsList.map((job, i) => (
             <div key={job.id || job._id || i} className="job-card p-10 rounded-[2.5rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-colors transition-shadow duration-500 group flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
@@ -457,7 +336,7 @@ const Careers = () => {
                 </div>
               </div>
               <button
-                onClick={() => handleOpenModal(job)}
+                onClick={() => navigate(`/careers/${generateSlug(job.title)}`)}
                 className="px-8 py-4 bg-black text-white rounded-full font-bold text-sm hover:bg-primary transition-all duration-300 shadow-lg group-hover:shadow-primary/20 text-center whitespace-nowrap"
               >
                 Apply Now
@@ -468,28 +347,13 @@ const Careers = () => {
       </Section>
 
       {/* Hiring Process */}
-      <Section id="process" className="bg-white text-black overflow-hidden">
-        <div className="text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight text-black">Our Hiring <span className="text-primary italic">Journey</span></h2>
-        </div>
-        <div className="relative reveal-up">
-          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-black/10 hidden lg:block"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
-            {hiringSteps.map((step, i) => (
-              <div key={i} className="relative z-10 group flex flex-col items-center text-center lg:items-start lg:text-left">
-                <div className="mb-6 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-black text-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] group-hover:scale-125 transition-transform duration-500">
-                  {i + 1}
-                </div>
-                <h4 className="text-lg font-bold mb-2 text-black">{step}</h4>
-                <div className="w-8 h-[2px] bg-primary/20 group-hover:w-full transition-all duration-700"></div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
+      <ScrollJourney 
+        title={<>Our Hiring <span className="text-primary italic">Journey</span></>} 
+        steps={hiringSteps} 
+      />
 
       {/* Benefits */}
-      <Section id="benefits" title="Perks & Benefits" subtitle="We invest in our people as much as our technology.">
+      <Section id="benefits" title="Perks & Benefits" subtitle="We offer supportive conditions to keep our developers and designers focused on shipping quality code.">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 reveal-up">
           {benefits.map((benefit, i) => (
             <div key={i} className="p-8 rounded-[2rem] border border-black/5 hover:border-primary/20 hover:shadow-lg transition-all duration-500 text-center group">
@@ -524,14 +388,14 @@ const Careers = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Ready to Build <br /> What’s Next?
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Ready to Build Custom Apps?
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Join Macenza and shape the future of AI, software, and digital innovation.
+            Join Macenza and build custom web applications, APIs, and database structures.
           </p>
           <button
-            onClick={() => handleOpenModal()}
+            onClick={() => navigate('/careers/general')}
             className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap"
           >
             Apply Now
@@ -540,235 +404,6 @@ const Careers = () => {
       </Section>
 
       <Footer />
-
-      {/* Candidates Interactive Apply Popup Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setIsModalOpen(false)}></div>
-
-          {/* Modal Card */}
-          <div
-            data-lenis-prevent
-            className="relative bg-white w-full max-w-2xl rounded-[3rem] p-8 md:p-10 shadow-2xl max-h-[90vh] overflow-y-auto border border-black/5 animate-in fade-in zoom-in-95 duration-200 text-black"
-          >
-
-            {/* Close Trigger */}
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-8 right-8 p-3 bg-black/5 hover:bg-black/10 rounded-full text-black transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Modal Header */}
-            <div className="mb-8 pr-12">
-              <span className="text-xs bg-primary/10 text-primary font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                Careers Placement Form
-              </span>
-              <h3 className="text-3xl font-black tracking-tight text-black mt-3">
-                Apply for {selectedJob ? selectedJob.title : 'Macenza Careers'}
-              </h3>
-              <p className="text-sm text-black/60 mt-1">
-                Fill in your registration details. We usually review and respond within 48 hours.
-              </p>
-            </div>
-
-            {submitSuccess ? (
-              <div className="text-center py-12 flex flex-col items-center justify-center gap-4">
-                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 animate-bounce">
-                  <Check className="w-8 h-8" />
-                </div>
-                <h4 className="text-2xl font-black text-black">Application Received!</h4>
-                <p className="text-black/60 max-w-sm leading-relaxed">
-                  Thank you for applying. Our talent acquisition specialists have saved your details and resume. We will contact you soon.
-                </p>
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="mt-6 px-8 py-3.5 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20"
-                >
-                  Return to Careers Page
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleFormSubmit} className="flex flex-col gap-5">
-                {submitError && (
-                  <div className="p-4 bg-rose-50 border border-rose-200 text-rose-950 font-bold rounded-2xl text-xs">
-                    {submitError}
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Full Name */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Full Name *</label>
-                    <input
-                      type="text"
-                      name="candidateName"
-                      value={formData.candidateName}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      required
-                      placeholder="e.g. John Doe"
-                    />
-                  </div>
-                  {/* Email */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Email Address *</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      required
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Phone */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Phone Number *</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      required
-                      placeholder="+1 (234) 567-890"
-                    />
-                  </div>
-                  {/* Current Location */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Current Location *</label>
-                    <input
-                      type="text"
-                      name="location"
-                      value={formData.location}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      required
-                      placeholder="e.g. San Francisco, CA"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Experience */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Years of Experience *</label>
-                    <input
-                      type="text"
-                      name="experience"
-                      value={formData.experience}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      required
-                      placeholder="e.g. 4 Years"
-                    />
-                  </div>
-                  {/* Job Selection Dropdown if general placement */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Applying Position</label>
-                    <select
-                      value={selectedJob ? selectedJob.title : ''}
-                      onChange={(e) => {
-                        const job = jobsList.find(j => j.title === e.target.value);
-                        setSelectedJob(job || null);
-                      }}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                    >
-                      {jobsList.map((job, idx) => (
-                        <option key={job.id || job._id || idx} value={job.title}>{job.title}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* LinkedIn */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">LinkedIn URL</label>
-                    <input
-                      type="url"
-                      name="linkedInUrl"
-                      value={formData.linkedInUrl}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      placeholder="https://linkedin.com/in/username"
-                    />
-                  </div>
-                  {/* Portfolio */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-bold text-black/70">Portfolio URL</label>
-                    <input
-                      type="url"
-                      name="portfolioUrl"
-                      value={formData.portfolioUrl}
-                      onChange={handleInputChange}
-                      className="bg-black/5 border border-black/5 p-3 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all"
-                      placeholder="https://yourwebsite.com"
-                    />
-                  </div>
-                </div>
-
-                {/* Cover Letter */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-black/70">Cover Letter / Pitch</label>
-                  <textarea
-                    name="coverLetter"
-                    value={formData.coverLetter}
-                    onChange={handleInputChange}
-                    rows="3"
-                    className="bg-black/5 border border-black/5 p-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:bg-white transition-all resize-none"
-                    placeholder="Briefly tell us why you are interested in this position..."
-                  />
-                </div>
-
-                {/* Resume Upload File Card */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-bold text-black/70">Upload Resume (PDF, DOC, DOCX) *</label>
-                  <div className="relative border-2 border-dashed border-black/10 rounded-2xl p-6 text-center hover:border-primary/40 transition-colors bg-black/5 flex flex-col items-center justify-center gap-2 cursor-pointer">
-                    <input
-                      type="file"
-                      onChange={handleFileChange}
-                      className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-                      accept=".pdf,.doc,.docx"
-                    />
-                    {resumeFile ? (
-                      <>
-                        <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600">
-                          <Check className="w-6 h-6" />
-                        </div>
-                        <span className="font-bold text-sm text-black truncate max-w-xs">{resumeFile.name}</span>
-                        <span className="text-[10px] text-black/40">{(resumeFile.size / 1024 / 1024).toFixed(2)} MB &bull; Click to change</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-8 h-8 text-black/40 animate-pulse" />
-                        <span className="font-bold text-sm text-black">Choose file or drag & drop</span>
-                        <span className="text-[10px] text-black/40">Only PDF, DOC, DOCX up to 10MB</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                {/* Submit Trigger */}
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full mt-4 py-4 bg-primary text-white rounded-full font-bold text-base hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {submitting ? 'Uploading Application...' : 'Submit Application'}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

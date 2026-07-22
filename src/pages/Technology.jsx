@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import {
   Monitor, Server, Smartphone, Database, Brain, Cloud,
@@ -17,72 +18,93 @@ const techStack = [
   {
     name: "Frontend Engineering",
     icon: "💻",
-    technologies: ["React", "Next.js", "Vue.js", "TailwindCSS", "TypeScript", "GSAP"],
+    technologies: [
+      "React: Used to build modular, component-based user interfaces.",
+      "Next.js: Used for fast page loads, server-side rendering, and SEO performance.",
+      "TypeScript: Used to catch syntax and type errors during compilation.",
+      "TailwindCSS: Used to write utility-first styling directly in JSX files.",
+      "GSAP: Used for hardware-accelerated scroll triggers and page transitions."
+    ],
     bgClass: "bg-sky-500/10"
   },
   {
     name: "Backend Engineering",
     icon: "🖥️",
-    technologies: ["Node.js", "Python", "FastAPI", "Express.js", "Django", "NestJS"],
+    technologies: [
+      "Node.js: Used to execute asynchronous, high-concurrency server code.",
+      "Python: Used for machine learning scripts, data processing, and scripting.",
+      "FastAPI: Used to build structured REST APIs with auto-generated documentation.",
+      "Express.js: Used to handle HTTP routing with minimal server overhead."
+    ],
     bgClass: "bg-blue-500/10"
   },
   {
     name: "Mobile Engineering",
     icon: "📱",
-    technologies: ["Flutter", "React Native", "Swift", "Kotlin"],
+    technologies: [
+      "Flutter: Used to build native-compiled cross-platform mobile apps.",
+      "React Native: Used to share frontend logic between iOS and Android."
+    ],
     bgClass: "bg-rose-500/10"
   },
   {
-    name: "Databases",
+    name: "Databases & Caching",
     icon: "💾",
-    technologies: ["MongoDB", "PostgreSQL", "MySQL", "Redis", "Firebase"],
+    technologies: [
+      "PostgreSQL: Used to store normalized relational data with strict constraints.",
+      "MongoDB: Used to store unstructured documents and JSON files.",
+      "Redis: Used as an in-memory key-value cache to speed up database queries."
+    ],
     bgClass: "bg-cyan-500/10"
   },
   {
-    name: "AI / Machine Learning",
+    name: "AI & Machine Learning",
     icon: "🧠",
-    technologies: ["OpenAI", "LangChain", "TensorFlow", "PyTorch", "Hugging Face", "LlamaIndex"],
+    technologies: [
+      "OpenAI: Used to parse text, summarize logs, and route customer support queries.",
+      "LangChain: Used to chain prompt calls and connect tools to language models.",
+      "PyTorch: Used to train and fine-tune custom deep learning neural networks."
+    ],
     bgClass: "bg-violet-500/10"
   },
   {
-    name: "Cloud & DevOps",
-    icon: "☁️",
-    technologies: ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "GitHub Actions"],
+    name: "Hotel Management System",
+    icon: "🏨",
+    technologies: [
+      "Booking Engine: Handles online reservations, room availability, and rate management.",
+      "Property Management (PMS): Optimizes front desk operations, check-ins, and room assignments.",
+      "POS & Billing: Automates billing, restaurant orders, and guest payment processing."
+    ],
     bgClass: "bg-emerald-500/10"
   }
 ];
 
 const capabilities = [
-  "Generative AI", "AI Agents", "Computer Vision", "Natural Language Processing",
-  "Voice AI Systems", "Recommendation Engines", "Predictive Analytics", "Intelligent Automation"
-];
-
-const architectureSteps = [
-  "Frontend Experience Layer", "API Gateway Layer", "Business Logic Engine",
-  "AI Intelligence Layer", "Database Layer", "Cloud Infrastructure"
+  "Automated Text Parsing", "Background Sync Triggers", "Scheduled Data Queries", "Email Queue Schedulers",
+  "Log File Analysis", "Secure API Routing", "CSV Import Automation", "Host Health Audits"
 ];
 
 const securityFeatures = [
-  "End-to-End Encryption", "Secure API Architecture", "Role-Based Access Control",
-  "Cloud Security Monitoring", "Compliance-Ready Infrastructure", "Real-Time Monitoring & Logging"
+  "HTTPS and SSL Certificates", "Token-Based Session Checks", "Role-Based Database Access",
+  "Encrypted Storage Backups", "Strict CORS Origin Filtering", "Express Request Logging"
 ];
 
 const engineeringExcellence = [
-  "Clean Code Architecture", "Scalable Systems Design", "CI/CD Pipelines",
-  "Performance Optimization", "Automated Testing", "Microservices Architecture"
+  "Modular Helper Functions", "Relational Schema Indexing", "Automated Git Pull Deployments",
+  "Vite Asset Bundling", "Staging Server Testing", "Normalized Data Tables"
 ];
 
 const agentStack = [
-  "OpenAI API", "LangChain", "Vector Databases", "RAG Architecture",
-  "Prompt Orchestration", "Memory Systems", "Tool Calling", "Autonomous Workflow Agents"
+  "OpenAI Text Completion API", "LangChain Pipeline Scripts", "Pgvector Database Extensions", "Structured Prompt Templates",
+  "User Session Context Caching", "Scheduled Background Cron Jobs"
 ];
 
 const metrics = [
-  { label: "99.99% Uptime", sub: "Enterprise Reliability" },
-  { label: "<200ms Response", sub: "API Performance" },
-  { label: "10M+ Requests", sub: "Handled Daily" },
-  { label: "Enterprise-Scale", sub: "Global Deployments" },
-  { label: "Global Cloud", sub: "Infrastructure" }
+  { label: "28", sub: "Software Engineers" },
+  { label: "100%", sub: "Code Ownership" },
+  { label: "AWS VPS", sub: "Infrastructure" },
+  { label: "99.9%", sub: "Database SLA" },
+  { label: "Git-based", sub: "Version Control" }
 ];
 
 const partners = ["OpenAI", "AWS", "Microsoft Azure", "Google Cloud", "Docker", "NVIDIA", "GitHub", "MongoDB"];
@@ -91,7 +113,6 @@ const devTools = ["Supabase", "GitHub", "Postman", "Docker Desktop", "Jupyter", 
 
 const Technology = () => {
   const pageRef = useRef(null);
-  const diagramRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -109,25 +130,6 @@ const Technology = () => {
             toggleActions: "play none none none"
           }
         });
-      });
-
-      // Diagram animation
-      const lines = diagramRef.current.querySelectorAll('.flow-line');
-      lines.forEach((line, i) => {
-        gsap.fromTo(line,
-          { scaleY: 0 },
-          {
-            scaleY: 1,
-            duration: 0.8,
-            delay: i * 0.3,
-            ease: "power2.inOut",
-            scrollTrigger: {
-              trigger: diagramRef.current,
-              start: "top 60%",
-              toggleActions: "play none none none"
-            }
-          }
-        );
       });
 
       // Metric counters
@@ -168,15 +170,14 @@ const Technology = () => {
         <div className="container mx-auto px-6 relative z-10 text-left w-full flex flex-col items-start justify-center">
           <div className="max-w-3xl">
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-              Deep-Tech Engineering
+              Systems Engineering
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-[0.9]">
-              Tech That Powers <br />
-              <span className="text-primary italic">Intelligence.</span>
+            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-[0.9]">
+              <BouncyText text="Code Built for " /> <br />
+              <BouncyText text="Performance." className="text-primary italic" />
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-              We design cutting-edge AI infrastructure <br />
-              and high-performance software architectures.
+              We configure cloud infrastructure, normalize relational databases, and build fast frontend interfaces.
             </p>
             <div className="flex flex-wrap justify-start gap-6 reveal-up">
               <button
@@ -258,7 +259,7 @@ const Technology = () => {
       </section>
 
       {/* Tech Stack Showcase */}
-      <Section id="tech-stack" title="Our Technology Stack" subtitle="A robust, multi-layered foundation for the next generation of digital products.">
+      <Section id="tech-stack" title="Our Technology Stack" subtitle="The frontend frameworks, backend runtimes, databases, and deployment platforms we use to run applications.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {techStack.map((category, idx) => (
             <div key={idx} className="p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group reveal-up">
@@ -266,11 +267,11 @@ const Technology = () => {
                 {category.icon}
               </div>
               <h3 className="text-2xl font-bold text-black mb-6">{category.name}</h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-4">
                 {category.technologies.map((tech) => (
-                  <span key={tech} className="px-4 py-2 bg-black/5 rounded-full text-xs font-bold text-black/70 hover:bg-primary hover:text-white transition-all cursor-default">
+                  <div key={tech} className="text-sm font-medium text-black/75 hover:text-primary transition-all cursor-default leading-relaxed">
                     {tech}
-                  </span>
+                  </div>
                 ))}
               </div>
             </div>
@@ -283,8 +284,8 @@ const Technology = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary rounded-full blur-[200px] opacity-10"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-20 reveal-up">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">AI <span className="text-primary italic">Capabilities</span></h2>
-            <p className="text-xl text-black/60 font-light max-w-2xl mx-auto">Pushing the boundaries of what artificial intelligence can achieve for modern enterprise.</p>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Workflow <span className="text-primary italic">Automations</span></h2>
+            <p className="text-xl text-black/60 font-light max-w-2xl mx-auto">Integrating APIs, scripting runtimes, and databases to automate manual business processes.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 reveal-up">
             {capabilities.map((cap, i) => (
@@ -292,25 +293,6 @@ const Technology = () => {
                 <div className="w-3 h-3 bg-primary rounded-full group-hover:scale-150 transition-transform"></div>
                 <span className="text-lg font-bold text-black">{cap}</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* System Architecture Diagram */}
-      <Section id="architecture" title="System Architecture" subtitle="How we structure complex digital ecosystems for scale and resilience.">
-        <div ref={diagramRef} className="max-w-4xl mx-auto py-20 relative">
-          <div className="flex flex-col items-center gap-16">
-            {architectureSteps.map((step, i) => (
-              <React.Fragment key={i}>
-                <div className="w-full md:w-2/3 p-8 glass-morphism rounded-3xl border border-black/5 text-center shadow-lg hover:border-primary/40 transition-all duration-500 reveal-up">
-                  <span className="text-xs font-black text-primary uppercase tracking-[0.2em] mb-2 block">Level 0{i + 1}</span>
-                  <h4 className="text-2xl font-bold text-black">{step}</h4>
-                </div>
-                {i < architectureSteps.length - 1 && (
-                  <div className="h-16 w-[2px] bg-gradient-to-b from-primary/40 to-transparent flow-line origin-top"></div>
-                )}
-              </React.Fragment>
             ))}
           </div>
         </div>
@@ -355,8 +337,8 @@ const Technology = () => {
         <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-20 reveal-up">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">AI Agent <span className="text-primary italic">Infrastructure</span></h2>
-            <p className="text-xl text-black/60 font-light max-w-2xl mx-auto">The deep-tech stack powering our autonomous and semi-autonomous AI agents.</p>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Workflow Scripting <span className="text-primary italic">Setup</span></h2>
+            <p className="text-xl text-black/60 font-light max-w-2xl mx-auto">The database schemas and API integrations used in our automated text parsing engines.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-up">
             {agentStack.map((tech, i) => (
@@ -372,13 +354,13 @@ const Technology = () => {
       <Section id="innovation" className="relative overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="reveal-up">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Macenza <span className="text-primary">Innovation Lab</span></h2>
+            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Testing Sandbox <span className="text-primary">Servers</span></h2>
             <p className="text-xl text-black/60 font-light leading-relaxed mb-10">
-              Our dedicated R&D wing where we experiment with the next frontier of human-AI interaction, decentralized computing, and adaptive interfaces.
+              We maintain sandbox test servers to try out new database engines, test container loads, and run script performance benchmarks.
             </p>
             <div className="space-y-6">
               {[
-                "Neural Interface Research", "Adaptive UI Prototypes", "LLM Fine-tuning Experiments", "Decentralized AI Infrastructure"
+                "Database Engine Benchmarks", "Container Load Tests", "API Latency Logs", "Shell Scripting Automations"
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-2 h-2 bg-primary rounded-full"></div>
@@ -453,7 +435,7 @@ const Technology = () => {
       </section>
 
       {/* Developer Tools */}
-      <Section id="dev-tools" title="Developer Tooling" subtitle="The precision instruments our engineers use to build excellence.">
+      <Section id="dev-tools" title="Developer Tooling" subtitle="The standard software tools we use to edit, test, and host our codebases.">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-up">
           {devTools.map((tool, i) => (
             <div key={i} className="p-8 rounded-3xl border border-black/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 text-center group">
@@ -469,11 +451,11 @@ const Technology = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Build Future-Ready <br /> Technology.
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Partner with Macenza to engineer intelligent systems designed for tomorrow.
+            Contact our engineering team to discuss your application architecture, schedule a database consult, or review a codebase audit.
           </p>
           <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Talk to Our Engineers

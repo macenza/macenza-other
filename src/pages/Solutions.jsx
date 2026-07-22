@@ -2,6 +2,8 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
+import ScrollJourney from '../components/ScrollJourney';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import {
   Brain, Code, Globe, Smartphone, Zap, Cloud,
@@ -45,9 +47,9 @@ const solutions = [
     bgClass: "bg-amber-500/10"
   },
   {
-    name: "Cloud & DevOps",
-    icon: "☁️",
-    services: ["AWS Deployment", "Azure Cloud", "CI/CD Pipelines", "Cloud Migration", "Scalable Infrastructure", "Server Management"],
+    name: "Hotel Management System",
+    icon: "🏨",
+    services: ["Booking Engines", "Property Management", "POS Integration", "Revenue Management", "Guest Services", "Housekeeping Systems"],
     bgClass: "bg-sky-500/10"
   }
 ];
@@ -73,13 +75,13 @@ const aiAgents = [
 ];
 
 const processSteps = [
-  { title: "Discovery", desc: "Understanding your vision and objectives." },
-  { title: "Strategy", desc: "Mapping out the technical architecture." },
-  { title: "Design", desc: "Crafting intuitive user experiences." },
-  { title: "Development", desc: "Building with AI-first engineering." },
-  { title: "Testing", desc: "Rigorous quality assurance and optimization." },
-  { title: "Launch", desc: "Deploying to production with scale." },
-  { title: "Scale", desc: "Continuous improvement and growth." }
+  { title: "Discovery", desc: "We interview your team to document user roles, database structures, and external API integrations." },
+  { title: "Planning", desc: "We specify the system architecture, select the tech stack, and map out the data flows." },
+  { title: "UI/UX Design", desc: "We create responsive interface mockups and click-through prototypes for all application screens." },
+  { title: "Development", desc: "We write clean, modular frontend and backend code, committing all updates to Git." },
+  { title: "Testing", desc: "We write automated test suites and deploy to a staging server for integration checking." },
+  { title: "Deployment", desc: "We containerize the software using Docker and release it to production cloud servers." },
+  { title: "Maintenance", desc: "We monitor server error logs, update software libraries, and patch security issues." }
 ];
 
 const CaseStudyCard = ({ title, description, image }) => (
@@ -156,14 +158,14 @@ const Solutions = () => {
         <div className="container mx-auto px-6 relative z-10 text-left w-full flex flex-col items-start justify-center">
           <div className="max-w-3xl">
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
-              Intelligent Innovation
+              Software Engineering Services
             </div>
-            <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
-              Smart Solutions. <br />
-              <span className="text-primary">Built for scale.</span>
+            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+              <BouncyText text="Tailored Software. " /> <br />
+              <BouncyText text="Built for scale." className="text-primary" />
             </h1>
             <p className="max-w-2xl text-lg md:text-xl text-black/60 font-light reveal-up mb-12">
-              We deploy advanced artificial intelligence, automation systems, and transformative digital solutions to optimize your business workflows.
+              We design and build custom web applications, automate business processes, and configure cloud hosting setups to streamline your company operations.
             </p>
             <div className="flex justify-start reveal-up">
               <Link to="/contact" className="px-12 py-5 bg-primary text-white rounded-full font-bold text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 text-center">
@@ -236,7 +238,7 @@ const Solutions = () => {
       </section>
 
       {/* Core Solutions Grid */}
-      <Section id="core-solutions" title="Our Core Solutions" subtitle="Empowering your business with high-performance digital tools.">
+      <Section id="core-solutions" title="Our Core Solutions" subtitle="We build and deploy functional software tools tailored for your operational processes.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 solution-grid">
           {solutions.map((sol, idx) => (
             <div key={idx} className="solution-card p-10 rounded-[3rem] glass-morphism border border-black/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-colors transition-shadow duration-500 group">
@@ -263,8 +265,8 @@ const Solutions = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary rounded-full blur-[180px]"></div>
         </div>
         <div className="relative z-10 text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">AI Agents Built by <span className="text-primary">Macenza</span></h2>
-          <p className="text-xl text-black/60 font-light max-w-3xl mx-auto">Our custom-trained autonomous agents handle everything from high-volume sales outreach to real-time customer support.</p>
+          <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black">Workflow Automation Tools</h2>
+          <p className="text-xl text-black/60 font-light max-w-3xl mx-auto">We write background scripts and database triggers to handle scheduled data queries, customer email queuing, and document parsing.</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 relative z-10 reveal-up">
           {aiAgents.map((agent, i) => (
@@ -279,7 +281,7 @@ const Solutions = () => {
       </Section>
 
       {/* Industry Solutions */}
-      <Section id="industries" title="Solutions by Industry" subtitle="Tailored technology for specialized sectors.">
+      <Section id="industries" title="Solutions by Industry" subtitle="We build custom implementations developed for specific business domains.">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-up">
           {industries.map((industry, i) => (
             <div key={i} className="p-10 rounded-[2rem] border border-black/5 hover:border-primary/20 hover:shadow-xl transition-all duration-500 text-center group">
@@ -293,26 +295,10 @@ const Solutions = () => {
       </Section>
 
       {/* Development Process */}
-      <Section id="process" className="bg-white text-black overflow-hidden">
-        <div className="text-center mb-20 reveal-up">
-          <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight text-black">How We <span className="text-primary">Build</span></h2>
-        </div>
-        <div className="relative reveal-up">
-          {/* Progress Line */}
-          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-black/10 hidden lg:block"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-10">
-            {processSteps.map((step, i) => (
-              <div key={i} className="relative z-10 group flex flex-col items-center text-center lg:items-start lg:text-left">
-                <div className="mb-6 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-black text-xl shadow-[0_0_20px_rgba(37,99,235,0.3)] group-hover:scale-125 transition-transform duration-500">
-                  {i + 1}
-                </div>
-                <h4 className="text-xl font-bold mb-3 text-black">{step.title}</h4>
-                <p className="text-sm text-black/50 leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </Section>
+      <ScrollJourney 
+        title={<>How We <span className="text-primary">Build</span></>} 
+        steps={processSteps} 
+      />
 
       {/* Tech Stack */}
       <section id="stack" className="py-20 border-y border-black/5 overflow-hidden relative w-full marquee-container">
@@ -357,13 +343,13 @@ const Solutions = () => {
       </section>
 
       {/* Engagement Models */}
-      <Section id="models" title="Flexible Engagement Models" subtitle="Choosing the right partnership for your business growth.">
+      <Section id="models" title="Engagement Models" subtitle="We offer transparent contract types to match your project requirements.">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 reveal-up">
           {[
-            { title: "Fixed Cost Project", desc: "Best for clearly defined projects with specific scopes and deadlines.", accent: "bg-white" },
-            { title: "Dedicated Team", desc: "An extension of your internal team for long-term development needs.", accent: "bg-white" },
-            { title: "Monthly Retainer", desc: "Ongoing support and improvements for your digital products.", accent: "bg-white" },
-            { title: "Startup MVP", desc: "Rapid 8-12 week build to get your product to market and start scaling.", accent: "bg-white" }
+            { title: "Fixed Cost Project", desc: "Best for clearly defined applications with specific scopes, wireframes, and delivery timelines.", accent: "bg-white" },
+            { title: "Dedicated Team", desc: "An extension of your internal engineering team for long-term development and support.", accent: "bg-white" },
+            { title: "Monthly Retainer", desc: "Ongoing development support, performance optimization, and regular library updates.", accent: "bg-white" },
+            { title: "Fixed Scope MVP", desc: "A functional database schema and frontend UI built in 8-12 weeks to test your product concepts.", accent: "bg-white" }
           ].map((model, i) => (
             <div key={i} className={`p-10 rounded-[3rem] border border-black/5 shadow-sm ${model.accent} transition-all duration-300 hover:-translate-y-2`}>
               <h4 className="text-2xl font-bold mb-6 text-black">{model.title}</h4>
@@ -385,12 +371,12 @@ const Solutions = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
-            { title: "AI-first engineering", desc: "Every solution is built with artificial intelligence at its core.", icon: "🧠", bg: "bg-violet-500/10" },
-            { title: "Startup speed", desc: "We move at the speed of thought to bring your ideas to market.", icon: "⚡", bg: "bg-amber-500/10" },
-            { title: "Enterprise reliability", desc: "Robust, secure, and reliable for high-stakes environments.", icon: "🛡️", bg: "bg-blue-500/10" },
-            { title: "Scalable architecture", desc: "Cloud-native systems designed to grow with your ambition.", icon: "🚀", bg: "bg-pink-500/10" },
-            { title: "Future-ready solutions", desc: "Building technology that stays relevant in a shifting world.", icon: "🎯", bg: "bg-rose-500/10" },
-            { title: "Global innovation mindset", desc: "Drawing inspiration from the world's leading tech hubs.", icon: "🌐", bg: "bg-teal-500/10" },
+            { title: "Transparent Development", desc: "Direct Git repository access and weekly reviews ensure you see every line of code written.", icon: "🧠", bg: "bg-violet-500/10" },
+            { title: "Scalable Database Setups", desc: "We design third-normal-form relational databases to handle heavy client transaction volume.", icon: "⚡", bg: "bg-amber-500/10" },
+            { title: "Direct Developer Contact", desc: "Clients collaborate directly with engineers, eliminating the communication latency of middle managers.", icon: "🛡️", bg: "bg-blue-500/10" },
+            { title: "Containerized Deployments", desc: "We pack all applications into Docker containers to guarantee configuration parity across environments.", icon: "🚀", bg: "bg-pink-500/10" },
+            { title: "Continuous Maintenance", desc: "We offer retainer plans to monitor performance, update server packages, and patch security concerns.", icon: "🎯", bg: "bg-rose-500/10" },
+            { title: "Full Intellectual Property", desc: "All source files, code, and hosting account accesses are fully transferred to you at hand-off.", icon: "🌐", bg: "bg-teal-500/10" },
           ].map((item, i) => (
             <div key={i} className="p-10 rounded-[2.5rem] bg-white border border-black/5 shadow-sm reveal-up hover:border-primary/50 transition-all duration-300 flex gap-6 items-start group">
               <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110 ${item.bg}`}>
@@ -411,11 +397,11 @@ const Solutions = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter">
-            Build Your Next <br /> Intelligent Product
+          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+            Build Your Custom Software
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
-            Partner with Macenza to transform your ideas into powerful digital solutions.
+            Partner with Macenza to design database architectures, build custom web interfaces, and automate your company workflows.
           </p>
           <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
             Start Your Project

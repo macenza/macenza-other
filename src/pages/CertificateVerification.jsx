@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { Search, Loader2, CheckCircle2, AlertCircle, FileCheck, Download, User, Briefcase, Award } from 'lucide-react';
 import Section from '../components/Section';
+import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import { toast } from 'react-toastify';
 
@@ -113,8 +114,9 @@ const CertificateVerification = () => {
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
             Secure Registry Verification
           </div>
-          <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-black mb-6 reveal-up">
-            Certificate <span className="text-primary italic">Verification</span>
+          <h1 className="text-[1.575rem] md:text-[2.625rem] font-black tracking-tighter text-black mb-6 reveal-up">
+            <BouncyText text="Certificate " />
+            <BouncyText text="Verification" className="text-primary italic" />
           </h1>
           <p className="max-w-2xl mx-auto text-black/50 text-base md:text-lg font-light reveal-up leading-relaxed">
             Verify official Macenza company credentials, employee certifications, and training records from our secure public ledger.

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ArrowRight, Users, Rocket, Globe, Shield, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import BouncyText from './BouncyText';
 
 const HeroOverlay = () => {
   const overlayRef = useRef(null);
@@ -24,12 +25,6 @@ const HeroOverlay = () => {
         { x: -100, opacity: 0 },
         { x: 0, opacity: 1 },
         0.6
-      );
-
-      tl.fromTo(".hero-desc",
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1 },
-        0.8
       );
 
       tl.fromTo(".hero-btns",
@@ -55,10 +50,10 @@ const HeroOverlay = () => {
   }, []);
 
   const stats = [
-    { icon: <Users className="w-5 h-5 text-accent" />, title: "500+", subtitle: "Happy Clients" },
-    { icon: <Rocket className="w-5 h-5 text-accent" />, title: "120+", subtitle: "AI Solutions" },
-    { icon: <Globe className="w-5 h-5 text-accent" />, title: "25+", subtitle: "Countries" },
-    { icon: <Shield className="w-5 h-5 text-accent" />, title: "99.9%", subtitle: "Uptime" },
+    { icon: <Users className="w-5 h-5 text-accent" />, title: "28", subtitle: "Software Engineers" },
+    { icon: <Rocket className="w-5 h-5 text-accent" />, title: "100%", subtitle: "Code Ownership" },
+    { icon: <Globe className="w-5 h-5 text-accent" />, title: "AWS Cloud", subtitle: "Hosting Infrastructure" },
+    { icon: <Shield className="w-5 h-5 text-accent" />, title: "99.9%", subtitle: "Uptime SLA" },
   ];
 
   return (
@@ -69,24 +64,18 @@ const HeroOverlay = () => {
 
         {/* Left Hero Content */}
         <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto -mt-0 md:mt-0">
-          <div className="overflow-hidden mb-2">
-            <h1 className="hero-line-1 text-6xl md:text-8xl font-black text-black tracking-tight leading-[0.9]">
-              Intelligence
+          <div className="overflow-hidden pt-5 mb-2">
+            <h1 className="hero-line-1 text-[2.1rem] md:text-[3.15rem] font-black text-black tracking-tight leading-[1.2] pb-2">
+              <BouncyText text="Custom Web Apps" />
             </h1>
           </div>
-          <div className="overflow-hidden mb-6">
-            <h1 className="hero-line-2 text-6xl md:text-8xl font-black text-primary tracking-tight leading-[0.9]">
-              Redefined.
+          <div className="overflow-hidden pt-5 mb-10">
+            <h1 className="hero-line-2 text-[2.1rem] md:text-[3.15rem] font-black text-primary tracking-tight leading-[1.2] pb-2">
+              <BouncyText text="Development" />
             </h1>
           </div>
-          <p className="hero-desc text-lg md:text-xl text-black/65 leading-relaxed mb-12 sm:mb-16 md:mb-10 max-w-[480px]">
-            Macenza builds next-generation AI solutions that empower businesses and elevate human potential.
-          </p>
           <div className="hero-btns flex flex-wrap gap-4">
-            <Link to="/solutions" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
-              Explore Solutions <ArrowRight className="w-5 h-5" />
-            </Link>
-            <Link to="/contact" className="px-8 py-4 bg-white text-black rounded-2xl font-bold flex items-center gap-2 hover:bg-black hover:text-white transition-all duration-300 border border-black/15 shadow-lg shadow-black/5">
+            <Link to="/contact" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
               Contact Us <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -97,9 +86,9 @@ const HeroOverlay = () => {
           {stats.map((stat, idx) => (
             <div
               key={idx}
-              className="stat-card w-64 glass-morphism rounded-[28px] p-6 flex items-center gap-4 transition-all duration-500 hover:scale-110 hover:shadow-2xl cursor-default group"
+              className="stat-card w-64 glass-morphism rounded-[28px] p-6 flex items-center gap-4 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(37,99,235,0.35)] hover:border-primary/40 cursor-default group border border-black/5"
             >
-              <div className="p-3 bg-black/5 rounded-2xl group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+              <div className="p-3 bg-black/5 rounded-2xl transition-all duration-300 group-hover:bg-white group-hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] group-hover:scale-110">
                 {stat.icon}
               </div>
               <div>
