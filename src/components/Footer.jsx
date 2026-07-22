@@ -48,7 +48,7 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-black/5 bg-white relative overflow-hidden">
-      <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50 dark:from-neutral-950 dark:to-neutral-900">
+      <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50">
         <div className="container mx-auto px-6 relative z-10 w-full">
           {/* Main Footer Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
