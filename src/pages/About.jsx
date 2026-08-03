@@ -27,8 +27,8 @@ const teamMembers = [
   { name: "Aman Partha", role: "Full Stack Developer", image: "/Team/A Aman Partha Full Stack Developer.webp" },
   { name: "Gungun Rawat", role: "Frontend UI/UX Designer", image: "/Team/Gungun UI UX Designer.webp" },
   { name: "Akshita Kumawat", role: "Full Stack Developer", image: "/Team/Akshita Kumawat Full Stack.webp" },
-  { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.webp" },
   { name: "Diksha Bansal", role: "Business Development Manager", image: "/Team/A Diksha Bansal AI ML.webp" },
+  { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" },
   { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.webp" },
   { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.webp" },
   { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.webp" },
@@ -41,7 +41,7 @@ const teamMembers = [
   { name: "Kuldeep Kothari", role: "Cybersecurity Engineer", image: "/Team/Kuldeep kothari Cybersecurity Engineer.webp" },
   { name: "Rohit", role: "Tester & Backend Developer", image: "/Team/Rohit Tester & Backend Developer.webp" },
   { name: "Yashika Agarwal", role: "Data Scientist", image: "/Team/Yashika Agarwal Data Scientist.webp" },
-  { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" }
+  { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.webp" }
 
 ];
 
