@@ -8,6 +8,7 @@ import Section from '../components/Section';
 import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import { toast } from 'react-toastify';
+import SEO from '../components/SEO';
 
 const CertificateVerification = () => {
   const pageRef = useRef(null);
@@ -101,8 +102,22 @@ const CertificateVerification = () => {
     }
   };
 
+  const certSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Certificate Verification | Macenza",
+    "url": "https://www.macenza.com/certificateverification",
+    "description": "Verify official certificates issued by Macenza."
+  };
+
   return (
     <div ref={pageRef} className="min-h-screen bg-white text-black font-sans selection:bg-primary selection:text-white overflow-x-hidden flex flex-col">
+      <SEO
+        title="Certificate Verification | Macenza"
+        description="Verify official certificates issued by Macenza."
+        canonicalPath="/certificateverification"
+        schema={certSchema}
+      />
 
       {/* Header */}
       <section className="relative min-h-[40vh] flex flex-col items-center justify-center overflow-hidden pt-44 pb-20 bg-black/5">

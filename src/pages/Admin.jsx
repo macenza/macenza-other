@@ -36,6 +36,7 @@ import {
 import { supabase } from '../supabaseClient';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SEO from '../components/SEO';
 
 const Admin = () => {
   // Authentication states
@@ -1183,6 +1184,7 @@ const Admin = () => {
   if (!user) {
     return (
       <div className="min-h-screen bg-white text-black flex flex-col items-center justify-center font-sans relative overflow-hidden px-6">
+        <SEO title="Admin Portal | Macenza" description="Macenza Admin Portal" canonicalPath="/admin" noindex={true} />
         {/* Futuristic glowing ambient background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] animate-pulse"></div>
@@ -1273,6 +1275,7 @@ const Admin = () => {
 
   return (
     <div className="flex bg-[#FFFFFF] min-h-screen font-sans text-black relative select-none">
+      <SEO title="Admin Dashboard | Macenza" description="Macenza Admin Portal" canonicalPath="/admin" noindex={true} />
       {/* Sidebar */}
       <aside className="w-64 bg-[#EFF6FF] border-r border-[#BFDBFE] flex flex-col justify-between h-screen sticky top-0 py-8 px-6 z-20">
         <div className="flex flex-col gap-12">

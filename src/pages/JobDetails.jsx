@@ -6,6 +6,7 @@ import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 import { fallbackJobs } from '../data/fallbackJobs';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
 import {
   MapPin, Clock, Briefcase, Calendar, Users, DollarSign,
   ArrowLeft, Upload, Check, ChevronRight, Share2, Award, ShieldCheck
@@ -263,6 +264,11 @@ const JobDetails = () => {
 
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen relative pt-32">
+      <SEO
+        title={job?.title ? `${job.title} | Macenza Careers` : 'Job Details | Macenza Careers'}
+        description={job?.description ? job.description.slice(0, 160) : 'View job description and apply for positions at Macenza.'}
+        canonicalPath={`/careers/${id || ''}`}
+      />
       {/* Decorative Blur Background Elements */}
       <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
       <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[100px] pointer-events-none"></div>

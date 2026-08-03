@@ -11,6 +11,7 @@ import {
   ArrowDown
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -159,8 +160,22 @@ const Technology = () => {
     };
   }, []);
 
+  const techSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Technology Stack & Infrastructure | Macenza",
+    "url": "https://www.macenza.com/technology",
+    "description": "Discover the tech stack powering Macenza's AI platforms and web applications, including React, Next.js, Python, Node.js, PostgreSQL, OpenAI, and cloud infrastructure."
+  };
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
+      <SEO
+        title="Technology Stack & Infrastructure | Macenza"
+        description="Discover the tech stack powering Macenza's AI platforms and web applications, including React, Next.js, Python, Node.js, PostgreSQL, OpenAI, and cloud infrastructure."
+        canonicalPath="/technology"
+        schema={techSchema}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">

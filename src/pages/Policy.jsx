@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
 
 const Policy = () => {
   const pageRef = useRef(null);
@@ -76,8 +77,22 @@ const Policy = () => {
     }
   ];
 
+  const policySchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Privacy Policy | Macenza",
+    "url": "https://www.macenza.com/privacy",
+    "description": "Read Macenza's Privacy Policy to understand how we collect, use, and protect your data."
+  };
+
   return (
     <div ref={pageRef} className="min-h-screen bg-white text-black font-sans selection:bg-primary selection:text-white overflow-x-hidden">
+      <SEO
+        title="Privacy Policy | Macenza"
+        description="Read Macenza's Privacy Policy to understand how we collect, use, and protect your data."
+        canonicalPath="/privacy"
+        schema={policySchema}
+      />
       {/* Header */}
       <section className="relative min-h-[40vh] flex flex-col items-center justify-center overflow-hidden pt-44 pb-20 bg-black/5">
         <div className="absolute inset-0 z-0">

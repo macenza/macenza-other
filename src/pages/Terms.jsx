@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Section from '../components/Section';
 import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
 
 const Terms = () => {
   const pageRef = useRef(null);
@@ -80,8 +81,22 @@ const Terms = () => {
     }
   ];
 
+  const termsSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Terms of Service | Macenza",
+    "url": "https://www.macenza.com/terms",
+    "description": "Read Macenza's Terms of Service governing the use of our website, software, and services."
+  };
+
   return (
     <div ref={pageRef} className="min-h-screen bg-white text-black font-sans selection:bg-primary selection:text-white overflow-x-hidden">
+      <SEO
+        title="Terms of Service | Macenza"
+        description="Read Macenza's Terms of Service governing the use of our website, software, and services."
+        canonicalPath="/terms"
+        schema={termsSchema}
+      />
       {/* Header */}
       <section className="relative min-h-[40vh] flex flex-col items-center justify-center overflow-hidden pt-44 pb-20 bg-black/5">
         <div className="absolute inset-0 z-0">

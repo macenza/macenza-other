@@ -8,6 +8,7 @@ import { Send, ChevronDown, Loader2 } from 'lucide-react';
 const ReactGlobe = lazy(() => import('react-globe.gl'));
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
+import SEO from '../components/SEO';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -201,8 +202,28 @@ const Contact = () => {
     };
   }, []);
 
+  const contactSchema = {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact Us | Macenza",
+    "url": "https://www.macenza.com/contact",
+    "description": "Get in touch with Macenza for custom AI software development, website applications, and digital transformation solutions.",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Macenza",
+      "email": "info@macenza.com",
+      "url": "https://www.macenza.com/"
+    }
+  };
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
+      <SEO
+        title="Contact Us | Macenza"
+        description="Get in touch with Macenza for custom AI software development, website applications, and digital transformation solutions."
+        canonicalPath="/contact"
+        schema={contactSchema}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">

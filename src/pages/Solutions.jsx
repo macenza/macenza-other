@@ -12,6 +12,7 @@ import {
   Mic, UserCheck, BarChart3, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -147,8 +148,47 @@ const Solutions = () => {
     };
   }, []);
 
+  const solutionsSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "AI & Software Solutions | Macenza",
+      "url": "https://www.macenza.com/solutions",
+      "description": "Explore Macenza's software solutions including custom website development, SaaS web applications, AI integrations, automation systems, and HRMS software."
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Macenza Software & AI Solutions",
+      "provider": {
+        "@type": "Organization",
+        "name": "Macenza",
+        "url": "https://www.macenza.com/"
+      },
+      "serviceType": "Software Development & AI Integration",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Macenza Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "AI Solutions" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Software Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Web Solutions" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile Applications" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automation Solutions" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cloud Infrastructure" } }
+        ]
+      }
+    }
+  ];
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
+      <SEO
+        title="AI & Software Solutions | Macenza"
+        description="Explore Macenza's software solutions including custom website development, SaaS web applications, AI integrations, automation systems, and HRMS software."
+        canonicalPath="/solutions"
+        schema={solutionsSchema}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">

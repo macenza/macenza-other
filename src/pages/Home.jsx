@@ -11,6 +11,7 @@ import LogoLoop from '../components/LogoLoop';
 import ScrollVelocity from '../components/ScrollVelocity';
 import { TestimonialCard } from '../components/ui/testimonial-cards';
 import { cn } from '../lib/utils';
+import SEO from '../components/SEO';
 
 const services = [
   { image: "/portfolio/website_development.webp", title: "Website Development", desc: "We design and build custom frontend websites and headless CMS integrations. We use Next.js and Tailwind CSS to ensure rapid load times, responsive layouts, and search engine optimization, resolving slow load speeds and high bounce rates for consumer brands.", link: "/solutions" },
@@ -273,8 +274,40 @@ const Home = React.memo(() => {
     });
   };
 
+  const homeSchema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Macenza",
+      "url": "https://www.macenza.com/",
+      "logo": "https://www.macenza.com/logo.svg",
+      "description": "Macenza delivers AI software solutions, automation systems, high-performance web applications, and custom digital transformation solutions.",
+      "sameAs": [
+        "https://in.linkedin.com/company/macenza",
+        "https://instagram.com/macenza.ai"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "email": "info@macenza.com",
+        "contactType": "customer service"
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Macenza",
+      "url": "https://www.macenza.com/"
+    }
+  ];
+
   return (
     <div className="relative">
+      <SEO
+        title="Macenza | AI Software Development Company"
+        description="Macenza delivers AI software solutions, automation systems, high-performance web applications, and custom digital transformation solutions."
+        canonicalPath="/"
+        schema={homeSchema}
+      />
       <div id="hero-trigger" className="relative">
         <HeroSequence onLoadingComplete={handleLoadingComplete}>
           <div className="hero-overlay-container absolute inset-0 z-30">

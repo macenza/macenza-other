@@ -14,6 +14,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 import { fallbackJobs } from '../data/fallbackJobs';
+import SEO from '../components/SEO';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -145,8 +146,22 @@ const Careers = () => {
     }
   }, [jobsList]);
 
+  const careersSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Careers at Macenza | Join Our Team",
+    "url": "https://www.macenza.com/careers",
+    "description": "Explore career opportunities at Macenza. Join our team of engineers, developers, and AI specialists building the future of software."
+  };
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen relative">
+      <SEO
+        title="Careers at Macenza | Join Our Team"
+        description="Explore career opportunities at Macenza. Join our team of engineers, developers, and AI specialists building the future of software."
+        canonicalPath="/careers"
+        schema={careersSchema}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         <div className="absolute inset-0 z-0">

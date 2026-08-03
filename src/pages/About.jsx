@@ -10,6 +10,7 @@ import {
   Search, Menu, X
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SEO from '../components/SEO';
 
 const teamMembers = [
 
@@ -27,7 +28,7 @@ const teamMembers = [
   { name: "Gungun Rawat", role: "Frontend UI/UX Designer", image: "/Team/Gungun UI UX Designer.webp" },
   { name: "Akshita Kumawat", role: "Full Stack Developer", image: "/Team/Akshita Kumawat Full Stack.webp" },
   { name: "Deepak Gupta", role: "Security Tester", image: "/Team/A Deepak Gupta Secutry Tester.webp" },
-  { name: "Diksha Bansal", role: "AI/ML Engineer", image: "/Team/A Diksha Bansal AI ML.webp" },
+  { name: "Diksha Bansal", role: "Business Development Manager", image: "/Team/A Diksha Bansal AI ML.webp" },
   { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.webp" },
   { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.webp" },
   { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.webp" },
@@ -99,8 +100,27 @@ const About = () => {
     };
   }, []);
 
+  const aboutSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    "name": "About Us | Macenza",
+    "url": "https://www.macenza.com/about",
+    "description": "Learn about Macenza, an AI software development company dedicated to building cutting-edge web applications, custom HRMS software, and AI integration solutions.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Macenza",
+      "url": "https://www.macenza.com/"
+    }
+  };
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen">
+      <SEO
+        title="About Us | Macenza"
+        description="Learn about Macenza, an AI software development company dedicated to building cutting-edge web applications, custom HRMS software, and AI integration solutions."
+        canonicalPath="/about"
+        schema={aboutSchema}
+      />
       {/* Hero Section */}
       <section className="relative min-h-[80vh] lg:min-h-[85vh] flex flex-col items-center justify-start overflow-hidden pt-44 pb-24">
         {/* Glow ambient backgrounds on z-0 layer */}

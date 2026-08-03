@@ -1,0 +1,32 @@
+# Macenza
+
+> Macenza delivers AI software solutions, automation systems, high-performance web applications, and custom digital transformation solutions.
+
+## About Macenza
+Macenza is an AI software development company specializing in custom web applications, SaaS platforms, HRMS software, AI integration, and workflow automation.
+
+## Core Services & Solutions
+- **Website Development**: Custom frontend websites and headless CMS integrations built using modern web tech stacks.
+- **Web Applications**: Tailored SaaS platforms and internal business portals using React, TypeScript, and PostgreSQL.
+- **Custom HRMS Software**: Human resource management dashboards integrating time tracking, automated payroll calculations, and job applicant queues (Hrenso - https://www.hrenso.com/).
+- **AI Integration & Solutions**: Machine learning integration, language model APIs (OpenAI API, PyTorch, Python), document categorization, and customer service routing.
+- **Automation Solutions**: Background scheduled pipelines, cron jobs, scripts, and webhooks for cross-platform data synchronization.
+- **Hotel Management Software**: Custom software for hotel bookings, room allocation, guest management, billing, and staff operations.
+
+## Key Public Pages
+- Home: https://www.macenza.com/
+- Solutions: https://www.macenza.com/solutions
+- Technology: https://www.macenza.com/technology
+- About Us: https://www.macenza.com/about
+- Contact: https://www.macenza.com/contact
+- Partnership: https://www.macenza.com/partnership
+- Careers: https://www.macenza.com/careers
+- Certificate Verification: https://www.macenza.com/certificateverification
+- Privacy Policy: https://www.macenza.com/privacy
+- Terms of Service: https://www.macenza.com/terms
+
+## Contact Information
+- Website: https://www.macenza.com/
+- Email: info@macenza.com
+- LinkedIn: https://in.linkedin.com/company/macenza
+- Instagram: https://instagram.com/macenza.ai
