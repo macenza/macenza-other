@@ -24,6 +24,136 @@ const generateSlug = (title) => {
     .replace(/^-+|-+$/g, '');
 };
 
+const buildJobPostingSchema = (job, currentId) => {
+  if (!job || job.id === 'general') return null;
+
+  const jobSlug = currentId || generateSlug(job.title) || job.id;
+  const canonicalUrl = `https://www.macenza.com/careers/${jobSlug}`;
+
+  // Build clean HTML description from visible job information
+  let descriptionHtml = `<p>${job.description || ''}</p>`;
+  if (job.skills) {
+    const skillsList = job.skills.split(',').map(s => `<li>${s.trim()}</li>`).join('');
+    descriptionHtml += `<h3>Core Skills &amp; Technologies</h3><ul>${skillsList}</ul>`;
+  }
+  if (job.requirements) {
+    const reqsList = job.requirements.split(',').map(r => `<li>${r.trim()}</li>`).join('');
+    descriptionHtml += `<h3>Responsibilities &amp; Requirements</h3><ul>${reqsList}</ul>`;
+  }
+  if (job.benefits) {
+    const benefitsList = job.benefits.split(',').map(b => `<li>${b.trim()}</li>`).join('');
+    descriptionHtml += `<h3>Skills &amp; Benefits</h3><ul>${benefitsList}</ul>`;
+  }
+
+  // Employment Type Mapping
+  const typeStr = (job.employmentType || job.type || '').toUpperCase();
+  let employmentType = 'FULL_TIME';
+  if (typeStr.includes('INTERN')) employmentType = 'INTERN';
+  else if (typeStr.includes('PART')) employmentType = 'PART_TIME';
+  else if (typeStr.includes('CONTRACT')) employmentType = 'CONTRACTOR';
+  else if (typeStr.includes('TEMP')) employmentType = 'TEMPORARY';
+
+  // Date Posted & Expiry
+  const datePosted = job.datePosted || (job.created_at ? new Date(job.created_at).toISOString().split('T')[0] : '2026-08-01');
+  let validThrough = job.validThrough;
+  if (!validThrough && job.deadline && job.deadline !== 'Flexible' && job.deadline !== 'Always Open') {
+    validThrough = `${job.deadline}T23:59:59+05:30`;
+  }
+
+  // Parse visible salary if numeric
+  let baseSalary = null;
+  if (job.salary && typeof job.salary === 'string') {
+    const salaryStr = job.salary.replace(/,/g, '');
+    const matches = salaryStr.match(/\d+/g);
+    if (matches && matches.length > 0) {
+      const currency = salaryStr.includes('₹') || salaryStr.toLowerCase().includes('inr') ? 'INR' : 'USD';
+      let unitText = 'MONTH';
+      if (salaryStr.toLowerCase().includes('year') || salaryStr.toLowerCase().includes('yr') || salaryStr.toLowerCase().includes('annual')) {
+        unitText = 'YEAR';
+      }
+      const numbers = matches.map(n => parseInt(n, 10));
+      if (numbers.length >= 2) {
+        baseSalary = {
+          '@type': 'MonetaryAmount',
+          currency,
+          value: {
+            '@type': 'QuantitativeValue',
+            minValue: Math.min(...numbers),
+            maxValue: Math.max(...numbers),
+            unitText
+          }
+        };
+      } else if (numbers.length === 1) {
+        baseSalary = {
+          '@type': 'MonetaryAmount',
+          currency,
+          value: {
+            '@type': 'QuantitativeValue',
+            value: numbers[0],
+            unitText
+          }
+        };
+      }
+    }
+  }
+
+  // Remote vs physical location
+  const isRemote = !job.location || job.location.toLowerCase().includes('remote') || job.location.toLowerCase().includes('telecommute');
+
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    'title': job.title,
+    'description': descriptionHtml,
+    'datePosted': datePosted,
+    ...(validThrough ? { 'validThrough': validThrough } : {}),
+    'employmentType': employmentType,
+    'hiringOrganization': {
+      '@type': 'Organization',
+      'name': 'Macenza',
+      'sameAs': 'https://www.macenza.com/',
+      'logo': 'https://www.macenza.com/logo.svg'
+    },
+    'identifier': {
+      '@type': 'PropertyValue',
+      'name': 'Macenza',
+      'value': String(job.id || job._id || jobSlug)
+    },
+    'directApply': true,
+    'mainEntityOfPage': canonicalUrl
+  };
+
+  if (isRemote) {
+    schema.jobLocationType = 'TELECOMMUTE';
+    schema.applicantLocationRequirements = {
+      '@type': 'Country',
+      'name': 'India'
+    };
+    schema.jobLocation = {
+      '@type': 'Place',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressCountry': 'IN'
+      }
+    };
+  } else {
+    schema.jobLocation = {
+      '@type': 'Place',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressLocality': job.location,
+        'addressCountry': 'IN'
+      }
+    };
+  }
+
+  if (baseSalary) {
+    schema.baseSalary = baseSalary;
+  }
+
+  return schema;
+};
+
 const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -262,12 +392,15 @@ const JobDetails = () => {
     );
   }
 
+  const jobSchema = buildJobPostingSchema(job, id);
+
   return (
     <div ref={pageRef} className="bg-white text-black min-h-screen relative pt-32">
       <SEO
         title={job?.title ? `${job.title} | Macenza Careers` : 'Job Details | Macenza Careers'}
         description={job?.description ? job.description.slice(0, 160) : 'View job description and apply for positions at Macenza.'}
         canonicalPath={`/careers/${id || ''}`}
+        schema={jobSchema}
       />
       {/* Decorative Blur Background Elements */}
       <div className="absolute top-0 left-1/4 w-[400px] h-[400px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
