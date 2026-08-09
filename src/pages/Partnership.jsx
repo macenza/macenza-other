@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Section from '../components/Section';
@@ -13,8 +14,6 @@ import {
   Building2, 
   ShieldCheck, 
   Sparkles, 
-  Send, 
-  Loader2, 
   Layers, 
   TrendingUp, 
   Lock, 
@@ -25,8 +24,6 @@ import {
   CreditCard,
   Rocket
 } from 'lucide-react';
-import { supabase } from '../supabaseClient';
-import { toast } from 'react-toastify';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -72,17 +69,7 @@ const comparisonData = [
 
 const Partnership = () => {
   const pageRef = useRef(null);
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    company: '',
-    email: '',
-    phone: '',
-    website: '',
-    partnership_type: 'Sales Partnership',
-    customer_base: '',
-    message: ''
-  });
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -117,51 +104,8 @@ const Partnership = () => {
     document.getElementById('whitelabel-section')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleScrollToForm = (type = 'Sales Partnership') => {
-    setFormData(prev => ({ ...prev, partnership_type: type }));
-    document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim()) {
-      toast.error('Name and Work Email are required.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert({
-          name: formData.name.trim(),
-          email: formData.email.trim(),
-          phone: formData.phone.trim(),
-          company: formData.company.trim(),
-          project_type: `Partnership: ${formData.partnership_type}`,
-          budget: formData.customer_base ? `Customer Base: ${formData.customer_base}` : 'N/A',
-          details: `[Website: ${formData.website || 'N/A'}] ${formData.message.trim()}`
-        });
-
-      if (error) throw error;
-
-      toast.success('Thank you for your interest in partnering with Macenza. Our team will review your request and contact you shortly.');
-      setFormData({
-        name: '',
-        company: '',
-        email: '',
-        phone: '',
-        website: '',
-        partnership_type: 'Sales Partnership',
-        customer_base: '',
-        message: ''
-      });
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to submit request: ' + err.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleGoToContact = () => {
+    navigate('/contact');
   };
 
   const partnershipSchema = {
@@ -201,7 +145,7 @@ const Partnership = () => {
             </p>
             <div className="flex flex-wrap items-center gap-4 reveal-up">
               <button
-                onClick={() => handleScrollToForm()}
+                onClick={handleGoToContact}
                 className="px-8 py-4 sm:px-10 sm:py-5 bg-primary text-white rounded-full font-bold text-base sm:text-lg glow-blue hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/20 flex items-center gap-3 active:scale-95"
               >
                 Become a Partner <ArrowRight className="w-5 h-5" />
@@ -339,7 +283,7 @@ const Partnership = () => {
                 <Sparkles className="w-4 h-4" /> Earn an agreed commission on every successful sale.
               </p>
               <button
-                onClick={() => handleScrollToForm('Sales Partnership')}
+                onClick={handleGoToContact}
                 className="w-full py-4 bg-primary text-white rounded-2xl font-bold text-base hover:bg-primary-dark transition-all duration-300 shadow-lg shadow-primary/20 active:scale-[0.98]"
               >
                 Become a Sales Partner
@@ -400,7 +344,7 @@ const Partnership = () => {
                 <ShieldCheck className="w-4 h-4 text-primary" /> Macenza operates behind the scenes as your technology partner.
               </p>
               <button
-                onClick={() => handleScrollToForm('White-Label HRMS')}
+                onClick={handleGoToContact}
                 className="w-full py-4 bg-primary text-white rounded-2xl font-bold text-base hover:bg-primary-dark transition-all duration-300 shadow-xl shadow-primary/30 active:scale-[0.98]"
               >
                 Explore White-Label HRMS
@@ -700,132 +644,17 @@ const Partnership = () => {
           
           <div className="flex flex-wrap justify-center gap-4 mb-6">
             <button
-              onClick={() => handleScrollToForm('Sales Partnership')}
+              onClick={handleGoToContact}
               className="px-8 py-4 sm:px-12 sm:py-5 bg-white text-primary rounded-full font-bold text-base sm:text-lg hover:bg-black hover:text-white transition-all duration-300 shadow-2xl"
             >
               Become a Sales Partner
             </button>
             <button
-              onClick={() => handleScrollToForm('White-Label HRMS')}
+              onClick={handleGoToContact}
               className="px-8 py-4 sm:px-12 sm:py-5 bg-black/20 text-white rounded-full font-bold text-base sm:text-lg hover:bg-black transition-all duration-300"
             >
               Launch White-Label HRMS
             </button>
-          </div>
-          <p className="text-xs text-white/60 font-light">Tell us about your company and the partnership model you're interested in.</p>
-        </div>
-      </Section>
-
-      {/* FORM TEXT */}
-      <Section id="application-form">
-        <div className="max-w-4xl mx-auto reveal-up">
-          <div className="glass-morphism rounded-[3rem] p-8 sm:p-14 border border-black/10 shadow-2xl">
-            <div className="text-center mb-10">
-              <h2 className="text-3xl sm:text-5xl font-bold text-black mb-4 tracking-tight">
-                Become a <span className="text-primary">Macenza Partner</span>
-              </h2>
-              <p className="text-black/60 font-light text-base sm:text-lg">Tell us about your business and how you would like to partner with Macenza.</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Full Name</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
-                    placeholder="Jane Doe"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Company Name</label>
-                  <input
-                    type="text"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
-                    placeholder="Acme Corp"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Work Email</label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
-                    placeholder="jane@acme.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Phone Number</label>
-                  <input
-                    type="text"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
-                    placeholder="+1 (555) 000-0000"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Website</label>
-                  <input
-                    type="url"
-                    value={formData.website}
-                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none"
-                    placeholder="https://yourcompany.com"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Partnership Type</label>
-                  <select
-                    value={formData.partnership_type}
-                    onChange={(e) => setFormData({ ...formData, partnership_type: e.target.value })}
-                    className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none appearance-none cursor-pointer"
-                  >
-                    <option value="Sales Partnership">Sales Partnership</option>
-                    <option value="White-Label HRMS">White-Label HRMS</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Tell Us About Your Business</label>
-                <textarea
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none min-h-[140px] resize-none"
-                  placeholder="Tell us about your business network and partnership goals..."
-                ></textarea>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-5 bg-primary text-white rounded-2xl font-bold text-lg hover:bg-black transition-all duration-300 shadow-xl shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] disabled:opacity-50"
-              >
-                {loading ? (
-                  <>
-                    Submitting... <Loader2 className="w-5 h-5 animate-spin" />
-                  </>
-                ) : (
-                  <>
-                    Submit Partnership Request <Send className="w-5 h-5" />
-                  </>
-                )}
-              </button>
-            </form>
           </div>
         </div>
       </Section>

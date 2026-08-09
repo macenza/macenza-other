@@ -29,6 +29,7 @@ const teamMembers = [
   { name: "Akshita Kumawat", role: "Full Stack Developer", image: "/Team/Akshita Kumawat Full Stack.webp" },
   { name: "Diksha Bansal", role: "Business Development Manager", image: "/Team/A Diksha Bansal AI ML.webp" },
   { name: "Divyanshi Sen", role: "Full Stack Developer", image: "/Team/Divyanshi Sen Full Stack Developer.webp" },
+  { name: "Mohit Tanwar", role: "Full Stack Developer", image: "/Team/Mohit Tawar Full Stack Developer.webp" },
   { name: "Kapil Sharma", role: "Backend Developer", image: "/Team/A Kapil Sharma Backend Developer.webp" },
   { name: "Naman", role: "Business Development", image: "/Team/A Naman Business Developmenet.webp" },
   { name: "Preet Meena", role: "Marketing", image: "/Team/A Preet Meena Markating.webp" },
