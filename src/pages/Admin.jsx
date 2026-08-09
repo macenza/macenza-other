@@ -30,7 +30,10 @@ import {
   PartyPopper,
   CalendarDays,
   Camera,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Globe,
+  Mail,
+  Phone
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
@@ -65,6 +68,10 @@ const Admin = () => {
   // Selected Candidate for Resume Preview / Recruitment Actions
   const [selectedApp, setSelectedApp] = useState(null);
   const [notesText, setNotesText] = useState('');
+
+  // Slide-Over Candidate Drawer State
+  const [candidateDrawerApp, setCandidateDrawerApp] = useState(null);
+  const [drawerNotesText, setDrawerNotesText] = useState('');
 
   // Job Form State
   const initialJobForm = {
@@ -1077,6 +1084,101 @@ const Admin = () => {
     }
   };
 
+  // Drawer Recruitment Handlers
+  const handleDrawerStatusUpdate = async (targetApp, newStatus) => {
+    if (!targetApp) return;
+    const appId = targetApp.id || targetApp._id;
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .update({ status: newStatus })
+        .eq('id', appId)
+        .select('*, jobId:jobs(*)')
+        .single();
+
+      if (error) throw error;
+
+      const mapped = {
+        ...data,
+        _id: data.id,
+        candidateName: data.candidate_name,
+        linkedInUrl: data.linkedin_url,
+        portfolioUrl: data.portfolio_url,
+        coverLetter: data.cover_letter,
+        resume: data.resume_url,
+        createdAt: data.created_at || data.createdAt,
+        jobId: data.jobId ? {
+          ...data.jobId,
+          _id: data.jobId.id,
+          employmentType: data.jobId.employment_type || data.jobId.employmentType
+        } : null
+      };
+
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? mapped : a));
+      setCandidateDrawerApp(mapped);
+      if (selectedApp && (selectedApp.id === appId || selectedApp._id === appId)) {
+        setSelectedApp(mapped);
+      }
+      toast.success(`Status updated to ${newStatus}`);
+    } catch (err) {
+      console.error(err);
+      const updated = { ...targetApp, status: newStatus };
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? updated : a));
+      setCandidateDrawerApp(updated);
+      if (selectedApp && (selectedApp.id === appId || selectedApp._id === appId)) {
+        setSelectedApp(updated);
+      }
+      toast.success(`Status updated to ${newStatus}`);
+    }
+  };
+
+  const handleDrawerSaveNotes = async (targetApp, notes) => {
+    if (!targetApp) return;
+    const appId = targetApp.id || targetApp._id;
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .update({ notes })
+        .eq('id', appId)
+        .select('*, jobId:jobs(*)')
+        .single();
+
+      if (error) throw error;
+
+      const mapped = {
+        ...data,
+        _id: data.id,
+        candidateName: data.candidate_name,
+        linkedInUrl: data.linkedin_url,
+        portfolioUrl: data.portfolio_url,
+        coverLetter: data.cover_letter,
+        resume: data.resume_url,
+        createdAt: data.created_at || data.createdAt,
+        jobId: data.jobId ? {
+          ...data.jobId,
+          _id: data.jobId.id,
+          employmentType: data.jobId.employment_type || data.jobId.employmentType
+        } : null
+      };
+
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? mapped : a));
+      setCandidateDrawerApp(mapped);
+      if (selectedApp && (selectedApp.id === appId || selectedApp._id === appId)) {
+        setSelectedApp(mapped);
+      }
+      toast.success('Recruiter notes saved!');
+    } catch (err) {
+      console.error(err);
+      const updated = { ...targetApp, notes };
+      setApplications(prev => prev.map(a => (a.id === appId || a._id === appId) ? updated : a));
+      setCandidateDrawerApp(updated);
+      if (selectedApp && (selectedApp.id === appId || selectedApp._id === appId)) {
+        setSelectedApp(updated);
+      }
+      toast.success('Recruiter notes saved!');
+    }
+  };
+
   const handleDownloadResume = async (e, url, candidateName) => {
     e.preventDefault();
     if (!url) return;
@@ -1274,7 +1376,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="flex bg-[#FFFFFF] min-h-screen font-sans text-black relative select-none">
+    <div className="flex bg-[#FFFFFF] min-h-screen font-sans text-black relative">
       <SEO title="Admin Dashboard | Macenza" description="Macenza Admin Portal" canonicalPath="/admin" noindex={true} />
       {/* Sidebar */}
       <aside className="w-64 bg-[#EFF6FF] border-r border-[#BFDBFE] flex flex-col justify-between h-screen sticky top-0 py-8 px-6 z-20">
@@ -1846,10 +1948,19 @@ const Admin = () => {
                       {filteredApplications.map(app => (
                         <tr key={app._id} className="hover:bg-[#EFF6FF]/60 transition-colors text-sm font-semibold">
                           <td className="px-8 py-5">
-                            <div className="flex flex-col">
-                              <span className="text-black font-black text-base">{app.candidateName}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setCandidateDrawerApp(app);
+                                setDrawerNotesText(app.notes || '');
+                              }}
+                              className="flex flex-col text-left group cursor-pointer focus:outline-none"
+                            >
+                              <span className="text-black font-black text-base group-hover:text-primary group-hover:underline transition-colors flex items-center gap-1.5">
+                                {app.candidateName}
+                              </span>
                               <span className="text-xs text-black/50">{app.email}</span>
-                            </div>
+                            </button>
                           </td>
                           <td className="px-6 py-5 text-black">
                             {app.jobId ? app.jobId.title : 'General Placement'}
@@ -1871,12 +1982,12 @@ const Admin = () => {
                           <td className="px-8 py-5 text-right">
                             <button
                               onClick={() => {
-                                setSelectedApp(app);
-                                setActiveTab('Resume Manager');
+                                setCandidateDrawerApp(app);
+                                setDrawerNotesText(app.notes || '');
                               }}
                               className="px-4 py-2 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider transition-colors inline-flex items-center gap-1.5"
                             >
-                              Review <ArrowRight className="w-3.5 h-3.5" />
+                              View Details <ArrowRight className="w-3.5 h-3.5" />
                             </button>
                           </td>
                         </tr>
@@ -3120,6 +3231,264 @@ const Admin = () => {
           )}
         </div>
       </main>
+      {/* Slide-Over Right Drawer for Candidate Details */}
+      {candidateDrawerApp && (
+        <div className="fixed inset-0 z-[100] flex justify-end overflow-hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
+            onClick={() => setCandidateDrawerApp(null)}
+          />
+
+          {/* Slide-in Panel from Right */}
+          <div
+            data-lenis-prevent
+            className="relative w-full max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-[#BFDBFE]"
+          >
+            {/* Drawer Header */}
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#BFDBFE] px-6 py-5 flex items-center justify-between z-20">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center font-black text-primary text-xl shadow-sm">
+                  {candidateDrawerApp.candidateName ? candidateDrawerApp.candidateName.charAt(0).toUpperCase() : 'C'}
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-black leading-tight">
+                    {candidateDrawerApp.candidateName}
+                  </h3>
+                  <p className="text-xs font-semibold text-black/60">
+                    Applied for: <span className="text-primary font-bold">{candidateDrawerApp.jobId ? candidateDrawerApp.jobId.title : 'General Placement'}</span>
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setCandidateDrawerApp(null)}
+                className="p-2 rounded-xl hover:bg-slate-100 text-black/60 hover:text-black transition-colors"
+                title="Close"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Top Action Bar: Download Resume & View Portfolio */}
+            <div className="p-6 bg-[#EFF6FF] border-b border-[#BFDBFE] flex flex-wrap items-center gap-3">
+              {/* Download Resume Button */}
+              <button
+                onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
+                disabled={!candidateDrawerApp.resume}
+                className={`flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${
+                  candidateDrawerApp.resume
+                    ? 'bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] cursor-pointer'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <Download className="w-4 h-4" /> Download Resume
+              </button>
+
+              {/* View Portfolio Button */}
+              {candidateDrawerApp.portfolioUrl ? (
+                <a
+                  href={candidateDrawerApp.portfolioUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider bg-white border-2 border-primary text-primary hover:bg-primary/10 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+                >
+                  <Globe className="w-4 h-4" /> View Portfolio <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              ) : (
+                <button
+                  disabled
+                  className="flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
+                >
+                  <Globe className="w-4 h-4" /> No Portfolio Provided
+                </button>
+              )}
+
+              {/* LinkedIn Option */}
+              {candidateDrawerApp.linkedInUrl && (
+                <a
+                  href={candidateDrawerApp.linkedInUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-3.5 px-5 rounded-2xl font-bold text-xs bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+                  title="LinkedIn Profile"
+                >
+                  <ExternalLink className="w-4 h-4" /> LinkedIn
+                </a>
+              )}
+            </div>
+
+            {/* Drawer Body Content */}
+            <div className="p-6 flex flex-col gap-6">
+              {/* Profile Details Card */}
+              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-4">
+                <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Candidate Contact & Overview</h4>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col overflow-hidden">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Email</span>
+                      <a href={`mailto:${candidateDrawerApp.email}`} className="text-xs font-bold text-black hover:text-primary truncate">
+                        {candidateDrawerApp.email || 'N/A'}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Phone</span>
+                      <a href={`tel:${candidateDrawerApp.phone}`} className="text-xs font-bold text-black hover:text-primary">
+                        {candidateDrawerApp.phone || 'N/A'}
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <MapPin className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Location</span>
+                      <span className="text-xs font-bold text-black">{candidateDrawerApp.location || 'Remote'}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <Briefcase className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Experience</span>
+                      <span className="text-xs font-bold text-black">{candidateDrawerApp.experience || 'Not Specified'}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <CalendarDays className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Applied Date</span>
+                      <span className="text-xs font-bold text-black">
+                        {candidateDrawerApp.createdAt ? new Date(candidateDrawerApp.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
+                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                      <FileCheck className="w-4 h-4" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] font-bold uppercase text-black/40">Status</span>
+                      <span className="text-xs font-black uppercase text-primary">{candidateDrawerApp.status || 'Applied'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Cover Letter */}
+              {candidateDrawerApp.coverLetter && (
+                <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Cover Letter</h4>
+                  <p className="text-xs text-black/80 leading-relaxed italic bg-white p-4 rounded-2xl border border-[#BFDBFE]/60">
+                    "{candidateDrawerApp.coverLetter}"
+                  </p>
+                </div>
+              )}
+
+              {/* Recruitment Pipeline Status update */}
+              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+                <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Update Pipeline Status</h4>
+                <div className="flex flex-wrap gap-2">
+                  {['Applied', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'].map((statusOption) => (
+                    <button
+                      key={statusOption}
+                      onClick={() => handleDrawerStatusUpdate(candidateDrawerApp, statusOption)}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
+                        candidateDrawerApp.status === statusOption
+                          ? 'bg-primary text-white shadow-md scale-105'
+                          : 'bg-white border border-[#BFDBFE] text-black/70 hover:bg-[#DBEAFE] hover:text-black'
+                      }`}
+                    >
+                      {statusOption}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Internal Notes */}
+              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Internal Recruiter Notes</h4>
+                  <button
+                    onClick={() => handleDrawerSaveNotes(candidateDrawerApp, drawerNotesText)}
+                    className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark flex items-center gap-1.5 shadow-sm uppercase tracking-wider"
+                  >
+                    <Save className="w-3.5 h-3.5" /> Save Notes
+                  </button>
+                </div>
+                <textarea
+                  value={drawerNotesText}
+                  onChange={(e) => setDrawerNotesText(e.target.value)}
+                  rows={3}
+                  className="w-full bg-white border border-[#BFDBFE] rounded-2xl p-4 text-xs text-black font-semibold focus:outline-none focus:border-primary"
+                  placeholder="Add internal feedback, interview outcome, notes..."
+                />
+              </div>
+
+              {/* Resume Viewer */}
+              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Resume Document</h4>
+                  {candidateDrawerApp.resume && (
+                    <a
+                      href={candidateDrawerApp.resume}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                    >
+                      Open Document <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  )}
+                </div>
+                {candidateDrawerApp.resume ? (
+                  candidateDrawerApp.resume.toLowerCase().endsWith('.pdf') ? (
+                    <iframe
+                      src={`${candidateDrawerApp.resume}#toolbar=0`}
+                      className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-white shadow-inner"
+                      title="Resume Preview"
+                    />
+                  ) : (
+                    <div className="bg-white border border-[#BFDBFE] rounded-2xl p-6 text-center flex flex-col items-center gap-3">
+                      <FileText className="w-10 h-10 text-primary" />
+                      <div>
+                        <p className="text-xs font-bold text-black">Resume Attached</p>
+                        <p className="text-[11px] text-black/50">Click below to download or view the document</p>
+                      </div>
+                      <button
+                        onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
+                        className="px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" /> Download Resume
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  <div className="bg-white border border-[#BFDBFE] rounded-2xl p-6 text-center text-black/40 text-xs italic">
+                    No resume uploaded by candidate.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <ToastContainer position="bottom-right" autoClose={3000} hideProgressBar theme="colored" />
     </div>
   );
