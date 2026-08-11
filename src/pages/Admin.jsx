@@ -1185,12 +1185,35 @@ const Admin = () => {
     e.preventDefault();
     if (!url) return;
 
+    let downloadUrl = url;
+
+    // Resolve private buckets dynamically via signed URLs
+    if (url.includes('/employee-docs/') || url.includes('/resumes/')) {
+      try {
+        const isDocs = url.includes('/employee-docs/');
+        const bucket = isDocs ? 'employee-docs' : 'resumes';
+        const parts = url.split(isDocs ? '/employee-docs/' : '/resumes/');
+        if (parts.length > 1) {
+          const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+          const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(filePath, 60);
+          if (error) throw error;
+          if (data && data.signedUrl) {
+            downloadUrl = data.signedUrl;
+          }
+        }
+      } catch (signError) {
+        console.error('Error signing URL:', signError);
+      }
+    }
+
     const filename = candidateName
       ? `${candidateName.replace(/\s+/g, '_')}_Resume.${url.split('.').pop().split('?')[0] || 'pdf'}`
       : 'Resume.pdf';
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(downloadUrl);
       if (!response.ok) throw new Error('Fetch failed');
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -1203,10 +1226,10 @@ const Admin = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.warn('Direct download via fetch failed, trying query parameter fallback', error);
-      if (url.includes('supabase.co')) {
-        const downloadUrl = url.includes('?') ? `${url}&download=` : `${url}?download=`;
+      if (downloadUrl.includes('supabase.co')) {
+        const fallbackUrl = downloadUrl.includes('?') ? `${downloadUrl}&download=` : `${downloadUrl}?download=`;
         const link = document.createElement('a');
-        link.href = downloadUrl;
+        link.href = fallbackUrl;
         link.target = '_self';
         document.body.appendChild(link);
         link.click();
