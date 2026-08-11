@@ -173,7 +173,7 @@ const CertificateVerification = () => {
                   type="text"
                   value={certNumber}
                   onChange={(e) => setCertNumber(e.target.value)}
-                  placeholder="e.g. CERT-1717876092"
+                  placeholder="e.g. MAC-xxx-xxx"
                   className="w-full bg-white border border-[#BFDBFE] pl-12 pr-4 py-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all uppercase"
                 />
                 <Award className="w-5 h-5 text-black/40 absolute left-4 top-1/2 -translate-y-1/2" />
