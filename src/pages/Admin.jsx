@@ -1262,11 +1262,13 @@ const Admin = () => {
     let downloadUrl = url;
 
     // Resolve private buckets dynamically via signed URLs
-    if (url.includes('/employee-docs/') || url.includes('/resumes/')) {
+    if (url.includes('/employee-docs/') || url.includes('/resumes/') || url.includes('/employee-certs/')) {
       try {
         const isDocs = url.includes('/employee-docs/');
-        const bucket = isDocs ? 'employee-docs' : 'resumes';
-        const parts = url.split(isDocs ? '/employee-docs/' : '/resumes/');
+        const isCerts = url.includes('/employee-certs/');
+        const bucket = isDocs ? 'employee-docs' : (isCerts ? 'employee-certs' : 'resumes');
+        const separator = isDocs ? '/employee-docs/' : (isCerts ? '/employee-certs/' : '/resumes/');
+        const parts = url.split(separator);
         if (parts.length > 1) {
           const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
           const { data, error } = await supabase.storage
