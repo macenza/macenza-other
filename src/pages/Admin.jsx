@@ -40,6 +40,7 @@ import { supabase } from '../supabaseClient';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SEO from '../components/SEO';
+import JSZip from 'jszip';
 
 const Admin = () => {
   // Authentication states
@@ -54,6 +55,7 @@ const Admin = () => {
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [downloadingResumes, setDownloadingResumes] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -1215,6 +1217,169 @@ const Admin = () => {
     }
   };
 
+  const exportApplicationsToCSV = () => {
+    if (filteredApplications.length === 0) {
+      toast.error('No candidate applications to export');
+      return;
+    }
+    const headers = ['Candidate Name', 'Email', 'Phone', 'Job Applied', 'Experience', 'Location', 'Applied Date', 'Status', 'LinkedIn URL', 'Portfolio URL', 'Resume URL', 'Cover Letter', 'Notes'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredApplications.map(app => [
+        `"${(app.candidateName || '').replace(/"/g, '""')}"`,
+        `"${(app.email || '').replace(/"/g, '""')}"`,
+        `"${(app.phone || '').replace(/"/g, '""')}"`,
+        `"${(app.jobId?.title || 'General Placement').replace(/"/g, '""')}"`,
+        `"${(app.experience || '').replace(/"/g, '""')}"`,
+        `"${(app.location || '').replace(/"/g, '""')}"`,
+        `"${app.createdAt ? new Date(app.createdAt).toLocaleDateString() : ''}"`,
+        `"${(app.status || '').replace(/"/g, '""')}"`,
+        `"${(app.linkedInUrl || '').replace(/"/g, '""')}"`,
+        `"${(app.portfolioUrl || '').replace(/"/g, '""')}"`,
+        `"${(app.resume || '').replace(/"/g, '""')}"`,
+        `"${(app.coverLetter || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`,
+        `"${(app.notes || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    const dateStr = new Date().toISOString().split('T')[0];
+    link.setAttribute('download', `Macenza_Applications_${dateStr}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Applications CSV exported instantly!');
+  };
+
+  const handleDownloadAllResumes = async () => {
+    const appsToDownload = filteredApplications.filter(app => app.resume);
+    
+    if (applications.length === 0) {
+      toast.error('No applications available to download.');
+      return;
+    }
+
+    if (appsToDownload.length === 0) {
+      toast.info('No resumes available for current filter selection.');
+      return;
+    }
+
+    setDownloadingResumes(true);
+    const toastId = toast.loading(`Starting download for ${appsToDownload.length} candidate resumes...`);
+
+    try {
+      const zip = new JSZip();
+      const folder = zip.folder("Resumes");
+      let completedCount = 0;
+      const total = appsToDownload.length;
+
+      // Helper function to fetch single resume with 2.5s abort timeout
+      const processApp = async (app) => {
+        const candidateName = (app.candidateName || 'Candidate').replace(/[^a-zA-Z0-9_\-]/g, '_');
+        const jobTitle = (app.jobId?.title || 'Position').replace(/[^a-zA-Z0-9_\-]/g, '_');
+        const url = app.resume;
+
+        let ext = 'pdf';
+        if (url && typeof url === 'string') {
+          const cleanUrl = url.split('?')[0];
+          const parts = cleanUrl.split('.');
+          if (parts.length > 1) {
+            const lastPart = parts.pop().toLowerCase();
+            if (['pdf', 'doc', 'docx', 'txt', 'png', 'jpg', 'jpeg'].includes(lastPart)) {
+              ext = lastPart;
+            }
+          }
+        }
+
+        const filename = `${candidateName}_${jobTitle}_Resume.${ext}`;
+
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+          const response = await fetch(url, { signal: controller.signal });
+          clearTimeout(timeoutId);
+
+          if (!response.ok) throw new Error(`HTTP status ${response.status}`);
+          const blob = await response.blob();
+          folder.file(filename, blob);
+        } catch (fetchErr) {
+          const detailsContent = `MACENZA CAREERS - CANDIDATE RESUME SUMMARY\n` +
+            `==========================================\n` +
+            `Candidate Name : ${app.candidateName || 'N/A'}\n` +
+            `Email          : ${app.email || 'N/A'}\n` +
+            `Phone          : ${app.phone || 'N/A'}\n` +
+            `Job Applied    : ${app.jobId?.title || 'N/A'}\n` +
+            `Experience     : ${app.experience || 'N/A'}\n` +
+            `Location       : ${app.location || 'N/A'}\n` +
+            `Status         : ${app.status || 'Applied'}\n` +
+            `Applied Date   : ${app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'N/A'}\n` +
+            `LinkedIn       : ${app.linkedInUrl || 'N/A'}\n` +
+            `Portfolio      : ${app.portfolioUrl || 'N/A'}\n` +
+            `Resume URL     : ${url || 'N/A'}\n\n` +
+            `COVER LETTER:\n` +
+            `${app.coverLetter || 'No cover letter provided.'}\n\n` +
+            `NOTES:\n` +
+            `${app.notes || 'No notes.'}\n`;
+          folder.file(`${candidateName}_${jobTitle}_Details.txt`, detailsContent);
+        } finally {
+          completedCount++;
+          if (completedCount % 5 === 0 || completedCount === total) {
+            toast.update(toastId, {
+              render: `Packaging resumes: ${completedCount} / ${total} (${Math.round((completedCount / total) * 100)}%)...`,
+              isLoading: true
+            });
+          }
+        }
+      };
+
+      // Process in parallel batches of 25 concurrently
+      const BATCH_SIZE = 25;
+      for (let i = 0; i < appsToDownload.length; i += BATCH_SIZE) {
+        const batch = appsToDownload.slice(i, i + BATCH_SIZE);
+        await Promise.all(batch.map(app => processApp(app)));
+      }
+
+      toast.update(toastId, {
+        render: `Compressing ${total} files into ZIP archive...`,
+        isLoading: true
+      });
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const blobUrl = window.URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      const dateStr = new Date().toISOString().split('T')[0];
+      link.download = `Macenza_Resumes_${dateStr}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+
+      toast.update(toastId, {
+        render: `Successfully downloaded ZIP with ${total} candidate resumes!`,
+        type: 'success',
+        isLoading: false,
+        autoClose: 4000
+      });
+    } catch (zipErr) {
+      console.error('Error generating resumes zip:', zipErr);
+      toast.update(toastId, {
+        render: 'Failed to generate resumes ZIP archive.',
+        type: 'error',
+        isLoading: false,
+        autoClose: 4000
+      });
+    } finally {
+      setDownloadingResumes(false);
+    }
+  };
+
+
   // Filter Applications
   const filteredApplications = applications.filter(app => {
     // Name / Email search
@@ -1928,8 +2093,34 @@ const Admin = () => {
 
               {/* Data Table */}
               <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] overflow-hidden">
-                <div className="px-8 py-6 border-b border-[#BFDBFE] flex justify-between items-center bg-white">
-                  <h4 className="font-black text-xl text-black">Applications Submissions ({filteredApplications.length})</h4>
+                <div className="px-8 py-6 border-b border-[#BFDBFE] flex flex-wrap justify-between items-center bg-white gap-4">
+                  <div>
+                    <h4 className="font-black text-xl text-black">Applications Submissions ({filteredApplications.length})</h4>
+                    <p className="text-xs text-black/50 font-medium mt-0.5">Manage candidate submissions and download bulk resume archives</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={exportApplicationsToCSV}
+                      disabled={filteredApplications.length === 0}
+                      className="px-4 py-2.5 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black font-bold text-xs rounded-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      title="Export all applications & direct resume links to CSV instantly"
+                    >
+                      <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                      <span>Export CSV (Instant)</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadAllResumes}
+                      disabled={downloadingResumes || filteredApplications.length === 0}
+                      className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                      title="Download ZIP package of all applicant resumes"
+                    >
+                      <Download className={`w-4 h-4 ${downloadingResumes ? 'animate-bounce' : ''}`} />
+                      <span>{downloadingResumes ? 'Packaging Resumes...' : 'Download All Resumes (ZIP)'}</span>
+                    </button>
+                  </div>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">

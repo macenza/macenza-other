@@ -175,7 +175,9 @@ const JobDetails = () => {
     experience: '',
     linkedInUrl: '',
     portfolioUrl: '',
-    coverLetter: ''
+    coverLetter: '',
+    agreeToTerms: false,
+    agreeToFutureRecruitment: false
   };
   const [formData, setFormData] = useState(initialFormState);
 
@@ -278,8 +280,8 @@ const JobDetails = () => {
   }, [loading, job]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleFileChange = (e) => {
@@ -299,6 +301,13 @@ const JobDetails = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.agreeToTerms) {
+      const err = 'Please agree to the Privacy Policy and Terms & Conditions to submit your application.';
+      setSubmitError(err);
+      toast.error(err);
+      return;
+    }
 
     let uploadFile = resumeFile;
     if (!uploadFile) {
@@ -714,6 +723,48 @@ const JobDetails = () => {
                         </>
                       )}
                     </div>
+                  </div>
+
+                  {/* Consent Checkboxes */}
+                  <div className="flex flex-col gap-3 py-3 border-t border-black/10 mt-2 bg-black/[0.02] p-4 rounded-2xl">
+                    {/* 1. Mandatory Checkbox */}
+                    <label className="flex items-start gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        name="agreeToTerms"
+                        checked={formData.agreeToTerms}
+                        onChange={handleInputChange}
+                        required
+                        className="mt-0.5 w-4 h-4 rounded border-black/20 text-primary focus:ring-primary cursor-pointer accent-primary shrink-0"
+                      />
+                      <span className="text-xs text-black/80 font-medium leading-relaxed group-hover:text-black transition-colors">
+                        <span className="font-bold text-rose-600 mr-1">*</span>
+                        I have read and agree to the{' '}
+                        <a href="https://www.macenza.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">
+                          Privacy Policy
+                        </a>{' '}
+                        and{' '}
+                        <Link to="/terms" target="_blank" className="text-primary font-bold hover:underline">
+                          Terms &amp; Conditions
+                        </Link>
+                        , and I consent to Macenza collecting and processing the information I provide for recruitment and employment-related purposes.
+                      </span>
+                    </label>
+
+                    {/* 2. Optional Checkbox */}
+                    <label className="flex items-start gap-3 cursor-pointer group pt-1 border-t border-black/5">
+                      <input
+                        type="checkbox"
+                        name="agreeToFutureRecruitment"
+                        checked={formData.agreeToFutureRecruitment}
+                        onChange={handleInputChange}
+                        className="mt-0.5 w-4 h-4 rounded border-black/20 text-primary focus:ring-primary cursor-pointer accent-primary shrink-0"
+                      />
+                      <span className="text-xs text-black/70 font-medium leading-relaxed group-hover:text-black transition-colors">
+                        <span className="text-black/40 font-bold mr-1">(Optional)</span>
+                        I consent to Macenza retaining my application information and contacting me about future employment opportunities.
+                      </span>
+                    </label>
                   </div>
 
                   {/* Submit Trigger */}

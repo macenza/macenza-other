@@ -176,6 +176,7 @@ const Footer = () => {
               <Link to="/certificateverification" className="hover:text-primary transition-colors">Verify Certificate</Link>
               <Link to="/privacy" className="hover:text-primary transition-colors">Privacy Policy</Link>
               <Link to="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
+              <Link to="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link>
             </div>
           </div>
         </div>
