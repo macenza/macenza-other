@@ -70,10 +70,84 @@ const Admin = () => {
   // Selected Candidate for Resume Preview / Recruitment Actions
   const [selectedApp, setSelectedApp] = useState(null);
   const [notesText, setNotesText] = useState('');
+  const [selectedAppResumeSignedUrl, setSelectedAppResumeSignedUrl] = useState('');
 
   // Slide-Over Candidate Drawer State
   const [candidateDrawerApp, setCandidateDrawerApp] = useState(null);
   const [drawerNotesText, setDrawerNotesText] = useState('');
+  const [candidateDrawerAppResumeSignedUrl, setCandidateDrawerAppResumeSignedUrl] = useState('');
+
+  // Sign resume URL for selectedApp
+  useEffect(() => {
+    let active = true;
+    const signUrl = async () => {
+      const url = selectedApp?.resume;
+      if (!url) {
+        setSelectedAppResumeSignedUrl('');
+        return;
+      }
+
+      if (url.includes('/resumes/')) {
+        try {
+          const parts = url.split('/resumes/');
+          if (parts.length > 1) {
+            const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+            const { data, error } = await supabase.storage
+              .from('resumes')
+              .createSignedUrl(filePath, 900); // 15 mins for reading
+            if (error) throw error;
+            if (active && data && data.signedUrl) {
+              setSelectedAppResumeSignedUrl(data.signedUrl);
+            }
+          }
+        } catch (err) {
+          console.error('Error signing selectedApp resume:', err);
+          if (active) setSelectedAppResumeSignedUrl(url); // Fallback
+        }
+      } else {
+        setSelectedAppResumeSignedUrl(url);
+      }
+    };
+
+    signUrl();
+    return () => { active = false; };
+  }, [selectedApp?.resume]);
+
+  // Sign resume URL for candidateDrawerApp
+  useEffect(() => {
+    let active = true;
+    const signUrl = async () => {
+      const url = candidateDrawerApp?.resume;
+      if (!url) {
+        setCandidateDrawerAppResumeSignedUrl('');
+        return;
+      }
+
+      if (url.includes('/resumes/')) {
+        try {
+          const parts = url.split('/resumes/');
+          if (parts.length > 1) {
+            const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+            const { data, error } = await supabase.storage
+              .from('resumes')
+              .createSignedUrl(filePath, 900); // 15 mins for reading
+            if (error) throw error;
+            if (active && data && data.signedUrl) {
+              setCandidateDrawerAppResumeSignedUrl(data.signedUrl);
+            }
+          }
+        } catch (err) {
+          console.error('Error signing candidateDrawerApp resume:', err);
+          if (active) setCandidateDrawerAppResumeSignedUrl(url); // Fallback
+        }
+      } else {
+        setCandidateDrawerAppResumeSignedUrl(url);
+      }
+    };
+
+    signUrl();
+    return () => { active = false; };
+  }, [candidateDrawerApp?.resume]);
 
   // Job Form State
   const initialJobForm = {
@@ -97,7 +171,7 @@ const Admin = () => {
 
   const getProfilePicture = (empName, empProfilePic) => {
     if (empProfilePic) return empProfilePic;
-    
+
     const nameToImage = {
       "shashank shubham": "/Team/Shashank Shubham Founder & CEO.jpeg",
       "garima": "/Team/Garima CTO.png",
@@ -135,7 +209,7 @@ const Admin = () => {
       "yashika agarwal": "/Team/Yashika Agarwal Data Scientist.png",
       "divyanshi sen": "/Team/Divyanshi Sen Full Stack Developer.jpg"
     };
-    
+
     const normalized = empName ? empName.toLowerCase().trim() : "";
     return nameToImage[normalized] || null;
   };
@@ -265,9 +339,9 @@ const Admin = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         if (isEdit) {
-          setEditEmployeeForm(prev => ({...prev, profile_picture: reader.result}));
+          setEditEmployeeForm(prev => ({ ...prev, profile_picture: reader.result }));
         } else {
-          setNewEmployeeForm(prev => ({...prev, profile_picture: reader.result}));
+          setNewEmployeeForm(prev => ({ ...prev, profile_picture: reader.result }));
         }
       };
       reader.readAsDataURL(file);
@@ -293,13 +367,13 @@ const Admin = () => {
       toast.error('Please fill all required fields and upload the PDF bill.');
       return;
     }
-    
+
     const newBill = {
       id: 'bill_' + Date.now(),
       ...newBillForm,
       createdAt: new Date().toISOString()
     };
-    
+
     setBills([newBill, ...bills]);
     setNewBillForm({ billNumber: '', description: '', amount: '', date: '', pdfDataUri: '' });
     setIsAddingBill(false);
@@ -323,13 +397,13 @@ const Admin = () => {
       .map(emp => {
         const [year, month, day] = emp.dob.split('-');
         let nextBirthday = new Date(currentYear, parseInt(month) - 1, parseInt(day));
-        
+
         if (nextBirthday.getTime() < todayMs) {
           nextBirthday = new Date(currentYear + 1, parseInt(month) - 1, parseInt(day));
         }
-        
+
         const daysUntil = Math.ceil((nextBirthday.getTime() - todayMs) / (1000 * 60 * 60 * 24));
-        
+
         return {
           ...emp,
           nextBirthday,
@@ -373,7 +447,7 @@ const Admin = () => {
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
           const dataUrl = canvas.toDataURL('image/jpeg', 0.6); // Compress heavy
-          
+
           setNewEventPhotoForm(prev => ({ ...prev, imageDataUri: dataUrl }));
         };
       };
@@ -389,13 +463,13 @@ const Admin = () => {
       toast.error('Please add a title and select a photo.');
       return;
     }
-    
+
     const newPhoto = {
       id: 'event_' + Date.now(),
       ...newEventPhotoForm,
       createdAt: new Date().toISOString()
     };
-    
+
     setEventPhotos([newPhoto, ...eventPhotos]);
     setNewEventPhotoForm({ title: '', date: '', imageDataUri: '' });
     setIsAddingEventPhoto(false);
@@ -485,8 +559,8 @@ const Admin = () => {
         { _id: '3', title: 'AI Specialist', department: 'Research', salary: '$120,000 - $160,000', employmentType: 'Full Time', location: 'Hybrid', experience: '4+ Years', skills: 'Python, PyTorch, LLMs', openings: 1, deadline: '2026-06-10', description: 'Train and optimize customized AI services.', status: 'Draft', createdAt: new Date() }
       ]);
       const mockApps = [
-        { _id: 'app1', candidateName: 'John Doe', email: 'john@example.com', phone: '+1 234 567 8901', location: 'New York', experience: '4 Years', linkedInUrl: 'https://linkedin.com/in/johndoe', portfolioUrl: 'https://johndoe.dev', coverLetter: 'I am highly interested in working at Macenza. I love AI products and high fidelity user interfaces.', resume: '/uploads/sample_resume.pdf', jobId: { _id: '1', title: 'Frontend Engineer' }, status: 'Applied', notes: 'Strong Javascript skills.', createdAt: new Date(Date.now() - 86400000) },
-        { _id: 'app2', candidateName: 'Jane Smith', email: 'jane@example.com', phone: '+1 987 654 3210', location: 'San Francisco', experience: '6 Years', linkedInUrl: 'https://linkedin.com/in/janesmith', portfolioUrl: 'https://janesmith.design', coverLetter: 'Passionate about frontend and pixel perfect implementations.', resume: '/uploads/jane_resume.pdf', jobId: { _id: '1', title: 'Frontend Engineer' }, status: 'Shortlisted', notes: 'Scheduled a brief screening call.', createdAt: new Date(Date.now() - 172800000) }
+        { _id: 'app1', candidateName: 'John Doe', email: 'john@example.com', phone: '+1 234 567 8901', location: 'New York', experience: '4 Years', linkedInUrl: 'https://linkedin.com/in/johndoe', portfolioUrl: 'https://johndoe.dev', coverLetter: 'I am highly interested in working at Macenza. I love AI products and high fidelity user interfaces.', resume: '', jobId: { _id: '1', title: 'Frontend Engineer' }, status: 'Applied', notes: 'Strong Javascript skills.', createdAt: new Date(Date.now() - 86400000) },
+        { _id: 'app2', candidateName: 'Jane Smith', email: 'jane@example.com', phone: '+1 987 654 3210', location: 'San Francisco', experience: '6 Years', linkedInUrl: 'https://linkedin.com/in/janesmith', portfolioUrl: 'https://janesmith.design', coverLetter: 'Passionate about frontend and pixel perfect implementations.', resume: '', jobId: { _id: '1', title: 'Frontend Engineer' }, status: 'Shortlisted', notes: 'Scheduled a brief screening call.', createdAt: new Date(Date.now() - 172800000) }
       ];
       setApplications(mockApps);
       setSelectedApp(mockApps[0]);
@@ -556,7 +630,7 @@ const Admin = () => {
     if (selectedEmployee && selectedRows.includes(selectedEmployee.id)) {
       setSelectedEmployee(null);
     }
-    
+
     try {
       const { error } = await supabase
         .from('employees')
@@ -595,7 +669,7 @@ const Admin = () => {
       return;
     }
     setPendingCertNumber(certNum.trim().toUpperCase());
-    
+
     const input = document.getElementById('certificate-file-input');
     if (input) {
       input.value = '';
@@ -686,7 +760,7 @@ const Admin = () => {
       id: 'emp_' + Date.now(),
       documents: []
     };
-    
+
     const updated = [newEmp, ...employees];
     setEmployees(updated);
 
@@ -739,8 +813,8 @@ const Admin = () => {
   const handleSaveEmployeeEdit = async (e) => {
     e.preventDefault();
     if (!editEmployeeForm) return;
-    
-    const updated = employees.map(emp => 
+
+    const updated = employees.map(emp =>
       emp.id === editEmployeeForm.id ? editEmployeeForm : emp
     );
     setEmployees(updated);
@@ -779,7 +853,7 @@ const Admin = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${selectedEmployee.id}-${Date.now()}.${fileExt}`;
       let publicUrl = '';
-      
+
       try {
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('employee-docs')
@@ -790,7 +864,7 @@ const Admin = () => {
         const { data: { publicUrl: url } } = supabase.storage
           .from('employee-docs')
           .getPublicUrl(fileName);
-        
+
         publicUrl = url;
       } catch (storageErr) {
         console.warn('Supabase storage upload failed, using Object URL fallback', storageErr);
@@ -818,8 +892,16 @@ const Admin = () => {
             .from('employees')
             .select('*');
           if (error) throw error;
-          
+
           const loaded = data || [];
+
+          // Sort by registration_no
+          loaded.sort((a, b) => {
+            const regA = a.registration_no || '';
+            const regB = b.registration_no || '';
+            return regA.localeCompare(regB, undefined, { numeric: true, sensitivity: 'base' });
+          });
+
           const savedPics = JSON.parse(localStorage.getItem('macenza_employee_pics') || '{}');
           const loadedWithPics = loaded.map(emp => ({
             ...emp,
@@ -1185,12 +1267,37 @@ const Admin = () => {
     e.preventDefault();
     if (!url) return;
 
+    let downloadUrl = url;
+
+    // Resolve private buckets dynamically via signed URLs
+    if (url.includes('/employee-docs/') || url.includes('/resumes/') || url.includes('/employee-certs/')) {
+      try {
+        const isDocs = url.includes('/employee-docs/');
+        const isCerts = url.includes('/employee-certs/');
+        const bucket = isDocs ? 'employee-docs' : (isCerts ? 'employee-certs' : 'resumes');
+        const separator = isDocs ? '/employee-docs/' : (isCerts ? '/employee-certs/' : '/resumes/');
+        const parts = url.split(separator);
+        if (parts.length > 1) {
+          const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+          const { data, error } = await supabase.storage
+            .from(bucket)
+            .createSignedUrl(filePath, 60);
+          if (error) throw error;
+          if (data && data.signedUrl) {
+            downloadUrl = data.signedUrl;
+          }
+        }
+      } catch (signError) {
+        console.error('Error signing URL:', signError);
+      }
+    }
+
     const filename = candidateName
       ? `${candidateName.replace(/\s+/g, '_')}_Resume.${url.split('.').pop().split('?')[0] || 'pdf'}`
       : 'Resume.pdf';
 
     try {
-      const response = await fetch(url);
+      const response = await fetch(downloadUrl);
       if (!response.ok) throw new Error('Fetch failed');
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
@@ -1203,10 +1310,10 @@ const Admin = () => {
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.warn('Direct download via fetch failed, trying query parameter fallback', error);
-      if (url.includes('supabase.co')) {
-        const downloadUrl = url.includes('?') ? `${url}&download=` : `${url}?download=`;
+      if (downloadUrl.includes('supabase.co')) {
+        const fallbackUrl = downloadUrl.includes('?') ? `${downloadUrl}&download=` : `${downloadUrl}?download=`;
         const link = document.createElement('a');
-        link.href = downloadUrl;
+        link.href = fallbackUrl;
         link.target = '_self';
         document.body.appendChild(link);
         link.click();
@@ -1257,7 +1364,7 @@ const Admin = () => {
 
   const handleDownloadAllResumes = async () => {
     const appsToDownload = filteredApplications.filter(app => app.resume);
-    
+
     if (applications.length === 0) {
       toast.error('No applications available to download.');
       return;
@@ -1281,7 +1388,26 @@ const Admin = () => {
       const processApp = async (app) => {
         const candidateName = (app.candidateName || 'Candidate').replace(/[^a-zA-Z0-9_\-]/g, '_');
         const jobTitle = (app.jobId?.title || 'Position').replace(/[^a-zA-Z0-9_\-]/g, '_');
-        const url = app.resume;
+        let url = app.resume;
+
+        // Resolve private buckets dynamically via signed URLs for bulk package download
+        if (url && url.includes('/resumes/')) {
+          try {
+            const parts = url.split('/resumes/');
+            if (parts.length > 1) {
+              const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+              const { data, error } = await supabase.storage
+                .from('resumes')
+                .createSignedUrl(filePath, 60);
+              if (error) throw error;
+              if (data && data.signedUrl) {
+                url = data.signedUrl;
+              }
+            }
+          } catch (signError) {
+            console.error('Error signing bulk resume URL:', signError);
+          }
+        }
 
         let ext = 'pdf';
         if (url && typeof url === 'string') {
@@ -1574,6 +1700,17 @@ const Admin = () => {
                 {item.label}
               </button>
             ))}
+
+            {/* Sanity Studio Link */}
+            <a
+              href="https://macenza.sanity.studio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-primary hover:bg-[#DBEAFE]/30 hover:pl-5 active:scale-95 group whitespace-nowrap mt-2 border-t border-[#BFDBFE]/40 pt-4"
+            >
+              <span className="text-xl group-hover:scale-125 transition-transform duration-300">📝</span>
+              Blog Editor
+            </a>
           </nav>
         </div>
 
@@ -2350,11 +2487,17 @@ const Admin = () => {
                         <div className="flex-1 w-full bg-slate-100 relative min-h-[350px]">
                           {/* Attempt to preview PDF. Fallback dynamically to card if not PDF or offline */}
                           {selectedApp.resume && selectedApp.resume.toLowerCase().endsWith('.pdf') ? (
-                            <iframe
-                              src={`${selectedApp.resume}#toolbar=0`}
-                              className="w-full h-full border-none absolute inset-0"
-                              title="Resume Preview PDF"
-                            />
+                            selectedAppResumeSignedUrl ? (
+                              <iframe
+                                src={`${selectedAppResumeSignedUrl}#toolbar=0`}
+                                className="w-full h-full border-none absolute inset-0"
+                                title="Resume Preview PDF"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-xs font-bold text-black/40">
+                                <span className="animate-pulse">Loading preview...</span>
+                              </div>
+                            )
                           ) : (
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white">
                               <div className="w-16 h-16 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl flex items-center justify-center text-primary mb-4 glow-blue">
@@ -2434,19 +2577,19 @@ const Admin = () => {
                     <form onSubmit={handleAddBill} className="flex flex-col gap-5">
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Bill Number</label>
-                        <input type="text" required value={newBillForm.billNumber} onChange={e => setNewBillForm({...newBillForm, billNumber: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. INV-2026-001" />
+                        <input type="text" required value={newBillForm.billNumber} onChange={e => setNewBillForm({ ...newBillForm, billNumber: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. INV-2026-001" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Description / Title</label>
-                        <input type="text" required value={newBillForm.description} onChange={e => setNewBillForm({...newBillForm, description: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Server Hosting" />
+                        <input type="text" required value={newBillForm.description} onChange={e => setNewBillForm({ ...newBillForm, description: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Server Hosting" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Amount ($)</label>
-                        <input type="number" step="0.01" required value={newBillForm.amount} onChange={e => setNewBillForm({...newBillForm, amount: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="0.00" />
+                        <input type="number" step="0.01" required value={newBillForm.amount} onChange={e => setNewBillForm({ ...newBillForm, amount: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="0.00" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Bill</label>
-                        <input type="date" required value={newBillForm.date} onChange={e => setNewBillForm({...newBillForm, date: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" required value={newBillForm.date} onChange={e => setNewBillForm({ ...newBillForm, date: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Upload PDF</label>
@@ -2545,11 +2688,11 @@ const Admin = () => {
                     <form onSubmit={handleAddEventPhoto} className="flex flex-col gap-5">
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Event Title</label>
-                        <input type="text" required value={newEventPhotoForm.title} onChange={e => setNewEventPhotoForm({...newEventPhotoForm, title: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Annual Office Party 2026" />
+                        <input type="text" required value={newEventPhotoForm.title} onChange={e => setNewEventPhotoForm({ ...newEventPhotoForm, title: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" placeholder="e.g. Annual Office Party 2026" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Event Date</label>
-                        <input type="date" value={newEventPhotoForm.date} onChange={e => setNewEventPhotoForm({...newEventPhotoForm, date: e.target.value})} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" value={newEventPhotoForm.date} onChange={e => setNewEventPhotoForm({ ...newEventPhotoForm, date: e.target.value })} className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Upload Compressed Photo</label>
@@ -2621,7 +2764,7 @@ const Admin = () => {
                       <Camera className="w-4 h-4" /> Upload Photo
                     </button>
                   </div>
-                  
+
                   <div className="flex-1 overflow-auto pr-2">
                     {eventPhotos.length === 0 ? (
                       <div className="h-full flex flex-col items-center justify-center text-black/40">
@@ -2669,7 +2812,7 @@ const Admin = () => {
                         <p className="text-xs font-semibold text-black/45 uppercase tracking-wide mt-1">Create a new company record</p>
                       </div>
                       <button onClick={() => setIsAddingEmployee(false)} className="text-black/50 hover:text-black">
-                         <X className="w-6 h-6" />
+                        <X className="w-6 h-6" />
                       </button>
                     </div>
                     <form onSubmit={handleAddEmployee} className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -2688,39 +2831,39 @@ const Admin = () => {
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Registration No.</label>
-                        <input type="text" value={newEmployeeForm.registration_no} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, registration_no: e.target.value})} placeholder="e.g. EMP-003" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.registration_no} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, registration_no: e.target.value })} placeholder="e.g. EMP-003" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Full Name</label>
-                        <input type="text" required value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, name: e.target.value})} placeholder="e.g. John Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" required value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, name: e.target.value })} placeholder="e.g. John Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Father's Name</label>
-                        <input type="text" value={newEmployeeForm.father_name} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, father_name: e.target.value})} placeholder="e.g. Richard Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.father_name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, father_name: e.target.value })} placeholder="e.g. Richard Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Birth</label>
-                        <input type="date" value={newEmployeeForm.dob} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, dob: e.target.value})} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" value={newEmployeeForm.dob} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, dob: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Email ID</label>
-                        <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, email: e.target.value})} placeholder="e.g. john@macenza.com" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, email: e.target.value })} placeholder="e.g. john@macenza.com" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Contact Number</label>
-                        <input type="text" value={newEmployeeForm.contact_number} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, contact_number: e.target.value})} placeholder="e.g. +1 555 0103" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.contact_number} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, contact_number: e.target.value })} placeholder="e.g. +1 555 0103" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Role / Designation</label>
-                        <input type="text" value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, role: e.target.value})} placeholder="e.g. Fullstack Engineer" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, role: e.target.value })} placeholder="e.g. Fullstack Engineer" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
-                        <input type="text" value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, department: e.target.value})} placeholder="e.g. Engineering" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, department: e.target.value })} placeholder="e.g. Engineering" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5 md:col-span-2">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
-                        <input type="date" value={newEmployeeForm.start_date} onChange={(e) => setNewEmployeeForm({...newEmployeeForm, start_date: e.target.value})} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" value={newEmployeeForm.start_date} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, start_date: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <button type="submit" className="md:col-span-2 w-full py-4 mt-2 bg-primary text-white rounded-full font-black text-xs tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 active:scale-95 flex items-center justify-center gap-2">
                         Create Employee Profile
@@ -2754,90 +2897,90 @@ const Admin = () => {
 
                   <div className="overflow-x-auto custom-scrollbar bg-white relative">
                     <table className="w-full text-left border-collapse min-w-[1500px]">
-                    <thead className="bg-[#DBEAFE] sticky top-0 z-10 border-b border-[#BFDBFE]">
-                      <tr className="text-black font-bold text-xs uppercase tracking-wider">
-                        <th className="px-8 py-4 whitespace-nowrap">
-                          <input type="checkbox" checked={employees.length > 0 && selectedRows.length === employees.length} onChange={toggleAllRows} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
-                        </th>
-                        <th className="px-6 py-4 whitespace-nowrap">#</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Pic</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Registration No.</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Full Name</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Father's Name</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Date of Birth</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Address (Permanent & Current)</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Email ID</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Contact Number</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Aadhaar No.</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Alternative Phone No.</th>
-                        <th className="px-6 py-4 whitespace-nowrap">Account No.</th>
-                        <th className="px-6 py-4 whitespace-nowrap">IFSC Code</th>
-                        <th className="px-8 py-4 whitespace-nowrap">Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {employees.map((emp, index) => (
-                        <tr
-                          key={emp.id}
-                          draggable
-                          onDragStart={(e) => handleDragStart(e, index)}
-                          onDragOver={(e) => handleDragOver(e, index)}
-                          onDragEnd={handleDragEnd}
-                          onClick={() => {
-                            setSelectedEmployee(emp);
-                            setEditEmployeeForm(emp);
-                            loadEmployeeCertificates(emp.id);
-                          }}
-                          className={`hover:bg-[#EFF6FF]/60 cursor-pointer transition-colors border-b border-[#BFDBFE]/50 last:border-0 text-sm font-semibold ${draggedIndex === index ? 'opacity-40 bg-gray-50' : selectedRows.includes(emp.id) ? 'bg-[#DBEAFE]' : ''}`}
-                        >
-                          <td className="px-8 py-5 text-sm font-black text-black/50 whitespace-nowrap">
-                            <input type="checkbox" checked={selectedRows.includes(emp.id)} onChange={(e) => toggleRowSelection(e, emp.id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
-                          </td>
-                          <td className="px-6 py-5 text-sm font-black text-black/50 whitespace-nowrap">{index + 1}</td>
-                          <td className="px-6 py-5 whitespace-nowrap">
-                            <div className="w-8 h-8 rounded-full overflow-hidden bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center shrink-0">
-                              {getProfilePicture(emp.name, emp.profile_picture) ? (
-                                <img src={getProfilePicture(emp.name, emp.profile_picture)} alt="Profile" className="w-full h-full object-cover" />
-                              ) : (
-                                <User className="w-4 h-4 text-primary/40" />
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-6 py-5 text-sm font-bold text-primary whitespace-nowrap">{emp.registration_no || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-bold text-black whitespace-nowrap">{emp.name || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.father_name || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.dob || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 max-w-[250px] truncate" title={`Perm: ${emp.permanent_address || 'N/A'} | Curr: ${emp.current_address || 'N/A'}`}>
-                            {emp.permanent_address || 'Not Provided'}
-                          </td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.email || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.contact_number || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.aadhaar_no || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.alt_phone || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.account_no || '-'}</td>
-                          <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.ifsc_detail || '-'}</td>
-                          <td className="px-8 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteEmployee(emp.id, emp.name);
-                              }}
-                              className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors active:scale-90"
-                              title="Delete Employee"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </td>
+                      <thead className="bg-[#DBEAFE] sticky top-0 z-10 border-b border-[#BFDBFE]">
+                        <tr className="text-black font-bold text-xs uppercase tracking-wider">
+                          <th className="px-8 py-4 whitespace-nowrap">
+                            <input type="checkbox" checked={employees.length > 0 && selectedRows.length === employees.length} onChange={toggleAllRows} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                          </th>
+                          <th className="px-6 py-4 whitespace-nowrap">#</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Pic</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Registration No.</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Full Name</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Father's Name</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Date of Birth</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Address (Permanent & Current)</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Email ID</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Contact Number</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Aadhaar No.</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Alternative Phone No.</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Account No.</th>
+                          <th className="px-6 py-4 whitespace-nowrap">IFSC Code</th>
+                          <th className="px-8 py-4 whitespace-nowrap">Action</th>
                         </tr>
-                      ))}
-                      {employees.length === 0 && (
-                        <tr>
-                          <td colSpan="15" className="p-8 text-center text-black/50 italic">
-                            No employee records found.
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
+                      </thead>
+                      <tbody>
+                        {employees.map((emp, index) => (
+                          <tr
+                            key={emp.id}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, index)}
+                            onDragOver={(e) => handleDragOver(e, index)}
+                            onDragEnd={handleDragEnd}
+                            onClick={() => {
+                              setSelectedEmployee(emp);
+                              setEditEmployeeForm(emp);
+                              loadEmployeeCertificates(emp.id);
+                            }}
+                            className={`hover:bg-[#EFF6FF]/60 cursor-pointer transition-colors border-b border-[#BFDBFE]/50 last:border-0 text-sm font-semibold ${draggedIndex === index ? 'opacity-40 bg-gray-50' : selectedRows.includes(emp.id) ? 'bg-[#DBEAFE]' : ''}`}
+                          >
+                            <td className="px-8 py-5 text-sm font-black text-black/50 whitespace-nowrap">
+                              <input type="checkbox" checked={selectedRows.includes(emp.id)} onChange={(e) => toggleRowSelection(e, emp.id)} onClick={(e) => e.stopPropagation()} className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer" />
+                            </td>
+                            <td className="px-6 py-5 text-sm font-black text-black/50 whitespace-nowrap">{index + 1}</td>
+                            <td className="px-6 py-5 whitespace-nowrap">
+                              <div className="w-8 h-8 rounded-full overflow-hidden bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+                                {getProfilePicture(emp.name, emp.profile_picture) ? (
+                                  <img src={getProfilePicture(emp.name, emp.profile_picture)} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                  <User className="w-4 h-4 text-primary/40" />
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-5 text-sm font-bold text-primary whitespace-nowrap">{emp.registration_no || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-bold text-black whitespace-nowrap">{emp.name || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.father_name || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.dob || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 max-w-[250px] truncate" title={`Perm: ${emp.permanent_address || 'N/A'} | Curr: ${emp.current_address || 'N/A'}`}>
+                              {emp.permanent_address || 'Not Provided'}
+                            </td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.email || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.contact_number || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.aadhaar_no || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.alt_phone || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.account_no || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.ifsc_detail || '-'}</td>
+                            <td className="px-8 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleDeleteEmployee(emp.id, emp.name);
+                                }}
+                                className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors active:scale-90"
+                                title="Delete Employee"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                        {employees.length === 0 && (
+                          <tr>
+                            <td colSpan="15" className="p-8 text-center text-black/50 italic">
+                              No employee records found.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
                     </table>
                   </div>
                 </div>
@@ -2983,7 +3126,7 @@ const Admin = () => {
                   {/* Personal Details */}
                   <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
                     <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Personal Details</h5>
-                    
+
                     <div className="flex justify-between items-center text-xs font-semibold py-1">
                       <span className="text-black/50">Registration No.</span>
                       <span className="text-black font-bold">{selectedEmployee.registration_no || '-'}</span>
@@ -3058,7 +3201,7 @@ const Admin = () => {
                   <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" /> Employee Documents & Certifications
                   </h5>
-                  
+
                   <div className="flex flex-wrap gap-3 items-center">
                     {/* General Documents */}
                     {selectedEmployee.documents && selectedEmployee.documents.map((doc, idx) => (
@@ -3074,7 +3217,7 @@ const Admin = () => {
                           <FileText className="w-4 h-4 text-primary" />
                           <span>{doc.name}</span>
                         </a>
-                        
+
                         <div className="flex items-center gap-1">
                           <a
                             href={doc.url}
@@ -3084,7 +3227,7 @@ const Admin = () => {
                           >
                             <Download className="w-3.5 h-3.5" />
                           </a>
-                          
+
                           <button
                             type="button"
                             onClick={() => {
@@ -3118,7 +3261,7 @@ const Admin = () => {
                           <Award className="w-4 h-4 text-emerald-600" />
                           <span>{cert.name} <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-1.5 py-0.5 rounded font-black uppercase ml-1">{cert.certification_number}</span></span>
                         </a>
-                        
+
                         <div className="flex items-center gap-1">
                           <a
                             href={cert.url}
@@ -3128,7 +3271,7 @@ const Admin = () => {
                           >
                             <Download className="w-3.5 h-3.5" />
                           </a>
-                          
+
                           <button
                             type="button"
                             onClick={async () => {
@@ -3139,7 +3282,7 @@ const Admin = () => {
                                     .delete()
                                     .eq('id', cert.id);
                                   if (error) throw error;
-                                  
+
                                   const updatedCerts = selectedEmployee.certificates.filter(c => c.id !== cert.id);
                                   setSelectedEmployee({ ...selectedEmployee, certificates: updatedCerts });
                                   toast.success('Certificate removed successfully!');
@@ -3156,7 +3299,7 @@ const Admin = () => {
                         </div>
                       </div>
                     ))}
-                    
+
                     {/* Action Upload Triggers */}
                     <div className="flex gap-3 items-center flex-wrap w-full mt-2 pt-2 border-t border-[#BFDBFE]/40">
                       <label className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
@@ -3233,7 +3376,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.registration_no || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, registration_no: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, registration_no: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3244,7 +3387,7 @@ const Admin = () => {
                         type="text"
                         required
                         value={editEmployeeForm.name || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, name: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, name: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3254,7 +3397,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.father_name || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, father_name: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, father_name: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3264,7 +3407,7 @@ const Admin = () => {
                       <input
                         type="date"
                         value={editEmployeeForm.dob || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, dob: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, dob: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3274,7 +3417,7 @@ const Admin = () => {
                       <input
                         type="email"
                         value={editEmployeeForm.email || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, email: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, email: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3284,7 +3427,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.contact_number || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, contact_number: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, contact_number: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3294,7 +3437,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.alt_phone || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, alt_phone: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, alt_phone: e.target.value })}
                         placeholder="e.g. +1 555 0109"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -3305,7 +3448,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.aadhaar_no || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, aadhaar_no: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, aadhaar_no: e.target.value })}
                         placeholder="e.g. 1234-5678-9012"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -3316,7 +3459,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.permanent_address || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, permanent_address: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, permanent_address: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3326,7 +3469,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.current_address || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, current_address: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, current_address: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3341,7 +3484,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.account_no || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, account_no: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, account_no: e.target.value })}
                         placeholder="e.g. 0987654321"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -3352,7 +3495,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.ifsc_detail || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, ifsc_detail: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, ifsc_detail: e.target.value })}
                         placeholder="e.g. CHAS0001"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -3363,7 +3506,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.role || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, role: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, role: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3373,7 +3516,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.department || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, department: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, department: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3383,7 +3526,7 @@ const Admin = () => {
                       <input
                         type="date"
                         value={editEmployeeForm.start_date || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, start_date: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, start_date: e.target.value })}
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
@@ -3393,7 +3536,7 @@ const Admin = () => {
                       <input
                         type="text"
                         value={editEmployeeForm.salary || ''}
-                        onChange={(e) => setEditEmployeeForm({...editEmployeeForm, salary: e.target.value})}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, salary: e.target.value })}
                         placeholder="e.g. $120,000"
                         className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
                       />
@@ -3466,11 +3609,10 @@ const Admin = () => {
               <button
                 onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
                 disabled={!candidateDrawerApp.resume}
-                className={`flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${
-                  candidateDrawerApp.resume
-                    ? 'bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] cursor-pointer'
-                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                }`}
+                className={`flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${candidateDrawerApp.resume
+                  ? 'bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] cursor-pointer'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                  }`}
               >
                 <Download className="w-4 h-4" /> Download Resume
               </button>
@@ -3601,11 +3743,10 @@ const Admin = () => {
                     <button
                       key={statusOption}
                       onClick={() => handleDrawerStatusUpdate(candidateDrawerApp, statusOption)}
-                      className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                        candidateDrawerApp.status === statusOption
-                          ? 'bg-primary text-white shadow-md scale-105'
-                          : 'bg-white border border-[#BFDBFE] text-black/70 hover:bg-[#DBEAFE] hover:text-black'
-                      }`}
+                      className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${candidateDrawerApp.status === statusOption
+                        ? 'bg-primary text-white shadow-md scale-105'
+                        : 'bg-white border border-[#BFDBFE] text-black/70 hover:bg-[#DBEAFE] hover:text-black'
+                        }`}
                     >
                       {statusOption}
                     </button>
@@ -3639,7 +3780,7 @@ const Admin = () => {
                   <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Resume Document</h4>
                   {candidateDrawerApp.resume && (
                     <a
-                      href={candidateDrawerApp.resume}
+                      href={candidateDrawerAppResumeSignedUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
@@ -3650,11 +3791,17 @@ const Admin = () => {
                 </div>
                 {candidateDrawerApp.resume ? (
                   candidateDrawerApp.resume.toLowerCase().endsWith('.pdf') ? (
-                    <iframe
-                      src={`${candidateDrawerApp.resume}#toolbar=0`}
-                      className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-white shadow-inner"
-                      title="Resume Preview"
-                    />
+                    candidateDrawerAppResumeSignedUrl ? (
+                      <iframe
+                        src={`${candidateDrawerAppResumeSignedUrl}#toolbar=0`}
+                        className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-white shadow-inner"
+                        title="Resume Preview"
+                      />
+                    ) : (
+                      <div className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-slate-50 shadow-inner flex items-center justify-center text-xs font-bold text-black/40">
+                        <span className="animate-pulse">Loading preview...</span>
+                      </div>
+                    )
                   ) : (
                     <div className="bg-white border border-[#BFDBFE] rounded-2xl p-6 text-center flex flex-col items-center gap-3">
                       <FileText className="w-10 h-10 text-primary" />

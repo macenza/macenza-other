@@ -72,7 +72,25 @@ const CertificateVerification = () => {
       if (error) throw error;
 
       if (data) {
-        setCertificate(data);
+        let signedUrl = data.url;
+        if (data.url && data.url.includes('/employee-certs/')) {
+          try {
+            const parts = data.url.split('/employee-certs/');
+            if (parts.length > 1) {
+              const filePath = decodeURIComponent(parts[parts.length - 1].split('?')[0]);
+              const { data: signData, error: signError } = await supabase.storage
+                .from('employee-certs')
+                .createSignedUrl(filePath, 300); // 5 mins validity
+              if (signError) throw signError;
+              if (signData && signData.signedUrl) {
+                signedUrl = signData.signedUrl;
+              }
+            }
+          } catch (signErr) {
+            console.error('Error signing certificate URL:', signErr);
+          }
+        }
+        setCertificate({ ...data, signedUrl });
         toast.success('Credential verified successfully!');
       } else {
         toast.error('No record found for this credential number.');
@@ -155,7 +173,7 @@ const CertificateVerification = () => {
                   type="text"
                   value={certNumber}
                   onChange={(e) => setCertNumber(e.target.value)}
-                  placeholder="e.g. CERT-1717876092"
+                  placeholder="e.g. MAC-xxx-xxx"
                   className="w-full bg-white border border-[#BFDBFE] pl-12 pr-4 py-4 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all uppercase"
                 />
                 <Award className="w-5 h-5 text-black/40 absolute left-4 top-1/2 -translate-y-1/2" />
@@ -235,7 +253,7 @@ const CertificateVerification = () => {
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t border-black/5 pt-6 mt-2">
                       <span className="text-xs text-black/40 font-bold uppercase">Issued via Macenza HR Secure Directory</span>
                       <button
-                        onClick={() => handleDownload(certificate.url, certificate.name)}
+                        onClick={() => handleDownload(certificate.signedUrl || certificate.url, certificate.name)}
                         className="w-full sm:w-auto px-6 py-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center justify-center gap-2 transition-all active:scale-95"
                       >
                         <Download className="w-4 h-4" /> Download Certificate Copy
