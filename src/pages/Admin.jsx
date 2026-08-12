@@ -894,6 +894,14 @@ const Admin = () => {
           if (error) throw error;
 
           const loaded = data || [];
+
+          // Sort by registration_no
+          loaded.sort((a, b) => {
+            const regA = a.registration_no || '';
+            const regB = b.registration_no || '';
+            return regA.localeCompare(regB, undefined, { numeric: true, sensitivity: 'base' });
+          });
+
           const savedPics = JSON.parse(localStorage.getItem('macenza_employee_pics') || '{}');
           const loadedWithPics = loaded.map(emp => ({
             ...emp,
