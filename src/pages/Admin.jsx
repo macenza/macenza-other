@@ -1700,6 +1700,17 @@ const Admin = () => {
                 {item.label}
               </button>
             ))}
+
+            {/* Sanity Studio Link */}
+            <a
+              href="https://macenza.sanity.studio/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-primary hover:bg-[#DBEAFE]/30 hover:pl-5 active:scale-95 group whitespace-nowrap mt-2 border-t border-[#BFDBFE]/40 pt-4"
+            >
+              <span className="text-xl group-hover:scale-125 transition-transform duration-300">📝</span>
+              Blog Editor
+            </a>
           </nav>
         </div>
 
