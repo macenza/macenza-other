@@ -167,7 +167,7 @@ const Blog = () => {
             {featuredPost && activeCategory === 'All' && (
               <div 
                 onClick={() => setSelectedPost(featuredPost)}
-                className="bg-white border border-[#BFDBFE] rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl hover:border-primary/30 transition-all duration-500 flex flex-col lg:flex-row cursor-pointer group"
+                className="bg-white border border-[#BFDBFE] rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl hover:border-primary/30 transition-[border-color,box-shadow] duration-500 flex flex-col lg:flex-row cursor-pointer group"
               >
                 <div className="lg:w-1/2 min-h-[300px] max-h-[500px] overflow-hidden relative">
                   {featuredPost.mainImage ? (
@@ -234,7 +234,7 @@ const Blog = () => {
                 <div 
                   key={post._id}
                   onClick={() => setSelectedPost(post)}
-                  className="bg-white border border-[#BFDBFE] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 cursor-pointer group flex flex-col justify-between"
+                  className="bg-white border border-[#BFDBFE] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-[border-color,box-shadow] duration-300 cursor-pointer group flex flex-col justify-between"
                 >
                   <div>
                     <div className="h-[220px] overflow-hidden relative">
