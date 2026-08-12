@@ -20,6 +20,7 @@ const CertificateVerification = lazy(() => import('./pages/CertificateVerificati
 const JobDetails = lazy(() => import('./pages/JobDetails'));
 const Partnership = lazy(() => import('./pages/Partnership'));
 const CookiePolicy = lazy(() => import('./pages/CookiePolicy'));
+const Blog = lazy(() => import('./pages/Blog'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -74,6 +75,7 @@ function App() {
         <Route path="/partnership" element={<Suspense fallback={<PageLoader />}><Partnership /></Suspense>} />
         <Route path="/admin" element={<Suspense fallback={<PageLoader />}><Admin /></Suspense>} />
         <Route path="/certificateverification" element={<Suspense fallback={<PageLoader />}><CertificateVerification /></Suspense>} />
+        <Route path="/blog" element={<Suspense fallback={<PageLoader />}><Blog /></Suspense>} />
       </Routes>
     </div>
   );
