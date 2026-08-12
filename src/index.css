@@ -1,20 +1,9 @@
-@font-face {
-  font-family: 'Cantata One';
-  src: url('../Font/CantataOne-Regular.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Costaline';
-  src: url('../Font/Costaline-ThinItalic.otf') format('opentype');
-}
-
-@font-face {
-  font-family: 'Klandestin';
-  src: url('../Font/Klandestin.ttf') format('truetype');
-}
-
 .font-klandestin {
-  font-family: 'Klandestin', sans-serif !important;
+  font-family: 'Syne', sans-serif !important;
+}
+
+.font-martell {
+  font-family: 'Playfair Display', serif !important;
 }
 
 @tailwind base;
@@ -71,7 +60,9 @@ canvas {
 }
 
 h1 {
-  font-family: 'Costaline', sans-serif !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-style: italic;
+  font-weight: 300;
   line-height: 1.15;
   letter-spacing: -0.01em;
 }
@@ -82,7 +73,7 @@ h4,
 h5,
 h6 {
   font-family: 'Cantata One', serif;
-  font-weight: 700;
+  font-weight: 400;
   letter-spacing: -0.015em;
   line-height: 1.3;
 }
