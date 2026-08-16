@@ -54,7 +54,7 @@ const Footer = () => {
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           aria-hidden="true"
         >
-          <span className="text-[14vw] md:text-[17vw] lg:text-[19vw] font-black tracking-[-0.04em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-black/[0.07] via-black/[0.04] to-black/[0.01] leading-none whitespace-nowrap select-none">
+          <span className="text-[14vw] md:text-[17vw] lg:text-[19vw] font-black tracking-[-0.04em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-primary/20 via-primary/10 to-primary/[0.02] leading-none whitespace-nowrap select-none">
             MACENZA
           </span>
         </div>
