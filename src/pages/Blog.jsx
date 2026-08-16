@@ -348,7 +348,6 @@ const Blog = () => {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs font-bold text-black">{selectedPost.authorName || 'Macenza Contributor'}</span>
-                  <span className="text-[10px] text-black/40">Author Profile</span>
                 </div>
               </div>
 
