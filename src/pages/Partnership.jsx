@@ -136,7 +136,7 @@ const Partnership = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               PARTNERSHIP
             </div>
-            <h1 className="text-[2.31rem] sm:text-[3.68rem] md:text-[4.41rem] font-pinyon font-normal tracking-normal text-black mb-8 reveal-up leading-[1.1]">
+            <h1 className="text-[2.31rem] sm:text-[3.68rem] md:text-[4.41rem] font-faculty font-normal tracking-normal text-black mb-8 reveal-up leading-[1.1]">
               <BouncyText text="Build Your Business " /> <br />
               <BouncyText text="With Macenza" className="text-primary italic" />
             </h1>

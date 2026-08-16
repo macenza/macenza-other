@@ -147,7 +147,7 @@ const CertificateVerification = () => {
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
             Secure Registry Verification
           </div>
-          <h1 className="text-[1.65rem] md:text-[2.76rem] font-pinyon font-normal tracking-normal text-black mb-6 reveal-up">
+          <h1 className="text-[1.65rem] md:text-[2.76rem] font-faculty font-normal tracking-normal text-black mb-6 reveal-up">
             <BouncyText text="Certificate " />
             <BouncyText text="Verification" className="text-primary italic" />
           </h1>

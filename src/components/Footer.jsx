@@ -48,7 +48,17 @@ const Footer = () => {
 
   return (
     <footer className="border-t border-black/5 bg-white relative overflow-hidden">
-      <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50">
+      <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50 relative">
+        {/* Giant Background "MACENZA" Letters */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
+          aria-hidden="true"
+        >
+          <span className="text-[14vw] md:text-[17vw] lg:text-[19vw] font-black tracking-[-0.04em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-black/[0.07] via-black/[0.04] to-black/[0.01] leading-none whitespace-nowrap select-none">
+            MACENZA
+          </span>
+        </div>
+
         <div className="container mx-auto px-6 relative z-10 w-full">
           {/* Main Footer Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">

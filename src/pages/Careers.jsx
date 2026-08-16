@@ -173,7 +173,7 @@ const Careers = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               Join Macenza
             </div>
-            <h1 className="text-[2.2rem] md:text-[4.41rem] font-pinyon font-normal tracking-normal text-black mb-8 reveal-up leading-tight">
+            <h1 className="text-[2.2rem] md:text-[4.41rem] font-faculty font-normal tracking-normal text-black mb-8 reveal-up leading-tight">
               <BouncyText text="Build Software. " /> <br />
               <BouncyText text="With Macenza." className="text-primary italic" />
             </h1>

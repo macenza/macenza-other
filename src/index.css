@@ -14,6 +14,10 @@
   font-family: 'Turret Road', sans-serif !important;
 }
 
+.font-faculty {
+  font-family: 'Faculty Glyphic', sans-serif !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

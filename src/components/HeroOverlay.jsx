@@ -65,12 +65,12 @@ const HeroOverlay = () => {
         {/* Left Hero Content */}
         <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto -mt-0 md:mt-0">
           <div className="overflow-hidden pt-5 mb-2">
-            <h1 className="hero-line-1 text-[2.2rem] md:text-[3.3rem] font-pinyon font-normal text-black tracking-normal leading-[1.2] pb-2">
+            <h1 className="hero-line-1 text-[2.2rem] md:text-[3.3rem] font-faculty font-normal text-black tracking-normal leading-[1.2] pb-2">
               <BouncyText text="Custom Web Apps" />
             </h1>
           </div>
           <div className="overflow-hidden pt-5 mb-10">
-            <h1 className="hero-line-2 text-[2.2rem] md:text-[3.3rem] font-pinyon font-normal text-primary tracking-normal leading-[1.2] pb-2">
+            <h1 className="hero-line-2 text-[2.2rem] md:text-[3.3rem] font-faculty font-normal text-primary tracking-normal leading-[1.2] pb-2">
               <BouncyText text="Development" />
             </h1>
           </div>

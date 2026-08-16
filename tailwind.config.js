@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        faculty: ['"Faculty Glyphic"', 'sans-serif'],
+        pinyon: ['"Pinyon Script"', 'cursive'],
+        turret: ['"Turret Road"', 'sans-serif'],
+      },
       colors: {
         primary: {
           DEFAULT: "#2563eb",
