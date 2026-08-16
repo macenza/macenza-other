@@ -1,54 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { sanityClient, urlFor } from '../sanityClient';
-import { Calendar, Clock, User, ArrowRight, X, ChevronRight, Award } from 'lucide-react';
+import { Calendar, User, ArrowRight, ChevronRight, Award } from 'lucide-react';
 import { toast } from 'react-toastify';
 import SEO from '../components/SEO';
 import Section from '../components/Section';
 import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
-
-// A custom lightweight renderer for Sanity's Block Content (rich text)
-const PortableText = ({ value }) => {
-  if (!Array.isArray(value)) return null;
-  return value.map((block, index) => {
-    if (block._type !== 'block' || !block.children) return null;
-    
-    const content = block.children.map((child, cIdx) => {
-      let text = child.text;
-      if (child.marks && child.marks.includes('strong')) {
-        text = <strong key={cIdx} className="font-extrabold text-black">{text}</strong>;
-      }
-      if (child.marks && child.marks.includes('em')) {
-        text = <em key={cIdx} className="italic text-black/90">{text}</em>;
-      }
-      return text;
-    });
-
-    if (block.style === 'h1') {
-      return <h1 key={index} className="text-3xl font-black mt-8 mb-4 text-black tracking-tight leading-tight">{content}</h1>;
-    }
-    if (block.style === 'h2') {
-      return <h2 key={index} className="text-2xl font-black mt-6 mb-3 text-black tracking-tight leading-tight">{content}</h2>;
-    }
-    if (block.style === 'h3') {
-      return <h3 key={index} className="text-xl font-bold mt-5 mb-2 text-black leading-snug">{content}</h3>;
-    }
-    if (block.style === 'blockquote') {
-      return (
-        <blockquote key={index} className="border-l-4 border-primary pl-4 py-1 italic my-6 text-black/70 bg-[#EFF6FF] rounded-r-xl pr-4">
-          {content}
-        </blockquote>
-      );
-    }
-    return <p key={index} className="text-base text-black/70 leading-relaxed mb-5 font-normal">{content}</p>;
-  });
-};
+import { getPostSlug } from './BlogPost';
 
 const Blog = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [selectedPost, setSelectedPost] = useState(null);
 
   // Fetch all posts from Sanity
   useEffect(() => {
@@ -115,7 +80,7 @@ const Blog = () => {
 
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6">
-            Tech & Engineering Blog
+            Tech &amp; Engineering Blog
           </div>
           <h1 className="text-[2.31rem] md:text-[3.68rem] font-faculty font-normal tracking-normal text-black mb-6">
             <BouncyText text="Insights & " />
@@ -164,215 +129,134 @@ const Blog = () => {
           <div className="container mx-auto px-6 flex flex-col gap-16">
             
             {/* Featured Article Card */}
-            {featuredPost && activeCategory === 'All' && (
-              <div 
-                onClick={() => setSelectedPost(featuredPost)}
-                className="bg-white border border-[#BFDBFE] rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl hover:border-primary/30 transition-[border-color,box-shadow] duration-500 flex flex-col lg:flex-row cursor-pointer group"
-              >
-                <div className="lg:w-1/2 min-h-[300px] max-h-[500px] overflow-hidden relative">
-                  {featuredPost.mainImage ? (
-                    <img 
-                      src={urlFor(featuredPost.mainImage).width(800).height(600).url()} 
-                      alt={featuredPost.title} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-[#EFF6FF] flex items-center justify-center text-primary font-black text-2xl">
-                      MACENZA
-                    </div>
-                  )}
-                  <div className="absolute top-6 left-6 flex flex-wrap gap-2">
-                    {featuredPost.categories && featuredPost.categories.map(cat => (
-                      <span key={cat} className="px-3 py-1.5 bg-black/60 backdrop-blur-sm text-white rounded-lg text-[10px] font-black uppercase tracking-wider">
-                        {cat}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-between gap-8">
-                  <div className="flex flex-col gap-4">
-                    <span className="text-[10px] text-primary font-black uppercase tracking-widest">Featured Story</span>
-                    <h2 className="text-2xl md:text-3xl font-black text-black group-hover:text-primary transition-colors tracking-tight leading-tight">
-                      {featuredPost.title}
-                    </h2>
-                    <p className="text-black/60 text-sm md:text-base leading-relaxed font-light line-clamp-3">
-                      {/* Generates short preview text from body */}
-                      {featuredPost.body && featuredPost.body[0]?.children?.[0]?.text || 'Click to read full article insights.'}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between border-t border-[#BFDBFE]/40 pt-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200 border border-[#BFDBFE]">
-                        {featuredPost.authorImage ? (
-                          <img src={urlFor(featuredPost.authorImage).width(80).height(80).url()} alt={featuredPost.authorName} className="w-full h-full object-cover" />
-                        ) : (
-                          <User className="w-5 h-5 text-black/30 m-2" />
-                        )}
+            {featuredPost && activeCategory === 'All' && (() => {
+              const featuredSlug = getPostSlug(featuredPost);
+              return (
+                <Link 
+                  to={`/blog/${featuredSlug}`}
+                  className="bg-white border border-[#BFDBFE] rounded-[3rem] overflow-hidden shadow-sm hover:shadow-2xl hover:border-primary/30 transition-[border-color,box-shadow] duration-500 flex flex-col lg:flex-row group"
+                >
+                  <div className="lg:w-1/2 min-h-[300px] max-h-[500px] overflow-hidden relative">
+                    {featuredPost.mainImage ? (
+                      <img 
+                        src={urlFor(featuredPost.mainImage).width(800).height(600).url()} 
+                        alt={featuredPost.title} 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#EFF6FF] flex items-center justify-center text-primary font-black text-2xl">
+                        MACENZA
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-xs font-bold text-black">{featuredPost.authorName || 'Macenza Contributor'}</span>
-                        <span className="text-[10px] text-black/40 flex items-center gap-1.5">
-                          <Calendar className="w-3 h-3" />
-                          {featuredPost.publishedAt ? new Date(featuredPost.publishedAt).toLocaleDateString() : 'Draft'}
+                    )}
+                    <div className="absolute top-6 left-6 flex flex-wrap gap-2">
+                      {featuredPost.categories && featuredPost.categories.map(cat => (
+                        <span key={cat} className="px-3 py-1.5 bg-black/60 backdrop-blur-sm text-white rounded-lg text-[10px] font-black uppercase tracking-wider">
+                          {cat}
                         </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1.5 text-xs font-black text-primary group-hover:translate-x-1.5 transition-transform duration-300">
-                      READ POST <ArrowRight className="w-4 h-4" />
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
-            )}
+
+                  <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-between gap-8">
+                    <div className="flex flex-col gap-4">
+                      <span className="text-[10px] text-primary font-black uppercase tracking-widest">Featured Story</span>
+                      <h2 className="text-2xl md:text-3xl font-black text-black group-hover:text-primary transition-colors tracking-tight leading-tight">
+                        {featuredPost.title}
+                      </h2>
+                      <p className="text-black/60 text-sm md:text-base leading-relaxed font-light line-clamp-3">
+                        {/* Generates short preview text from body */}
+                        {featuredPost.body && featuredPost.body[0]?.children?.[0]?.text || 'Click to read full article insights.'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-[#BFDBFE]/40 pt-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200 border border-[#BFDBFE]">
+                          {featuredPost.authorImage ? (
+                            <img src={urlFor(featuredPost.authorImage).width(80).height(80).url()} alt={featuredPost.authorName} className="w-full h-full object-cover" />
+                          ) : (
+                            <User className="w-5 h-5 text-black/30 m-2" />
+                          )}
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-black">{featuredPost.authorName || 'Macenza Contributor'}</span>
+                          <span className="text-[10px] text-black/40 flex items-center gap-1.5">
+                            <Calendar className="w-3 h-3 text-primary" />
+                            {featuredPost.publishedAt ? new Date(featuredPost.publishedAt).toLocaleDateString() : 'Draft'}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 text-xs font-black text-primary group-hover:translate-x-1.5 transition-transform duration-300">
+                        READ POST <ArrowRight className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })()}
 
             {/* Recent Posts Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(activeCategory === 'All' ? recentPosts : filteredPosts).map(post => (
-                <div 
-                  key={post._id}
-                  onClick={() => setSelectedPost(post)}
-                  className="bg-white border border-[#BFDBFE] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-[border-color,box-shadow] duration-300 cursor-pointer group flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="h-[220px] overflow-hidden relative">
-                      {post.mainImage ? (
-                        <img 
-                          src={urlFor(post.mainImage).width(400).height(300).url()} 
-                          alt={post.title} 
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#EFF6FF] flex items-center justify-center text-primary font-black">
-                          MACENZA
+              {(activeCategory === 'All' ? recentPosts : filteredPosts).map(post => {
+                const postSlug = getPostSlug(post);
+                return (
+                  <Link 
+                    key={post._id}
+                    to={`/blog/${postSlug}`}
+                    className="bg-white border border-[#BFDBFE] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/20 transition-[border-color,box-shadow] duration-300 group flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="h-[220px] overflow-hidden relative">
+                        {post.mainImage ? (
+                          <img 
+                            src={urlFor(post.mainImage).width(400).height(300).url()} 
+                            alt={post.title} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-[#EFF6FF] flex items-center justify-center text-primary font-black">
+                            MACENZA
+                          </div>
+                        )}
+                        
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
+                          {post.categories && post.categories.map(cat => (
+                            <span key={cat} className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white rounded font-black text-[9px] uppercase tracking-wider">
+                              {cat}
+                            </span>
+                          ))}
                         </div>
-                      )}
-                      
-                      <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
-                        {post.categories && post.categories.map(cat => (
-                          <span key={cat} className="px-2.5 py-1 bg-black/60 backdrop-blur-sm text-white rounded font-black text-[9px] uppercase tracking-wider">
-                            {cat}
-                          </span>
-                        ))}
+                      </div>
+
+                      <div className="p-6 md:p-8 flex flex-col gap-3">
+                        <span className="text-[9px] text-black/40 flex items-center gap-1.5 font-bold uppercase">
+                          <Calendar className="w-3 h-3 text-primary" />
+                          {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Draft'}
+                        </span>
+                        <h3 className="text-lg font-black text-black group-hover:text-primary transition-colors tracking-tight leading-snug line-clamp-2">
+                          {post.title}
+                        </h3>
+                        <p className="text-black/50 text-xs leading-relaxed font-light line-clamp-2">
+                          {post.body && post.body[0]?.children?.[0]?.text || 'Click to view full insights.'}
+                        </p>
                       </div>
                     </div>
 
-                    <div className="p-6 md:p-8 flex flex-col gap-3">
-                      <span className="text-[9px] text-black/40 flex items-center gap-1.5 font-bold uppercase">
-                        <Calendar className="w-3 h-3" />
-                        {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : 'Draft'}
+                    <div className="px-6 md:px-8 pb-6 md:pb-8 pt-4 border-t border-[#BFDBFE]/30 flex items-center justify-between">
+                      <span className="text-xs font-bold text-black">{post.authorName || 'Contributor'}</span>
+                      <span className="text-[10px] font-black text-primary inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                        VIEW <ChevronRight className="w-3.5 h-3.5" />
                       </span>
-                      <h3 className="text-lg font-black text-black group-hover:text-primary transition-colors tracking-tight leading-snug line-clamp-2">
-                        {post.title}
-                      </h3>
-                      <p className="text-black/50 text-xs leading-relaxed font-light line-clamp-2">
-                        {post.body && post.body[0]?.children?.[0]?.text || 'Click to view full insights.'}
-                      </p>
                     </div>
-                  </div>
-
-                  <div className="px-6 md:px-8 pb-6 md:pb-8 pt-4 border-t border-[#BFDBFE]/30 flex items-center justify-between">
-                    <span className="text-xs font-bold text-black">{post.authorName || 'Contributor'}</span>
-                    <span className="text-[10px] font-black text-primary inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                      VIEW <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
 
           </div>
         )}
       </Section>
-
-      {/* Full Article Reader Modal */}
-      {selectedPost && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-          onClick={() => setSelectedPost(null)}
-        >
-          <div 
-            className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl relative"
-            onClick={e => e.stopPropagation()}
-            data-lenis-prevent
-          >
-            {/* Close Button */}
-            <button
-              onClick={() => setSelectedPost(null)}
-              className="absolute top-6 right-6 w-10 h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-all z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Article Image Banner */}
-            <div className="h-[250px] md:h-[400px] overflow-hidden relative w-full">
-              {selectedPost.mainImage ? (
-                <img 
-                  src={urlFor(selectedPost.mainImage).width(1200).height(800).url()} 
-                  alt={selectedPost.title} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-[#EFF6FF] flex items-center justify-center text-primary font-black text-4xl">
-                  MACENZA
-                </div>
-              )}
-              
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-              
-              <div className="absolute bottom-8 left-8 right-8 text-white flex flex-col gap-3">
-                <div className="flex flex-wrap gap-2">
-                  {selectedPost.categories && selectedPost.categories.map(cat => (
-                    <span key={cat} className="px-3 py-1 bg-primary text-white rounded text-[9px] font-black uppercase tracking-wider">
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-                <h1 className="text-xl md:text-3xl font-black tracking-tight leading-tight text-white max-w-2xl drop-shadow-sm">
-                  {selectedPost.title}
-                </h1>
-              </div>
-            </div>
-
-            {/* Article Info Bar */}
-            <div className="bg-white border-b border-[#BFDBFE]/40 px-8 py-5 flex flex-wrap justify-between items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-slate-200 border border-[#BFDBFE]">
-                  {selectedPost.authorImage ? (
-                    <img src={urlFor(selectedPost.authorImage).width(80).height(80).url()} alt={selectedPost.authorName} className="w-full h-full object-cover" />
-                  ) : (
-                    <User className="w-5 h-5 text-black/30 m-2" />
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-black">{selectedPost.authorName || 'Macenza Contributor'}</span>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-center">
-                <span className="text-[11px] text-black/50 flex items-center gap-1.5 font-bold uppercase">
-                  <Calendar className="w-3.5 h-3.5 text-primary" />
-                  {selectedPost.publishedAt ? new Date(selectedPost.publishedAt).toLocaleDateString() : 'Draft'}
-                </span>
-                <span className="text-[11px] text-black/50 flex items-center gap-1.5 font-bold uppercase">
-                  <Clock className="w-3.5 h-3.5 text-primary" />
-                  {selectedPost.body ? `${Math.ceil(JSON.stringify(selectedPost.body).length / 1000)} min read` : '1 min read'}
-                </span>
-              </div>
-            </div>
-
-            {/* Article Content Body */}
-            <div className="bg-white p-8 md:p-12">
-              <div className="max-w-2xl mx-auto prose prose-blue prose-sm md:prose-base font-sans">
-                <PortableText value={selectedPost.body} />
-              </div>
-            </div>
-            
-          </div>
-        </div>
-      )}
 
       <Footer />
     </div>

@@ -421,12 +421,12 @@ const Home = React.memo(() => {
       <div className="py-10 bg-white overflow-hidden border-t border-black/5 flex flex-col gap-4">
         <ScrollVelocity
           texts={['Website Development • IT Services • Web App Development • AI Solutions • Custom Software •']}
-          velocity={40}
+          velocity={15}
           className="text-black/10 uppercase font-black"
         />
         <ScrollVelocity
           texts={['Cloud Infrastructure • Automation • UI/UX Design • Mobile Apps • Data Science •']}
-          velocity={-40}
+          velocity={-15}
           className="text-black/5 uppercase font-black"
         />
       </div>
