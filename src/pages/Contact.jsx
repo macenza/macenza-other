@@ -6,7 +6,6 @@ import BouncyText from '../components/BouncyText';
 import Footer from '../components/Footer';
 import { Send, ChevronDown, Loader2 } from 'lucide-react';
 const ReactGlobe = lazy(() => import('react-globe.gl'));
-import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 import SEO from '../components/SEO';
 
@@ -65,6 +64,7 @@ const Contact = () => {
   const pageRef = useRef(null);
   const containerRef = useRef(null);
   const [globeInstance, setGlobeInstance] = useState(null);
+  const [isGlobeInView, setIsGlobeInView] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 700 });
 
@@ -88,6 +88,7 @@ const Contact = () => {
 
     setLoading(true);
     try {
+      const { supabase } = await import('../supabaseClient');
       const { error } = await supabase
         .from('contact_submissions')
         .insert({
@@ -119,6 +120,21 @@ const Contact = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsGlobeInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '250px' }
+    );
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -235,7 +251,7 @@ const Contact = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               Connect With Macenza
             </div>
-            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+            <h1 className="text-[2.2rem] md:text-[4.41rem] font-pinyon font-normal tracking-normal text-black mb-8 reveal-up leading-tight">
               <BouncyText text="Let's discuss. " /> <br />
               <BouncyText text="Build your project." className="text-primary italic" />
             </h1>
@@ -306,9 +322,11 @@ const Contact = () => {
           </svg>
 
           <img
-            src="/hero-robot.png"
+            src="/hero-robot.webp"
             alt="Macenza AI Robot"
             className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         {/* Bottom Fade Mask */}
@@ -454,47 +472,53 @@ const Contact = () => {
         </div>
 
         <div ref={containerRef} className="globe-container relative h-[380px] md:h-[700px] w-full overflow-hidden flex items-center justify-center">
-          <Suspense fallback={<div className="animate-pulse w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>}>
-            <ReactGlobe
-              ref={setGlobeInstance}
-              width={dimensions.width}
-              height={dimensions.height}
-              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-              bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-              backgroundImageUrl=""
-              backgroundColor="rgba(0,0,0,0)"
-              showAtmosphere={true}
-              atmosphereColor="#2563eb"
-              atmosphereAltitude={0.18}
+          {isGlobeInView ? (
+            <Suspense fallback={<div className="w-[320px] h-[320px] md:w-[500px] md:h-[500px] bg-primary/5 rounded-full border border-primary/20 animate-pulse flex items-center justify-center text-primary/40 text-xs font-bold uppercase tracking-widest">Loading 3D Globe...</div>}>
+              <ReactGlobe
+                ref={setGlobeInstance}
+                width={dimensions.width}
+                height={dimensions.height}
+                globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+                bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+                backgroundImageUrl=""
+                backgroundColor="rgba(0,0,0,0)"
+                showAtmosphere={true}
+                atmosphereColor="#2563eb"
+                atmosphereAltitude={0.18}
 
-              // Arcs
-              arcsData={arcsData}
-              arcColor="color"
-              arcDashLength={0.45}
-              arcDashGap={2}
-              arcDashAnimateTime={2000}
-              arcStroke={0.8}
-              arcAltitude={0.28}
+                // Arcs
+                arcsData={arcsData}
+                arcColor="color"
+                arcDashLength={0.45}
+                arcDashGap={2}
+                arcDashAnimateTime={2000}
+                arcStroke={0.8}
+                arcAltitude={0.28}
 
-              // Points (Rippling or glowing landmarks)
-              pointsData={countries}
-              pointLat="lat"
-              pointLng="lng"
-              pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
-              pointAltitude={d => d.isHQ ? 0.09 : 0.06}
-              pointRadius={d => d.isHQ ? 0.8 : 0.5}
+                // Points (Rippling or glowing landmarks)
+                pointsData={countries}
+                pointLat="lat"
+                pointLng="lng"
+                pointColor={d => d.isHQ ? '#ea580c' : '#2563eb'}
+                pointAltitude={d => d.isHQ ? 0.09 : 0.06}
+                pointRadius={d => d.isHQ ? 0.8 : 0.5}
 
-              // Labels
-              labelsData={countries}
-              labelLat="lat"
-              labelLng="lng"
-              labelText="city"
-              labelSize={d => d.isHQ ? 2.0 : 1.5}
-              labelColor={d => d.isHQ ? '#fff' : '#fff'}
-              labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
-              labelResolution={2}
-            />
-          </Suspense>
+                // Labels
+                labelsData={countries}
+                labelLat="lat"
+                labelLng="lng"
+                labelText="city"
+                labelSize={d => d.isHQ ? 2.0 : 1.5}
+                labelColor={d => d.isHQ ? '#fff' : '#fff'}
+                labelDotRadius={d => d.isHQ ? 0.8 : 0.5}
+                labelResolution={2}
+              />
+            </Suspense>
+          ) : (
+            <div className="w-[320px] h-[320px] md:w-[500px] md:h-[500px] rounded-full border border-primary/15 bg-primary/5 flex items-center justify-center">
+              <span className="text-xs font-bold text-primary/40 tracking-widest uppercase">Global Client Network</span>
+            </div>
+          )}
         </div>
       </Section>
 
@@ -550,7 +574,7 @@ const Contact = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-turret">
             Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">

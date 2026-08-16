@@ -136,7 +136,7 @@ const About = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               Our Journey
             </div>
-            <h1 className="text-[2.1rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-tight">
+            <h1 className="text-[2.2rem] md:text-[4.41rem] font-pinyon font-normal tracking-normal text-black mb-8 reveal-up leading-tight">
               <BouncyText text="Building Smarter " /> <br />
               <BouncyText text="Digital Futures." className="text-accent" />
             </h1>
@@ -207,9 +207,11 @@ const About = () => {
           </svg>
 
           <img
-            src="/hero-robot.png"
+            src="/hero-robot.webp"
             alt="Macenza AI Robot"
             className="w-full h-full object-contain object-right-bottom select-none relative z-10 animate-float"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         {/* Bottom Fade Mask */}
@@ -532,7 +534,7 @@ const About = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-turret">
             Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">

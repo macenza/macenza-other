@@ -136,7 +136,7 @@ const Partnership = () => {
             <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6 reveal-up">
               PARTNERSHIP
             </div>
-            <h1 className="text-[2.2rem] sm:text-[3.5rem] md:text-[4.2rem] font-black tracking-tighter text-black mb-8 reveal-up leading-[1.1]">
+            <h1 className="text-[2.31rem] sm:text-[3.68rem] md:text-[4.41rem] font-pinyon font-normal tracking-normal text-black mb-8 reveal-up leading-[1.1]">
               <BouncyText text="Build Your Business " /> <br />
               <BouncyText text="With Macenza" className="text-primary italic" />
             </h1>
@@ -635,7 +635,7 @@ const Partnership = () => {
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
 
-          <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter">
+          <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tight font-turret">
             Ready to Build Your Business With Macenza?
           </h2>
           <p className="text-xl sm:text-2xl text-white/80 font-light mb-10 max-w-3xl mx-auto leading-relaxed">

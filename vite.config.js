@@ -10,11 +10,10 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules')) {
             if (id.includes('@supabase/supabase-js')) return 'vendor-supabase';
-            if (id.includes('@lottiefiles/dotlottie-react')) return 'vendor-lottie';
-            if (id.includes('react-globe.gl')) return 'vendor-globe';
-            if (id.includes('three') || id.includes('three-stdlib')) return 'vendor-three';
+            if (id.includes('@lottiefiles/dotlottie-react') || id.includes('@lottiefiles/dotlottie-web')) return 'vendor-lottie';
+            if (id.includes('react-globe.gl') || id.includes('three-globe') || id.includes('three')) return 'vendor-globe';
             if (id.includes('gsap')) return 'vendor-gsap';
-            if (id.includes('lucide-react') || id.includes('react-icons')) return 'vendor-icons';
+            if (id.includes('lucide-react')) return 'vendor-icons';
             if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) return 'vendor-react';
           }
         }

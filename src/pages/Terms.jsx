@@ -36,7 +36,7 @@ const Terms = () => {
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6">
             Legal &amp; Compliance
           </div>
-          <h1 className="text-[1.575rem] md:text-[2.625rem] font-black tracking-tighter text-black mb-6">
+          <h1 className="text-[1.65rem] md:text-[2.76rem] font-pinyon font-normal tracking-normal text-black mb-6">
             <BouncyText text="Terms &amp; " />
             <BouncyText text="Conditions" className="text-primary italic" />
           </h1>

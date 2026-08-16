@@ -34,20 +34,15 @@ function App() {
   const isAdmin = location.pathname.startsWith('/admin');
 
   useEffect(() => {
-    //  pre-fetching
+    // Prefetch only lightweight informational pages during browser idle
     const preloadPages = () => {
       import('./pages/About').catch(() => { });
       import('./pages/Solutions').catch(() => { });
       import('./pages/Technology').catch(() => { });
-      import('./pages/Careers').catch(() => { });
-      import('./pages/Contact').catch(() => { });
-      import('./pages/JobDetails').catch(() => { });
     };
 
     if (window.requestIdleCallback) {
-      window.requestIdleCallback(preloadPages);
-    } else {
-      setTimeout(preloadPages, 2000);
+      window.requestIdleCallback(preloadPages, { timeout: 4000 });
     }
   }, []);
 

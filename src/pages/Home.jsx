@@ -642,7 +642,7 @@ const Home = React.memo(() => {
         <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
-          <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter font-klandestin">
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-turret">
             Start Your Software Project
           </h2>
           <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">

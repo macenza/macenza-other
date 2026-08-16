@@ -436,7 +436,7 @@ const JobDetails = () => {
                 <Calendar className="w-3.5 h-3.5" /> Deadline: {job.deadline || 'Flexible'}
               </span>
             </div>
-            <h1 className="text-[1.575rem] md:text-[2.1rem] font-black tracking-tight text-black mb-4 leading-tight">
+            <h1 className="text-[1.65rem] md:text-[2.2rem] font-pinyon font-normal tracking-normal text-black mb-4 leading-tight">
               {job.title}
             </h1>
             <div className="flex flex-wrap gap-x-6 gap-y-3">

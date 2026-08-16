@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-const DEFAULT_IMAGE = 'https://www.macenza.com/hero-robot.png';
+const DEFAULT_IMAGE = 'https://www.macenza.com/hero-robot.webp';
 const SITE_NAME = 'Macenza';
 
 const SEO = ({

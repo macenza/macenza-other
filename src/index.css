@@ -1,11 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Syne:wght@400..800&display=swap');
-
 .font-klandestin {
   font-family: 'Syne', sans-serif !important;
 }
 
 .font-martell {
   font-family: 'Playfair Display', serif !important;
+}
+
+.font-pinyon {
+  font-family: 'Pinyon Script', cursive !important;
+}
+
+.font-turret {
+  font-family: 'Turret Road', sans-serif !important;
 }
 
 @tailwind base;
@@ -265,4 +271,25 @@ nav.fixed.nav-hidden {
   display: flex;
   width: max-content;
   animation: marquee-infinite-stats 35s linear infinite;
+}
+
+@keyframes beam-fall {
+  0% {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(650px);
+    opacity: 0;
+  }
+}
+
+.animate-beam-fall {
+  animation: beam-fall 6s linear infinite;
 }

@@ -110,7 +110,7 @@ const HeroSequence = ({ onLoadingComplete, children }) => {
   return (
     <div ref={containerRef} className="relative h-[600vh] w-full bg-white">
       <div className="sticky top-0 left-0 w-full h-screen flex items-center justify-center overflow-hidden">
-        <canvas ref={canvasRef} className="z-0" />
+        <canvas ref={canvasRef} className="z-0 block w-full h-full object-contain" />
         
         {/* Loading Overlay */}
         {loadingProgress < 100 && (

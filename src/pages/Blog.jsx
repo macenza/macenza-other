@@ -117,7 +117,7 @@ const Blog = () => {
           <div className="inline-block px-4 py-2 bg-primary/5 rounded-full text-primary font-bold text-xs uppercase tracking-widest mb-6">
             Tech & Engineering Blog
           </div>
-          <h1 className="text-[2.2rem] md:text-[3.5rem] font-black tracking-tight text-black mb-6">
+          <h1 className="text-[2.31rem] md:text-[3.68rem] font-pinyon font-normal tracking-normal text-black mb-6">
             <BouncyText text="Insights & " />
             <BouncyText text="Articles" className="text-primary italic" />
           </h1>
