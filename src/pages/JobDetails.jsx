@@ -177,7 +177,8 @@ const JobDetails = () => {
     portfolioUrl: '',
     coverLetter: '',
     agreeToTerms: false,
-    agreeToFutureRecruitment: false
+    agreeToFutureRecruitment: false,
+    honeypot: ''
   };
   const [formData, setFormData] = useState(initialFormState);
 
@@ -287,12 +288,31 @@ const JobDetails = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        const errorMsg = 'File is too large. Resumes must be smaller than 5MB.';
+        setSubmitError(errorMsg);
+        toast.error(errorMsg);
+        return;
+      }
+
+      // Validate extension and strict MIME types
       const ext = file.name.split('.').pop().toLowerCase();
-      if (['pdf', 'doc', 'docx'].includes(ext)) {
+      const validExtensions = ['pdf', 'doc', 'docx'];
+      const validMimeTypes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      ];
+
+      const isValidMime = validMimeTypes.includes(file.type);
+      const isValidExt = validExtensions.includes(ext);
+
+      if (isValidExt && isValidMime) {
         setResumeFile(file);
         setSubmitError('');
       } else {
-        const errorMsg = 'Invalid file format. Please upload PDF, DOC, or DOCX resumes.';
+        const errorMsg = 'Invalid file format. Please upload a valid PDF, DOC, or DOCX resume.';
         setSubmitError(errorMsg);
         toast.error(errorMsg);
       }
@@ -309,11 +329,18 @@ const JobDetails = () => {
       return;
     }
 
-    let uploadFile = resumeFile;
-    if (!uploadFile) {
-      // Create a mock PDF file dynamically for automated testing / empty submissions
-      const blob = new Blob(["Mock PDF Resume"], { type: "application/pdf" });
-      uploadFile = new File([blob], "mock_resume.pdf", { type: "application/pdf" });
+    if (!resumeFile) {
+      const err = 'Please upload your resume to submit your application.';
+      setSubmitError(err);
+      toast.error(err);
+      return;
+    }
+
+    // Honeypot spam prevention check
+    if (formData.honeypot) {
+      console.warn("Spam submission blocked via honeypot.");
+      setSubmitSuccess(true);
+      return;
     }
 
     setSubmitting(true);
@@ -321,12 +348,12 @@ const JobDetails = () => {
 
     try {
       // 1. Upload resume to Supabase Storage Bucket 'resumes'
-      const fileExt = uploadFile.name.split('.').pop();
+      const fileExt = resumeFile.name.split('.').pop().toLowerCase();
       const fileName = `${Date.now()}-${Math.round(Math.random() * 1E9)}.${fileExt}`;
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('resumes')
-        .upload(fileName, uploadFile);
+        .upload(fileName, resumeFile);
 
       if (uploadError) {
         throw new Error(`Resume upload failed: ${uploadError.message}`);
@@ -682,6 +709,19 @@ const JobDetails = () => {
                         placeholder="https://yourwebsite.com"
                       />
                     </div>
+                  </div>
+
+                  {/* Honeypot field (hidden from screen readers and visual layout) */}
+                  <div className="absolute opacity-0 -z-50 pointer-events-none h-0 w-0 overflow-hidden">
+                    <label>Do not fill this field if you are a human</label>
+                    <input
+                      type="text"
+                      name="honeypot"
+                      value={formData.honeypot}
+                      onChange={handleInputChange}
+                      tabIndex="-1"
+                      autoComplete="off"
+                    />
                   </div>
 
                   {/* Cover Letter */}

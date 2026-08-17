@@ -75,7 +75,8 @@ const Contact = () => {
     company: '',
     project_type: 'AI Development',
     budget: '',
-    details: ''
+    details: '',
+    honeypot: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -83,6 +84,23 @@ const Contact = () => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.email.trim()) {
       toast.error('Name and Email are required.');
+      return;
+    }
+
+    // Honeypot spam prevention check
+    if (formData.honeypot) {
+      console.warn("Spam contact submission blocked via honeypot.");
+      toast.success('Message sent successfully! We will contact you soon.');
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        project_type: 'AI Development',
+        budget: '',
+        details: '',
+        honeypot: ''
+      });
       return;
     }
 
@@ -111,7 +129,8 @@ const Contact = () => {
         company: '',
         project_type: 'AI Development',
         budget: '',
-        details: ''
+        details: '',
+        honeypot: ''
       });
     } catch (err) {
       console.error(err);
@@ -360,6 +379,18 @@ const Contact = () => {
           <div className="reveal-up">
             <div className="glass-morphism rounded-[3rem] p-10 md:p-14 border border-black/5 shadow-2xl shadow-primary/5">
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot field (hidden from screen readers and visual layout) */}
+                <div className="absolute opacity-0 -z-50 pointer-events-none h-0 w-0 overflow-hidden">
+                  <label>Do not fill this field if you are a human</label>
+                  <input
+                    type="text"
+                    name="honeypot"
+                    value={formData.honeypot}
+                    onChange={(e) => setFormData({ ...formData, honeypot: e.target.value })}
+                    tabIndex="-1"
+                    autoComplete="off"
+                  />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-black uppercase tracking-widest text-black/40 ml-4">Full Name</label>
