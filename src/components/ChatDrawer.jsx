@@ -20,7 +20,8 @@ const ChatDrawer = ({ onClose }) => {
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    if (GEMINI_API_KEY && !aiRef.current) {
+    // Only initialize client-side Gemini client in local development mode as a fallback
+    if (import.meta.env.DEV && GEMINI_API_KEY && !aiRef.current) {
       aiRef.current = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
     }
   }, []);
@@ -72,49 +73,86 @@ const ChatDrawer = ({ onClose }) => {
     setIsTyping(true);
 
     try {
-      if (aiRef.current) {
-        const contents = [];
-        const firstUserIdx = messages.findIndex(msg => msg.sender === 'user');
-        if (firstUserIdx !== -1) {
-          messages.slice(firstUserIdx).forEach(msg => {
-            contents.push({
-              role: msg.sender === 'user' ? 'user' : 'model',
-              parts: [{ text: msg.text }]
+      let replyText = '';
+      let useClientFallback = import.meta.env.DEV && !!aiRef.current;
+
+      if (!useClientFallback) {
+        // 1. Try calling the secure serverless backend endpoint first
+        try {
+          const contents = [];
+          const firstUserIdx = messages.findIndex(msg => msg.sender === 'user');
+          if (firstUserIdx !== -1) {
+            messages.slice(firstUserIdx).forEach(msg => {
+              contents.push({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }]
+              });
             });
-          });
-        }
-
-        contents.push({
-          role: 'user',
-          parts: [{ text: query }]
-        });
-
-        const response = await aiRef.current.models.generateContent({
-          model: 'gemini-2.5-flash-lite',
-          contents: contents,
-          config: {
-            systemInstruction: PRIYANKA_SYSTEM_INSTRUCTION
           }
-        });
+          contents.push({ role: 'user', parts: [{ text: query }] });
 
-        const replyText = response.text || "I'm sorry, I couldn't process that. How else can I help?";
+          const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents,
+              systemInstruction: PRIYANKA_SYSTEM_INSTRUCTION
+            })
+          });
 
-        setIsTyping(false);
-        setMessages(prev => [...prev, {
-          sender: 'bot',
-          text: replyText,
-          time: new Date()
-        }]);
-      } else {
-        setTimeout(() => {
-          setIsTyping(false);
-          setMessages(prev => [...prev, {
-            sender: 'bot',
-            text: getLocalResponse(query),
-            time: new Date()
-          }]);
-        }, 800);
+          if (res.ok) {
+            const data = await res.json();
+            replyText = data.text;
+          } else {
+            // If the serverless call fails (e.g. 404 in local dev), trigger the local fallback
+            throw new Error('Serverless function failed or not found');
+          }
+        } catch (backendErr) {
+          console.warn('Backend API unavailable, attempting client-side fallback...', backendErr);
+          useClientFallback = true;
+        }
       }
+
+      if (useClientFallback) {
+        // 2. Client-side Fallback (active in local dev mode)
+        if (aiRef.current) {
+          const contents = [];
+          const firstUserIdx = messages.findIndex(msg => msg.sender === 'user');
+          if (firstUserIdx !== -1) {
+            messages.slice(firstUserIdx).forEach(msg => {
+              contents.push({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }]
+              });
+            });
+          }
+          contents.push({
+            role: 'user',
+            parts: [{ text: query }]
+          });
+
+          const response = await aiRef.current.models.generateContent({
+            model: 'gemini-2.5-flash-lite',
+            contents: contents,
+            config: {
+              systemInstruction: PRIYANKA_SYSTEM_INSTRUCTION
+            }
+          });
+          replyText = response.text;
+        } else {
+          // If neither works (e.g. key is missing), fallback to offline local response
+          replyText = getLocalResponse(query);
+        }
+      }
+
+      setIsTyping(false);
+      setMessages(prev => [...prev, {
+        sender: 'bot',
+        text: replyText || "I'm sorry, I couldn't process that. How else can I help?",
+        time: new Date()
+      }]);
     } catch (err) {
       console.error("AI chat assistant endpoint error:", err);
       setIsTyping(false);
