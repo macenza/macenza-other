@@ -17,32 +17,32 @@ const Footer = () => {
   };
 
   const socials = [
-    { 
+    {
       icon: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
           <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
         </svg>
-      ), 
-      href: "https://instagram.com/macenza.ai", 
-      label: "Instagram" 
+      ),
+      href: "https://instagram.com/macenza.ai",
+      label: "Instagram"
     },
-    { 
+    {
       icon: (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
           <rect width="4" height="12" x="2" y="9" />
           <circle cx="4" cy="4" r="2" />
         </svg>
-      ), 
-      href: "https://in.linkedin.com/company/macenza", 
-      label: "LinkedIn" 
+      ),
+      href: "https://in.linkedin.com/company/macenza",
+      label: "LinkedIn"
     },
-    { 
-      icon: <Mail className="w-5 h-5" />, 
-      href: "mailto:info@macenza.com", 
-      label: "Email" 
+    {
+      icon: <Mail className="w-5 h-5" />,
+      href: "mailto:info@macenza.com",
+      label: "Email"
     }
   ];
 
@@ -50,7 +50,7 @@ const Footer = () => {
     <footer className="border-t border-black/5 bg-white relative overflow-hidden">
       <BackgroundBeamsWithCollision className="py-16 md:py-24 h-auto md:h-auto flex flex-col justify-center bg-gradient-to-b from-white to-neutral-50 relative">
         {/* Giant Background "MACENZA" Letters */}
-        <div 
+        <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           aria-hidden="true"
         >
@@ -62,7 +62,7 @@ const Footer = () => {
         <div className="container mx-auto px-6 relative z-10 w-full">
           {/* Main Footer Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-            
+
             {/* Column 1: Brand Info */}
             <div className="flex flex-col gap-6">
               <div className="flex items-center gap-3">
@@ -72,13 +72,13 @@ const Footer = () => {
               <p className="text-sm text-black/60 leading-relaxed max-w-sm">
                 Empowering businesses through cutting-edge AI integration, high-performance web applications, and custom digital transformation solutions.
               </p>
-              
+
               {/* Social Links */}
               <div className="flex items-center gap-3 mt-2">
                 {socials.map((social, i) => (
-                  <a 
-                    key={i} 
-                    href={social.href} 
+                  <a
+                    key={i}
+                    href={social.href}
                     target={social.href.startsWith('mailto:') ? undefined : "_blank"}
                     rel={social.href.startsWith('mailto:') ? undefined : "noopener noreferrer"}
                     className="p-3 bg-black/5 rounded-full text-black/60 hover:bg-primary hover:text-white hover:scale-110 transition-all duration-300 shadow-sm flex items-center justify-center"
@@ -102,10 +102,10 @@ const Footer = () => {
                   Web Application Development
                   <span className="w-1.5 h-1.5 rounded-full bg-primary/0 group-hover:bg-primary transition-all duration-300"></span>
                 </span>
-                <a 
-                  href="https://www.hrenso.com/" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://www.hrenso.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="hover:text-primary transition-colors flex items-center gap-1.5 group"
                 >
                   Custom HRMS Software
@@ -145,19 +145,17 @@ const Footer = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={subscribed}
                     required
-                    className={`w-full px-4 py-2.5 bg-black/5 border border-black/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 ${
-                      subscribed ? "bg-green-50/50 text-green-700 border-green-200" : ""
-                    }`}
+                    className={`w-full px-4 py-2.5 bg-black/5 border border-black/5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 ${subscribed ? "bg-green-50/50 text-green-700 border-green-200" : ""
+                      }`}
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={subscribed}
-                  className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center shrink-0 ${
-                    subscribed 
-                      ? "bg-green-600 text-white cursor-default" 
+                  className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center shrink-0 ${subscribed
+                      ? "bg-green-600 text-white cursor-default"
                       : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
-                  }`}
+                    }`}
                   aria-label="Subscribe to newsletter"
                 >
                   {subscribed ? (
