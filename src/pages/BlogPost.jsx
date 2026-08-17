@@ -33,6 +33,19 @@ export const getPostSlug = (post) => {
   return generateSlug(post.title) || post._id || '';
 };
 
+// Safe link href helper to prevent XSS protocol injection
+export const getSafeHref = (href) => {
+  if (!href) return '';
+  const trimmed = href.trim();
+  // Safe protocols: http, https, mailto, tel. Also allow relative/anchor links
+  const isSafeProtocol = /^(https?|mailto|tel):/i.test(trimmed);
+  const isRelative = trimmed.startsWith('/') || trimmed.startsWith('#');
+  if (isSafeProtocol || isRelative) {
+    return trimmed;
+  }
+  return '#';
+};
+
 // Rich portable text renderer
 const PortableText = ({ value }) => {
   if (!Array.isArray(value)) return null;
@@ -61,7 +74,7 @@ const PortableText = ({ value }) => {
 
     const content = block.children.map((child, cIdx) => {
       let text = child.text;
-      
+
       // Handle links
       if (child.marks && child.marks.length > 0 && block.markDefs) {
         const linkMark = block.markDefs.find(m => child.marks.includes(m._key) && m._type === 'link');
@@ -69,7 +82,7 @@ const PortableText = ({ value }) => {
           return (
             <a
               key={cIdx}
-              href={linkMark.href}
+              href={getSafeHref(linkMark.href)}
               target="_blank"
               rel="noopener noreferrer"
               className="text-primary font-bold underline decoration-primary/40 underline-offset-4 hover:decoration-primary transition-all"
@@ -116,7 +129,7 @@ const PortableText = ({ value }) => {
         </blockquote>
       );
     }
-    
+
     return <p key={index} className="text-base md:text-lg text-black/75 leading-relaxed mb-6 font-normal">{content}</p>;
   });
 };
@@ -150,7 +163,7 @@ const BlogPost = () => {
         }`;
 
         const allPosts = await sanityClient.fetch(allPostsQuery);
-        
+
         if (allPosts && allPosts.length > 0) {
           const cleanParamSlug = generateSlug(decodeURIComponent(slug || ''));
 
