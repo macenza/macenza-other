@@ -54,7 +54,7 @@ const Footer = () => {
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           aria-hidden="true"
         >
-          <span className="text-[14vw] md:text-[17vw] lg:text-[19vw] font-black tracking-[-0.04em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-primary/20 via-primary/10 to-primary/[0.02] leading-none whitespace-nowrap select-none">
+          <span className="text-[14vw] md:text-[17vw] lg:text-[19vw] font-black tracking-[-0.04em] uppercase text-transparent bg-clip-text bg-gradient-to-b from-primary/50 via-primary/10 to-primary/[0.02] leading-none whitespace-nowrap select-none">
             MACENZA
           </span>
         </div>
@@ -153,8 +153,8 @@ const Footer = () => {
                   type="submit"
                   disabled={subscribed}
                   className={`px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 flex items-center justify-center shrink-0 ${subscribed
-                      ? "bg-green-600 text-white cursor-default"
-                      : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
+                    ? "bg-green-600 text-white cursor-default"
+                    : "bg-primary text-white hover:bg-primary-dark hover:shadow-lg hover:shadow-primary/20"
                     }`}
                   aria-label="Subscribe to newsletter"
                 >
