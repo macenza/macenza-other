@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { MessageSquare, X, Sparkles } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 
 const ChatDrawer = lazy(() => import('./ChatDrawer'));
+const LazyDotLottie = lazy(() => import('@lottiefiles/dotlottie-react').then(m => ({ default: m.DotLottieReact })));
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,11 +66,17 @@ const ChatWidget = () => {
         {isOpen ? (
           <X className="w-6 h-6 transition-transform rotate-90 duration-300" />
         ) : (
-          <div className="relative flex items-center justify-center">
-            <MessageSquare className="w-7 h-7" />
-            <Sparkles className="w-3.5 h-3.5 text-amber-300 absolute -top-1 -right-1 animate-pulse" />
+          <div className="relative w-full h-full flex items-center justify-center overflow-hidden rounded-full">
+            <Suspense fallback={<MessageSquare className="w-7 h-7" />}>
+              <LazyDotLottie
+                src="/chatbot.lottie"
+                loop
+                autoplay
+                style={{ width: '100%', height: '100%' }}
+              />
+            </Suspense>
             {hasNewMessageBadge && (
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-ping"></span>
+              <span className="absolute top-2 right-2 w-3 h-3 bg-rose-500 rounded-full border-2 border-white animate-ping"></span>
             )}
           </div>
         )}

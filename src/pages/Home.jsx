@@ -359,8 +359,8 @@ const Home = React.memo(() => {
               className="rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block overflow-hidden bg-white/50 backdrop-blur-sm cursor-pointer select-text"
             >
               <div className="aspect-video w-full overflow-hidden relative border-b border-dark/5">
-                <img 
-                  src={service.image} 
+                <img
+                  src={service.image}
                   alt={service.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   loading="lazy"
@@ -421,12 +421,12 @@ const Home = React.memo(() => {
       <div className="py-10 bg-white overflow-hidden border-t border-black/5 flex flex-col gap-4">
         <ScrollVelocity
           texts={['Website Development • IT Services • Web App Development • AI Solutions • Custom Software •']}
-          velocity={15}
+          velocity={40}
           className="text-black/10 uppercase font-black"
         />
         <ScrollVelocity
           texts={['Cloud Infrastructure • Automation • UI/UX Design • Mobile Apps • Data Science •']}
-          velocity={-15}
+          velocity={-40}
           className="text-black/5 uppercase font-black"
         />
       </div>
