@@ -13,7 +13,11 @@
   ],
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    },
+    {
+      "source": "/((?!api|src|node_modules|@|static|.*\\..*$).*)",
       "destination": "/index.html"
     }
   ]
