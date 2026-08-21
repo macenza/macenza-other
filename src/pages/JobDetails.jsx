@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { fallbackJobs } from '../data/fallbackJobs';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import ReCAPTCHA from 'react-google-recaptcha';
 import {
   MapPin, Clock, Briefcase, Calendar, Users, DollarSign,
   ArrowLeft, Upload, Check, ChevronRight, Share2, Award, ShieldCheck
@@ -158,6 +159,7 @@ const JobDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const pageRef = useRef(null);
+  const recaptchaRef = useRef(null);
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -343,6 +345,15 @@ const JobDetails = () => {
       return;
     }
 
+    // reCAPTCHA verification check
+    const recaptchaToken = recaptchaRef.current ? recaptchaRef.current.getValue() : '';
+    if (!recaptchaToken) {
+      const err = 'Please verify that you are not a robot.';
+      setSubmitError(err);
+      toast.error(err);
+      return;
+    }
+
     setSubmitting(true);
     setSubmitError('');
 
@@ -364,30 +375,37 @@ const JobDetails = () => {
         .from('resumes')
         .getPublicUrl(fileName);
 
-      // 3. Save application entry in 'applications' table
-      const { error: insertError } = await supabase
-        .from('applications')
-        .insert([{
-          candidate_name: formData.candidateName,
+      // 3. Save application entry via secure serverless endpoint
+      const res = await fetch('/api/submit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          candidateName: formData.candidateName,
           email: formData.email,
           phone: formData.phone,
           location: formData.location,
           experience: formData.experience,
-          linkedin_url: formData.linkedInUrl,
-          portfolio_url: formData.portfolioUrl,
-          cover_letter: formData.coverLetter,
-          resume_url: publicUrl,
-          job_id: (job && (job.id || job._id)) !== 'general' ? (job.id || job._id) : null
-        }]);
+          linkedInUrl: formData.linkedInUrl,
+          portfolioUrl: formData.portfolioUrl,
+          coverLetter: formData.coverLetter,
+          resumeUrl: publicUrl,
+          jobId: (job && (job.id || job._id)) !== 'general' ? (job.id || job._id) : null,
+          recaptchaToken
+        })
+      });
 
-      if (insertError) {
-        throw new Error(`Application save failed: ${insertError.message}`);
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Server error occurred during submission.');
       }
 
       setSubmitSuccess(true);
       toast.success('Application submitted successfully!');
       setFormData(initialFormState);
       setResumeFile(null);
+      recaptchaRef.current?.reset();
     } catch (err) {
       console.error(err);
       const errorMsg = err.message || 'Submission failed. Please check entries.';
@@ -805,6 +823,14 @@ const JobDetails = () => {
                         I consent to Macenza retaining my application information and contacting me about future employment opportunities.
                       </span>
                     </label>
+                  </div>
+
+                  {/* reCAPTCHA Checkbox */}
+                  <div className="flex justify-center py-2">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                    />
                   </div>
 
                   {/* Submit Trigger */}

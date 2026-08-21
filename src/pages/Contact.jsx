@@ -8,6 +8,7 @@ import { Send, ChevronDown, Loader2 } from 'lucide-react';
 const ReactGlobe = lazy(() => import('react-globe.gl'));
 import { toast } from 'react-toastify';
 import SEO from '../components/SEO';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -63,6 +64,7 @@ const faqs = [
 const Contact = () => {
   const pageRef = useRef(null);
   const containerRef = useRef(null);
+  const recaptchaRef = useRef(null);
   const [globeInstance, setGlobeInstance] = useState(null);
   const [isGlobeInView, setIsGlobeInView] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
@@ -104,22 +106,36 @@ const Contact = () => {
       return;
     }
 
+    // reCAPTCHA verification check
+    const recaptchaToken = recaptchaRef.current ? recaptchaRef.current.getValue() : '';
+    if (!recaptchaToken) {
+      toast.error('Please verify that you are not a robot.');
+      return;
+    }
+
     setLoading(true);
     try {
-      const { supabase } = await import('../supabaseClient');
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert({
+      const res = await fetch('/api/submit-contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
           company: formData.company.trim(),
           project_type: formData.project_type,
           budget: formData.budget,
-          details: formData.details.trim()
-        });
+          details: formData.details.trim(),
+          recaptchaToken
+        })
+      });
 
-      if (error) throw error;
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Server error occurred');
+      }
 
       toast.success('Message sent successfully! We will contact you soon.');
       setFormData({
@@ -132,6 +148,7 @@ const Contact = () => {
         details: '',
         honeypot: ''
       });
+      recaptchaRef.current?.reset();
     } catch (err) {
       console.error(err);
       toast.error('Failed to send message: ' + err.message);
@@ -471,6 +488,12 @@ const Contact = () => {
                     className="w-full px-6 py-4 rounded-2xl bg-black/5 border-none focus:ring-2 focus:ring-primary/20 transition-all text-black font-medium outline-none min-h-[150px] resize-none"
                     placeholder="Describe your project vision..."
                   ></textarea>
+                </div>
+                <div className="flex justify-center py-2">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  />
                 </div>
                 <button
                   type="submit"
