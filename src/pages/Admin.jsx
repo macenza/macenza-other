@@ -33,7 +33,8 @@ import {
   Image as ImageIcon,
   Globe,
   Mail,
-  Phone
+  Phone,
+  Menu
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
@@ -53,6 +54,31 @@ const Admin = () => {
 
   // Dashboard states
   const [activeTab, setActiveTab] = useState('Dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth >= 1024;
+    }
+    return false;
+  });
+
+  // Handle escape key to close sidebar on mobile
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsSidebarOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleTabSelect = (tabId) => {
+    setActiveTab(tabId);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
   const [downloadingResumes, setDownloadingResumes] = useState(false);
@@ -1591,7 +1617,7 @@ const Admin = () => {
         </div>
 
         {/* Login Card */}
-        <div className="w-full max-w-md bg-[#EFF6FF]/60 backdrop-blur-xl border border-[#BFDBFE]/60 p-10 rounded-[3rem] shadow-2xl relative z-10 hover:border-primary/20 transition-all duration-500 group">
+        <div className="w-full max-w-md bg-[#EFF6FF]/60 backdrop-blur-xl border border-[#BFDBFE]/60 p-6 sm:p-10 rounded-2xl sm:rounded-[3rem] shadow-2xl relative z-10 hover:border-primary/20 transition-all duration-500 group">
           <div className="mb-8">
             <h3 className="text-3xl font-black text-black mb-2 tracking-tight">System Sign In</h3>
             <p className="text-sm text-black/55 font-medium leading-relaxed">Enter your administrator credentials to securely connect to the recruitment pipelines.</p>
@@ -1669,13 +1695,38 @@ const Admin = () => {
   return (
     <div className="flex bg-[#FFFFFF] min-h-screen font-sans text-black relative">
       <SEO title="Admin Dashboard | Macenza" description="Macenza Admin Portal" canonicalPath="/admin" noindex={true} />
+      {/* Mobile Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+          onClick={() => setIsSidebarOpen(false)}
+          aria-label="Close sidebar overlay"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 bg-[#EFF6FF] border-r border-[#BFDBFE] flex flex-col justify-between h-screen sticky top-0 py-8 px-6 z-20">
-        <div className="flex flex-col gap-12">
-          {/* Brand Logo */}
-          <div className="flex items-center gap-3 pl-2">
-            <img src="/logo.svg" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-white p-0.5" />
-            <span className="text-xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-[#EFF6FF] border-r border-[#BFDBFE] flex flex-col justify-between h-full py-6 px-5 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:sticky lg:top-0 lg:z-20 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:hidden'
+        }`}
+      >
+        <div className="flex flex-col gap-8 sm:gap-12 overflow-y-auto">
+          {/* Brand Logo & Close Button */}
+          <div className="flex items-center justify-between pl-1">
+            <div className="flex items-center gap-3">
+              <img src="/logo.svg" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-white p-0.5" />
+              <span className="text-xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
+            </div>
+            {/* Close button: closes drawer on mobile, or collapses sidebar on desktop */}
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-1.5 rounded-xl hover:bg-[#DBEAFE] text-black/60 hover:text-black transition-colors"
+              title="Close side panel"
+              aria-label="Close side panel"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           {/* Navigation Items */}
@@ -1692,7 +1743,7 @@ const Admin = () => {
             ].map(item => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabSelect(item.id)}
                 className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-5 active:scale-95 group whitespace-nowrap"
                 style={activeTab === item.id ? { backgroundColor: '#DBEAFE', color: 'black', paddingLeft: '20px', borderLeft: '4px solid #2563eb' } : {}}
               >
@@ -1706,6 +1757,9 @@ const Admin = () => {
               href="https://macenza.sanity.studio/"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsSidebarOpen(false);
+              }}
               className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-primary hover:bg-[#DBEAFE]/30 hover:pl-5 active:scale-95 group whitespace-nowrap mt-2 border-t border-[#BFDBFE]/40 pt-4"
             >
               <span className="text-xl group-hover:scale-125 transition-transform duration-300">📝</span>
@@ -1714,16 +1768,19 @@ const Admin = () => {
           </nav>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 mt-6">
           <button
-            onClick={handleSignOut}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-rose-50 border border-rose-200 text-rose-800 hover:bg-rose-100 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 active:scale-95"
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsSidebarOpen(false);
+              handleSignOut();
+            }}
+            className="w-full flex items-center justify-center gap-3 py-3.5 sm:py-4 bg-rose-50 border border-rose-200 text-rose-800 hover:bg-rose-100 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 active:scale-95"
           >
             <span>🚪</span> Sign Out Admin
           </button>
 
           {/* Info panel at bottom */}
-          <div className="bg-[#DBEAFE] rounded-3xl p-5 border border-[#BFDBFE]">
+          <div className="bg-[#DBEAFE] rounded-3xl p-4 sm:p-5 border border-[#BFDBFE]">
             <p className="text-xs font-bold text-black uppercase mb-1">Live Database Connection</p>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
@@ -1734,21 +1791,41 @@ const Admin = () => {
       </aside>
 
       {/* Main Workspace */}
-      <main className="flex-1 flex flex-col h-screen overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="h-20 bg-white border-b border-[#BFDBFE] px-10 flex items-center justify-between z-10">
-          <h2 className="text-2xl font-black tracking-tight text-black flex items-center gap-2">
-            MACENZA CAREERS HUB <span className="text-black/40 font-normal">|</span> <span className="text-primary italic text-lg font-bold">{activeTab}</span>
-          </h2>
-          <div className="flex items-center gap-6">
-            <span className="text-sm font-bold text-black/60 bg-[#EFF6FF] border border-[#BFDBFE] px-4 py-2 rounded-full">
+        <header className="h-16 sm:h-20 bg-white border-b border-[#BFDBFE] px-3 sm:px-6 lg:px-10 flex items-center justify-between z-10 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            {/* Open / Close Side Panel Button */}
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen(prev => !prev)}
+              className="p-2 sm:p-2.5 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black transition-all active:scale-95 flex items-center gap-2 shrink-0 shadow-sm"
+              title={isSidebarOpen ? "Close side panel" : "Open side panel"}
+              aria-label={isSidebarOpen ? "Close side panel" : "Open side panel"}
+            >
+              <Menu className="w-5 h-5" />
+              <span className="hidden sm:inline text-xs font-bold">
+                {isSidebarOpen ? 'Hide Menu' : 'Menu'}
+              </span>
+            </button>
+
+            <h2 className="text-sm sm:text-lg lg:text-2xl font-black tracking-tight text-black flex items-center gap-1.5 sm:gap-2 truncate">
+              <span className="hidden md:inline">MACENZA CAREERS HUB</span>
+              <span className="md:hidden">MACENZA</span>
+              <span className="text-black/40 font-normal">|</span>
+              <span className="text-primary italic text-xs sm:text-base lg:text-lg font-bold truncate">{activeTab}</span>
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-6 shrink-0">
+            <span className="hidden md:inline-flex text-xs sm:text-sm font-bold text-black/60 bg-[#EFF6FF] border border-[#BFDBFE] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
               {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
           </div>
         </header>
 
         {/* Work Area */}
-        <div className="flex-1 p-10 bg-white overflow-y-auto" data-lenis-prevent>
+        <div className="flex-1 p-3 sm:p-6 lg:p-10 bg-white overflow-y-auto overflow-x-hidden" data-lenis-prevent>
           {error && (
             <div className="bg-[#EFF6FF] border border-amber-300 p-5 rounded-2xl mb-8 flex items-center gap-3 text-amber-950 font-bold text-sm">
               <span className="w-3 h-3 bg-amber-500 rounded-full animate-ping"></span>
@@ -1758,8 +1835,8 @@ const Admin = () => {
 
           {/* Tab 1: Dashboard Overview */}
           {activeTab === 'Dashboard' && (
-            <div className="flex flex-col gap-10">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex flex-col gap-8 sm:gap-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {renderStatsCard('Total Jobs Posted', totalJobs, <Briefcase className="w-6 h-6" />, 'Active recruitment')}
                 {renderStatsCard('Total Applications', totalApps, <Users className="w-6 h-6" />, 'High volumes')}
                 {renderStatsCard('New Applications', newApps, <FileText className="w-6 h-6 text-indigo-700" />, 'Action required')}
@@ -1769,23 +1846,23 @@ const Admin = () => {
               </div>
 
               {/* Quick Summary Panels */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-2 sm:mt-4">
                 {/* Active Jobs Box */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xl font-black text-black">Active Hiring Pipelines</h4>
-                    <button onClick={() => setActiveTab('Jobs')} className="text-sm font-bold text-primary flex items-center gap-1 hover:underline">
+                    <h4 className="text-lg sm:text-xl font-black text-black">Active Hiring Pipelines</h4>
+                    <button onClick={() => setActiveTab('Jobs')} className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1 hover:underline">
                       Manage Jobs <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                   <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2">
                     {jobs.map(job => (
-                      <div key={job._id} className="p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center hover:scale-[1.01] transition-transform">
+                      <div key={job._id} className="p-4 sm:p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center hover:scale-[1.01] transition-transform">
                         <div>
-                          <h5 className="font-bold text-black text-base">{job.title}</h5>
+                          <h5 className="font-bold text-black text-sm sm:text-base">{job.title}</h5>
                           <span className="text-xs text-black/50 font-semibold">{job.department} &bull; {job.location}</span>
                         </div>
-                        <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                        <span className={`px-3 sm:px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
                           }`}>
                           {job.status}
                         </span>
@@ -1796,10 +1873,10 @@ const Admin = () => {
                 </div>
 
                 {/* Recent Candidates Box */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xl font-black text-black">Recent Candidates</h4>
-                    <button onClick={() => setActiveTab('Applications')} className="text-sm font-bold text-primary flex items-center gap-1 hover:underline">
+                    <h4 className="text-lg sm:text-xl font-black text-black">Recent Candidates</h4>
+                    <button onClick={() => setActiveTab('Applications')} className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1 hover:underline">
                       View Applications <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
@@ -1811,13 +1888,13 @@ const Admin = () => {
                           setSelectedApp(app);
                           setActiveTab('Resume Manager');
                         }}
-                        className="p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center cursor-pointer hover:border-primary/40 hover:scale-[1.01] transition-all"
+                        className="p-4 sm:p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center cursor-pointer hover:border-primary/40 hover:scale-[1.01] transition-all"
                       >
                         <div>
-                          <h5 className="font-bold text-black text-base">{app.candidateName}</h5>
+                          <h5 className="font-bold text-black text-sm sm:text-base">{app.candidateName}</h5>
                           <span className="text-xs text-black/50 font-semibold">Applied for: {app.jobId ? app.jobId.title : 'General Placement'}</span>
                         </div>
-                        <span className="px-4 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] rounded-full text-xs font-black uppercase text-black">
+                        <span className="px-3 sm:px-4 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] rounded-full text-[10px] sm:text-xs font-black uppercase text-black">
                           {app.status}
                         </span>
                       </div>
@@ -1831,9 +1908,9 @@ const Admin = () => {
 
           {/* Tab 2: Job Posting CRUD Manager */}
           {activeTab === 'Jobs' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)]">
               {/* Left Column: Form to create/edit jobs */}
-              <div data-lenis-prevent className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
+              <div data-lenis-prevent className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
                 <h4 className="text-2xl font-black text-black">
                   {editingJobId ? 'Edit Job Posting' : 'Create New Job'}
                 </h4>
@@ -2066,13 +2143,13 @@ const Admin = () => {
               </div>
 
               {/* Right Column: List of posted jobs */}
-              <div data-lenis-prevent className="xl:col-span-7 bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
-                <h4 className="text-2xl font-black text-black">Active Postings List</h4>
+              <div data-lenis-prevent className="xl:col-span-7 bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
+                <h4 className="text-xl sm:text-2xl font-black text-black">Active Postings List</h4>
                 <div className="flex flex-col gap-4">
                   {jobs.map(job => (
                     <div
                       key={job._id}
-                      className={`p-6 bg-white border rounded-[2rem] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 hover:shadow-md transition-shadow ${editingJobId === job._id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-[#BFDBFE]'
+                      className={`p-4 sm:p-6 bg-white border rounded-2xl sm:rounded-[2rem] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 hover:shadow-md transition-shadow ${editingJobId === job._id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-[#BFDBFE]'
                         }`}
                     >
                       <div className="flex flex-col gap-2">
@@ -2121,9 +2198,9 @@ const Admin = () => {
           {activeTab === 'Applications' && (
             <div className="flex flex-col gap-8">
               {/* Filtering Suite */}
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
                 <div className="flex items-center justify-between border-b border-[#BFDBFE] pb-4">
-                  <h4 className="text-xl font-black text-black">Structured Resume Filtering</h4>
+                  <h4 className="text-lg sm:text-xl font-black text-black">Structured Resume Filtering</h4>
                   <button
                     onClick={() => {
                       setSearchName('');
@@ -2139,7 +2216,7 @@ const Admin = () => {
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                   {/* Search by Name */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-black uppercase text-black/60">Candidate Name / Email</label>
@@ -2229,38 +2306,38 @@ const Admin = () => {
               </div>
 
               {/* Data Table */}
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] overflow-hidden">
-                <div className="px-8 py-6 border-b border-[#BFDBFE] flex flex-wrap justify-between items-center bg-white gap-4">
+              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] overflow-hidden">
+                <div className="px-4 sm:px-8 py-5 sm:py-6 border-b border-[#BFDBFE] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-4">
                   <div>
-                    <h4 className="font-black text-xl text-black">Applications Submissions ({filteredApplications.length})</h4>
+                    <h4 className="font-black text-lg sm:text-xl text-black">Applications Submissions ({filteredApplications.length})</h4>
                     <p className="text-xs text-black/50 font-medium mt-0.5">Manage candidate submissions and download bulk resume archives</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={exportApplicationsToCSV}
                       disabled={filteredApplications.length === 0}
-                      className="px-4 py-2.5 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black font-bold text-xs rounded-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black font-bold text-xs rounded-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Export all applications & direct resume links to CSV instantly"
                     >
                       <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
-                      <span>Export CSV (Instant)</span>
+                      <span>Export CSV</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={handleDownloadAllResumes}
                       disabled={downloadingResumes || filteredApplications.length === 0}
-                      className="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                      className="flex-1 sm:flex-none justify-center px-4 sm:px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                       title="Download ZIP package of all applicant resumes"
                     >
                       <Download className={`w-4 h-4 ${downloadingResumes ? 'animate-bounce' : ''}`} />
-                      <span>{downloadingResumes ? 'Packaging Resumes...' : 'Download All Resumes (ZIP)'}</span>
+                      <span>{downloadingResumes ? 'Packaging...' : 'Download Resumes (ZIP)'}</span>
                     </button>
                   </div>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+                <div className="overflow-x-auto custom-scrollbar">
+                  <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                       <tr className="border-b border-[#BFDBFE] text-black bg-[#DBEAFE] font-bold text-xs uppercase tracking-wider">
                         <th className="px-8 py-4">Candidate</th>
@@ -2336,10 +2413,10 @@ const Admin = () => {
 
           {/* Tab 4: Resume Manager & Preview Panel */}
           {activeTab === 'Resume Manager' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-stretch h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)]">
               {/* Candidates Side Drawer List */}
-              <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-6 flex flex-col gap-4 overflow-y-auto">
-                <h4 className="text-xl font-black text-black mb-2 flex items-center gap-2">
+              <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto max-h-[380px] xl:max-h-none">
+                <h4 className="text-lg sm:text-xl font-black text-black mb-1 sm:mb-2 flex items-center gap-2">
                   <Users className="w-5 h-5 text-primary" /> Active Pipeline ({applications.length})
                 </h4>
                 <div className="flex flex-col gap-3">
@@ -2350,13 +2427,13 @@ const Admin = () => {
                         setSelectedApp(app);
                         setNotesText(app.notes || '');
                       }}
-                      className={`p-5 rounded-[2rem] border cursor-pointer transition-all duration-300 ${selectedApp && selectedApp._id === app._id
+                      className={`p-4 sm:p-5 rounded-2xl sm:rounded-[2rem] border cursor-pointer transition-all duration-300 ${selectedApp && selectedApp._id === app._id
                         ? 'bg-white border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]'
                         : 'bg-white border-[#BFDBFE] hover:border-primary/40'
                         }`}
                     >
                       <div className="flex justify-between items-start gap-2 mb-1">
-                        <h5 className="font-bold text-black text-base">{app.candidateName}</h5>
+                        <h5 className="font-bold text-black text-sm sm:text-base">{app.candidateName}</h5>
                         <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
                           app.status === 'Shortlisted' ? 'bg-indigo-100 text-indigo-800' :
                             app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
@@ -2379,31 +2456,31 @@ const Admin = () => {
               </div>
 
               {/* Recruitment Review Panel & Resume Viewer */}
-              <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-y-auto">
+              <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 flex flex-col gap-6 overflow-y-auto">
                 {selectedApp ? (
                   <div className="flex flex-col gap-6 w-full">
                     {/* Header Info */}
                     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-[#BFDBFE] pb-6">
                       <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-4 flex-wrap">
-                          <h3 className="text-3xl font-black text-black">{selectedApp.candidateName}</h3>
-                          <span className="px-4 py-1.5 bg-[#DBEAFE] border border-[#BFDBFE] rounded-full text-xs font-black uppercase tracking-wider text-black">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+                          <h3 className="text-2xl sm:text-3xl font-black text-black">{selectedApp.candidateName}</h3>
+                          <span className="px-3 sm:px-4 py-1.5 bg-[#DBEAFE] border border-[#BFDBFE] rounded-full text-xs font-black uppercase tracking-wider text-black">
                             {selectedApp.status}
                           </span>
                         </div>
-                        <p className="text-sm font-semibold text-black/60">
+                        <p className="text-xs sm:text-sm font-semibold text-black/60">
                           Applied for: <span className="text-primary font-bold">{selectedApp.jobId ? selectedApp.jobId.title : 'General Placement'}</span> &bull; {selectedApp.experience} experience
                         </p>
                       </div>
 
                       {/* Download / Social Links */}
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                         {selectedApp.linkedInUrl && (
                           <a
                             href={selectedApp.linkedInUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
+                            className="p-2.5 sm:p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
                             title="LinkedIn Profile"
                           >
                             <Users className="w-4 h-4" />
@@ -2414,7 +2491,7 @@ const Admin = () => {
                             href={selectedApp.portfolioUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
+                            className="p-2.5 sm:p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
                             title="Portfolio Link"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -2423,7 +2500,7 @@ const Admin = () => {
                         <a
                           href={selectedApp.resume}
                           onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
-                          className="px-5 py-3 bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
+                          className="flex-1 sm:flex-none justify-center px-4 sm:px-5 py-2.5 sm:py-3 bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
                         >
                           <Download className="w-4 h-4" /> Download Resume
                         </a>
@@ -2563,14 +2640,14 @@ const Admin = () => {
 
           {/* Tab: Finance */}
           {activeTab === 'Finance' && (
-            <div className="flex flex-col gap-8 h-[calc(100vh-200px)]">
+            <div className="flex flex-col gap-6 lg:gap-8 min-h-full lg:h-[calc(100vh-200px)]">
               {/* Add Bill Modal */}
               {isAddingBill && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setIsAddingBill(false)}>
-                  <div className="bg-white rounded-[2rem] w-full max-w-xl p-8" onClick={e => e.stopPropagation()}>
+                  <div className="bg-white rounded-2xl sm:rounded-[2rem] w-full max-w-xl p-5 sm:p-8 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-2xl font-black text-black">Upload New Bill</h3>
-                      <button onClick={() => setIsAddingBill(false)} className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                      <h3 className="text-xl sm:text-2xl font-black text-black">Upload New Bill</h3>
+                      <button onClick={() => setIsAddingBill(false)} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
                         <X className="w-5 h-5 text-black" />
                       </button>
                     </div>
@@ -2615,13 +2692,13 @@ const Admin = () => {
                 </div>
               )}
 
-              <div data-lenis-prevent className="flex-1 w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-hidden">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-xl font-black text-black flex items-center gap-2">
+              <div data-lenis-prevent className="flex-1 w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 flex flex-col gap-6 overflow-hidden">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                  <h4 className="text-lg sm:text-xl font-black text-black flex items-center gap-2">
                     <Banknote className="w-5 h-5 text-primary" /> Finance & Bills ({bills.length})
                   </h4>
-                  <div className="flex gap-4">
-                    <button type="button" onClick={() => setIsAddingBill(true)} className="bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20">
+                  <div className="flex gap-4 w-full sm:w-auto">
+                    <button type="button" onClick={() => setIsAddingBill(true)} className="flex-1 sm:flex-none bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20 text-center">
                       + Upload New Bill
                     </button>
                   </div>
@@ -2674,14 +2751,14 @@ const Admin = () => {
 
           {/* Tab: Events */}
           {activeTab === 'Events' && (
-            <div className="flex flex-col gap-8 h-[calc(100vh-200px)]">
+            <div className="flex flex-col gap-6 lg:gap-8 min-h-full lg:h-[calc(100vh-200px)]">
               {/* Add Event Photo Modal */}
               {isAddingEventPhoto && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setIsAddingEventPhoto(false)}>
-                  <div className="bg-white rounded-[2rem] w-full max-w-xl p-8" onClick={e => e.stopPropagation()}>
+                  <div className="bg-white rounded-2xl sm:rounded-[2rem] w-full max-w-xl p-5 sm:p-8 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-2xl font-black text-black">Upload Event Photo</h3>
-                      <button onClick={() => setIsAddingEventPhoto(false)} className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                      <h3 className="text-xl sm:text-2xl font-black text-black">Upload Event Photo</h3>
+                      <button onClick={() => setIsAddingEventPhoto(false)} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
                         <X className="w-5 h-5 text-black" />
                       </button>
                     </div>
@@ -2716,14 +2793,14 @@ const Admin = () => {
                 </div>
               )}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 h-full">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 h-full">
                 {/* Birthdays Column (1/3 width) */}
-                <div data-lenis-prevent className="md:col-span-1 bg-gradient-to-br from-indigo-50 to-pink-50 border border-indigo-100 rounded-[3rem] p-8 flex flex-col gap-6 overflow-hidden shadow-sm">
+                <div data-lenis-prevent className="lg:col-span-1 bg-gradient-to-br from-indigo-50 to-pink-50 border border-indigo-100 rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 flex flex-col gap-6 overflow-hidden shadow-sm max-h-[380px] lg:max-h-none">
                   <div className="flex items-center gap-3 border-b border-indigo-200/50 pb-4">
                     <div className="w-10 h-10 bg-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
                       <PartyPopper className="w-5 h-5 text-white" />
                     </div>
-                    <h4 className="text-xl font-black text-indigo-950">Upcoming Birthdays</h4>
+                    <h4 className="text-lg sm:text-xl font-black text-indigo-950">Upcoming Birthdays</h4>
                   </div>
                   <div className="flex-1 overflow-auto flex flex-col gap-4 pr-2">
                     {getUpcomingBirthdays().length === 0 ? (
@@ -2755,9 +2832,9 @@ const Admin = () => {
                 </div>
 
                 {/* Photo Gallery Column (2/3 width) */}
-                <div data-lenis-prevent className="md:col-span-2 bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 flex flex-col gap-6 overflow-hidden">
-                  <div className="flex justify-between items-center border-b border-[#BFDBFE]/50 pb-4">
-                    <h4 className="text-xl font-black text-black flex items-center gap-2">
+                <div data-lenis-prevent className="lg:col-span-2 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 flex flex-col gap-6 overflow-hidden">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#BFDBFE]/50 pb-4">
+                    <h4 className="text-lg sm:text-xl font-black text-black flex items-center gap-2">
                       <ImageIcon className="w-5 h-5 text-primary" /> Event Gallery ({eventPhotos.length})
                     </h4>
                     <button type="button" onClick={() => setIsAddingEventPhoto(true)} className="bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20 flex items-center gap-2">
@@ -2773,7 +2850,7 @@ const Admin = () => {
                         <p className="text-sm">Click the button above to upload some memories!</p>
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {eventPhotos.map(photo => (
                           <div key={photo.id} className="bg-white rounded-3xl overflow-hidden border border-[#BFDBFE] shadow-sm hover:shadow-xl transition-all group relative">
                             <div className="aspect-[4/3] w-full bg-gray-100 relative overflow-hidden">
@@ -2805,17 +2882,17 @@ const Admin = () => {
               {/* Add Employee Modal */}
               {isAddingEmployee && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setIsAddingEmployee(false)}>
-                  <div className="bg-white rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-8" onClick={e => e.stopPropagation()}>
+                  <div className="bg-white rounded-2xl sm:rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 sm:p-8" onClick={e => e.stopPropagation()}>
                     <div className="flex justify-between items-center mb-6">
                       <div>
-                        <h3 className="text-2xl font-black text-black tracking-tight">Add Employee</h3>
+                        <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">Add Employee</h3>
                         <p className="text-xs font-semibold text-black/45 uppercase tracking-wide mt-1">Create a new company record</p>
                       </div>
-                      <button onClick={() => setIsAddingEmployee(false)} className="text-black/50 hover:text-black">
-                        <X className="w-6 h-6" />
+                      <button onClick={() => setIsAddingEmployee(false)} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-black/50 hover:text-black transition-colors">
+                        <X className="w-5 h-5" />
                       </button>
                     </div>
-                    <form onSubmit={handleAddEmployee} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <form onSubmit={handleAddEmployee} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                       <div className="col-span-full flex flex-col gap-1.5 items-center">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Profile Picture</label>
                         <div className="relative w-24 h-24 rounded-full border-2 border-dashed border-[#BFDBFE] flex items-center justify-center overflow-hidden group cursor-pointer hover:border-primary transition-colors">
@@ -2875,21 +2952,21 @@ const Admin = () => {
 
               <div className="flex flex-col gap-8">
                 {/* Top/Main Box: Employees List taking full width */}
-                <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] overflow-hidden">
-                  <div className="px-8 py-6 border-b border-[#BFDBFE] flex justify-between items-center bg-white">
-                    <h4 className="text-xl font-black text-black flex items-center gap-2">
+                <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] overflow-hidden">
+                  <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#BFDBFE] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-4">
+                    <h4 className="text-lg sm:text-xl font-black text-black flex items-center gap-2">
                       <Users className="w-5 h-5 text-primary" /> Employees ({employees.length})
                     </h4>
-                    <div className="flex gap-4">
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
                       {selectedRows.length > 0 && (
-                        <button type="button" onClick={handleDeleteSelected} className="bg-rose-100 text-rose-600 hover:bg-rose-200 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
+                        <button type="button" onClick={handleDeleteSelected} className="flex-1 sm:flex-none justify-center bg-rose-100 text-rose-600 hover:bg-rose-200 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
                           <Trash2 className="w-4 h-4 inline mr-1" /> Delete Selected ({selectedRows.length})
                         </button>
                       )}
-                      <button type="button" onClick={exportEmployeesToCSV} className="bg-primary/10 text-primary hover:bg-primary/20 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
-                        <Download className="w-4 h-4 inline mr-1" /> Export Data
+                      <button type="button" onClick={exportEmployeesToCSV} className="flex-1 sm:flex-none justify-center bg-primary/10 text-primary hover:bg-primary/20 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
+                        <Download className="w-4 h-4 inline mr-1" /> Export CSV
                       </button>
-                      <button type="button" onClick={() => setIsAddingEmployee(true)} className="bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20">
+                      <button type="button" onClick={() => setIsAddingEmployee(true)} className="flex-1 sm:flex-none justify-center bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20">
                         + Add Employee
                       </button>
                     </div>
@@ -2990,48 +3067,48 @@ const Admin = () => {
 
           {/* Tab 5: Analytics */}
           {activeTab === 'Analytics' && (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 sm:gap-8">
               {/* Analytics Top widgets */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-6 rounded-[2rem] flex items-center justify-between">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-black uppercase text-black/50">Application Volume</span>
-                    <h4 className="text-3xl font-black text-black mt-1">+{applications.length * 15}%</h4>
+                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Application Volume</span>
+                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">+{applications.length * 15}%</h4>
                     <span className="text-xs font-semibold text-black/70 mt-1 block">Month-over-month increase</span>
                   </div>
-                  <div className="p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <TrendingUp className="w-8 h-8" />
+                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
+                    <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
 
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-6 rounded-[2rem] flex items-center justify-between">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-black uppercase text-black/50">Time-to-Hire Avg</span>
-                    <h4 className="text-3xl font-black text-black mt-1">18 Days</h4>
+                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Time-to-Hire Avg</span>
+                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">18 Days</h4>
                     <span className="text-xs font-semibold text-black/70 mt-1 block">Industry average is 32</span>
                   </div>
-                  <div className="p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <Clock className="w-8 h-8" />
+                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
+                    <Clock className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
 
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-6 rounded-[2rem] flex items-center justify-between">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-black uppercase text-black/50">Conversion Rate</span>
-                    <h4 className="text-3xl font-black text-black mt-1">{totalApps > 0 ? ((shortlistedApps / totalApps) * 100).toFixed(0) : 0}%</h4>
+                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Conversion Rate</span>
+                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">{totalApps > 0 ? ((shortlistedApps / totalApps) * 100).toFixed(0) : 0}%</h4>
                     <span className="text-xs font-semibold text-black/70 mt-1 block">Shortlisted from submissions</span>
                   </div>
-                  <div className="p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <UserCheck className="w-8 h-8" />
+                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
+                    <UserCheck className="w-6 h-6 sm:w-8 sm:h-8" />
                   </div>
                 </div>
               </div>
 
               {/* Department Demand Visualizations */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
                 {/* Department Demand Chart */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
-                  <h4 className="text-xl font-black text-black">Open Postings by Department</h4>
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
+                  <h4 className="text-lg sm:text-xl font-black text-black">Open Postings by Department</h4>
                   <div className="flex flex-col gap-5">
                     {['Engineering', 'Research', 'Marketing', 'Product'].map((dept, idx) => {
                       const count = jobs.filter(j => j.department && j.department.toLowerCase() === dept.toLowerCase()).length;
@@ -3052,7 +3129,7 @@ const Admin = () => {
                 </div>
 
                 {/* Candidate Funnel Bar list */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-8 rounded-[3rem] flex flex-col gap-6">
+                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
                   <h4 className="text-xl font-black text-black">Candidate Recruitment Funnel</h4>
                   <div className="flex flex-col gap-4">
                     {[
@@ -3087,20 +3164,20 @@ const Admin = () => {
               <div
                 onClick={(e) => e.stopPropagation()}
                 data-lenis-prevent
-                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative cursor-default"
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative cursor-default"
               >
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedEmployee(null)}
-                  className="absolute top-6 right-6 w-10 h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <h3 className="text-2xl font-black text-black mb-6">Employee Details</h3>
+                <h3 className="text-xl sm:text-2xl font-black text-black mb-4 sm:mb-6">Employee Details</h3>
 
                 {/* Profile Header */}
-                <div className="bg-white border border-[#BFDBFE] rounded-[2rem] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div className="bg-white border border-[#BFDBFE] rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-black text-2xl shadow-md">
                       {selectedEmployee.name ? selectedEmployee.name.charAt(0).toUpperCase() : 'E'}
@@ -3339,18 +3416,18 @@ const Admin = () => {
               <form
                 onSubmit={handleSaveEmployeeEdit}
                 data-lenis-prevent
-                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-[3rem] p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative"
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative"
               >
                 {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => setIsEditingEmployee(false)}
-                  className="absolute top-6 right-6 w-10 h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                  className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <h3 className="text-2xl font-black text-black mb-8 border-b border-[#BFDBFE] pb-4">Edit Employee Profile</h3>
+                <h3 className="text-xl sm:text-2xl font-black text-black mb-6 sm:mb-8 border-b border-[#BFDBFE] pb-4">Edit Employee Profile</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
                   {/* Left Column: Personal Info */}
@@ -3577,26 +3654,26 @@ const Admin = () => {
           {/* Slide-in Panel from Right */}
           <div
             data-lenis-prevent
-            className="relative w-full max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-[#BFDBFE]"
+            className="relative w-full sm:max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-[#BFDBFE]"
           >
             {/* Drawer Header */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#BFDBFE] px-6 py-5 flex items-center justify-between z-20">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#BFDBFE] px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between z-20">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center font-black text-primary text-xl shadow-sm">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center font-black text-primary text-lg sm:text-xl shadow-sm shrink-0">
                   {candidateDrawerApp.candidateName ? candidateDrawerApp.candidateName.charAt(0).toUpperCase() : 'C'}
                 </div>
-                <div>
-                  <h3 className="text-xl font-black text-black leading-tight">
+                <div className="min-w-0">
+                  <h3 className="text-lg sm:text-xl font-black text-black leading-tight truncate">
                     {candidateDrawerApp.candidateName}
                   </h3>
-                  <p className="text-xs font-semibold text-black/60">
+                  <p className="text-xs font-semibold text-black/60 truncate">
                     Applied for: <span className="text-primary font-bold">{candidateDrawerApp.jobId ? candidateDrawerApp.jobId.title : 'General Placement'}</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setCandidateDrawerApp(null)}
-                className="p-2 rounded-xl hover:bg-slate-100 text-black/60 hover:text-black transition-colors"
+                className="p-2 rounded-xl hover:bg-slate-100 text-black/60 hover:text-black transition-colors shrink-0"
                 title="Close"
               >
                 <X className="w-6 h-6" />
@@ -3604,12 +3681,12 @@ const Admin = () => {
             </div>
 
             {/* Top Action Bar: Download Resume & View Portfolio */}
-            <div className="p-6 bg-[#EFF6FF] border-b border-[#BFDBFE] flex flex-wrap items-center gap-3">
+            <div className="p-4 sm:p-6 bg-[#EFF6FF] border-b border-[#BFDBFE] flex flex-wrap items-center gap-2.5 sm:gap-3">
               {/* Download Resume Button */}
               <button
                 onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
                 disabled={!candidateDrawerApp.resume}
-                className={`flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${candidateDrawerApp.resume
+                className={`flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${candidateDrawerApp.resume
                   ? 'bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] cursor-pointer'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                   }`}
@@ -3623,16 +3700,16 @@ const Admin = () => {
                   href={candidateDrawerApp.portfolioUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-black text-xs uppercase tracking-wider bg-white border-2 border-primary text-primary hover:bg-primary/10 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+                  className="flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-black text-xs uppercase tracking-wider bg-white border-2 border-primary text-primary hover:bg-primary/10 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
                 >
                   <Globe className="w-4 h-4" /> View Portfolio <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               ) : (
                 <button
                   disabled
-                  className="flex-1 min-w-[180px] py-3.5 px-5 rounded-2xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
+                  className="flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
                 >
-                  <Globe className="w-4 h-4" /> No Portfolio Provided
+                  <Globe className="w-4 h-4" /> No Portfolio
                 </button>
               )}
 
