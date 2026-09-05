@@ -34,7 +34,8 @@ import {
   Globe,
   Mail,
   Phone,
-  Menu
+  Menu,
+  Filter
 } from 'lucide-react';
 
 import { supabase } from '../supabaseClient';
@@ -42,6 +43,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SEO from '../components/SEO';
 import JSZip from 'jszip';
+import DashboardKpiMetrics from '../components/admin/DashboardKpiMetrics';
+import AppliedCandidatesChart from '../components/admin/AppliedCandidatesChart';
+import JobVsCandidateAnalysis from '../components/admin/JobVsCandidateAnalysis';
+import RecentActivityAndActions from '../components/admin/RecentActivityAndActions';
+import FuturisticAnalytics from '../components/admin/FuturisticAnalytics';
 
 const Admin = () => {
   // Authentication states
@@ -1573,18 +1579,18 @@ const Admin = () => {
 
   // Render Stats Card
   const renderStatsCard = (title, count, icon, subtext) => (
-    <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-      <div className="flex justify-between items-start mb-4">
+    <div className="bg-white border border-slate-200/80 p-5 rounded-2xl flex flex-col justify-between hover:shadow-md transition-all duration-300">
+      <div className="flex justify-between items-start mb-3">
         <div>
-          <p className="text-black/60 text-sm font-semibold tracking-wider uppercase mb-1">{title}</p>
-          <h3 className="text-4xl font-black text-black">{count}</h3>
+          <p className="text-slate-500 text-xs font-bold tracking-wider uppercase mb-1">{title}</p>
+          <h3 className="text-3xl font-black text-slate-900">{count}</h3>
         </div>
-        <div className="p-3 bg-[#DBEAFE] rounded-2xl text-black">
+        <div className="p-2.5 bg-slate-100 rounded-xl text-slate-700">
           {icon}
         </div>
       </div>
-      <span className="text-black/80 font-medium text-sm flex items-center gap-1">
-        <span className="text-primary font-bold">{subtext}</span> overall activity
+      <span className="text-slate-500 font-medium text-xs flex items-center gap-1">
+        <span className="text-blue-600 font-bold">{subtext}</span> overall activity
       </span>
     </div>
   );
@@ -1706,7 +1712,7 @@ const Admin = () => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-[#EFF6FF] border-r border-[#BFDBFE] flex flex-col justify-between h-full py-6 px-5 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:sticky lg:top-0 lg:z-20 ${
+        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-white border-r border-slate-200/80 flex flex-col justify-between h-full py-6 px-5 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:h-screen lg:sticky lg:top-0 lg:z-20 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:hidden'
         }`}
       >
@@ -1714,14 +1720,14 @@ const Admin = () => {
           {/* Brand Logo & Close Button */}
           <div className="flex items-center justify-between pl-1">
             <div className="flex items-center gap-3">
-              <img src="/logo.svg" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-white p-0.5" />
-              <span className="text-xl font-black tracking-tighter text-black uppercase">MACENZA ADMIN</span>
+              <img src="/logo.svg" alt="Macenza Logo" className="w-9 h-9 object-contain rounded-xl bg-slate-50 p-1 border border-slate-100" />
+              <span className="text-xl font-black tracking-tight text-slate-900 uppercase">MACENZA ADMIN</span>
             </div>
             {/* Close button: closes drawer on mobile, or collapses sidebar on desktop */}
             <button
               type="button"
               onClick={() => setIsSidebarOpen(false)}
-              className="p-1.5 rounded-xl hover:bg-[#DBEAFE] text-black/60 hover:text-black transition-colors"
+              className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors"
               title="Close side panel"
               aria-label="Close side panel"
             >
@@ -1730,7 +1736,7 @@ const Admin = () => {
           </div>
 
           {/* Navigation Items */}
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-1.5">
             {[
               { id: 'Dashboard', label: 'Dashboard', icon: "📊" },
               { id: 'Jobs', label: 'Jobs', icon: "💼" },
@@ -1744,10 +1750,10 @@ const Admin = () => {
               <button
                 key={item.id}
                 onClick={() => handleTabSelect(item.id)}
-                className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-black hover:bg-[#DBEAFE]/50 hover:pl-5 active:scale-95 group whitespace-nowrap"
-                style={activeTab === item.id ? { backgroundColor: '#DBEAFE', color: 'black', paddingLeft: '20px', borderLeft: '4px solid #2563eb' } : {}}
+                className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 active:scale-95 group whitespace-nowrap"
+                style={activeTab === item.id ? { backgroundColor: '#eff6ff', color: '#1d4ed8', paddingLeft: '18px', borderLeft: '4px solid #2563eb' } : {}}
               >
-                <span className="text-xl group-hover:scale-125 transition-transform duration-300">{item.icon}</span>
+                <span className="text-xl group-hover:scale-115 transition-transform duration-200">{item.icon}</span>
                 {item.label}
               </button>
             ))}
@@ -1760,9 +1766,9 @@ const Admin = () => {
               onClick={() => {
                 if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsSidebarOpen(false);
               }}
-              className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-300 text-black/70 hover:text-primary hover:bg-[#DBEAFE]/30 hover:pl-5 active:scale-95 group whitespace-nowrap mt-2 border-t border-[#BFDBFE]/40 pt-4"
+              className="flex items-center gap-3 py-3 px-4 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 text-slate-600 hover:text-blue-600 hover:bg-blue-50/50 group whitespace-nowrap mt-2 border-t border-slate-100 pt-4"
             >
-              <span className="text-xl group-hover:scale-125 transition-transform duration-300">📝</span>
+              <span className="text-xl group-hover:scale-115 transition-transform duration-200">📝</span>
               Blog Editor
             </a>
           </nav>
@@ -1774,17 +1780,17 @@ const Admin = () => {
               if (typeof window !== 'undefined' && window.innerWidth < 1024) setIsSidebarOpen(false);
               handleSignOut();
             }}
-            className="w-full flex items-center justify-center gap-3 py-3.5 sm:py-4 bg-rose-50 border border-rose-200 text-rose-800 hover:bg-rose-100 rounded-2xl font-bold text-sm tracking-wide transition-all duration-300 active:scale-95"
+            className="w-full flex items-center justify-center gap-2.5 py-3 bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 rounded-xl font-bold text-xs tracking-wide transition-all duration-200 active:scale-95"
           >
             <span>🚪</span> Sign Out Admin
           </button>
 
           {/* Info panel at bottom */}
-          <div className="bg-[#DBEAFE] rounded-3xl p-4 sm:p-5 border border-[#BFDBFE]">
-            <p className="text-xs font-bold text-black uppercase mb-1">Live Database Connection</p>
+          <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80">
+            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Live Database Connection</p>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
-              <span className="text-sm font-semibold text-black">Active Server Sync</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-semibold text-slate-800">Active Server Sync</span>
             </div>
           </div>
         </div>
@@ -1793,13 +1799,13 @@ const Admin = () => {
       {/* Main Workspace */}
       <main className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
         {/* Topbar */}
-        <header className="h-16 sm:h-20 bg-white border-b border-[#BFDBFE] px-3 sm:px-6 lg:px-10 flex items-center justify-between z-10 shrink-0">
+        <header className="h-16 sm:h-20 bg-white border-b border-slate-200/80 px-3 sm:px-6 lg:px-10 flex items-center justify-between z-10 shrink-0">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             {/* Open / Close Side Panel Button */}
             <button
               type="button"
               onClick={() => setIsSidebarOpen(prev => !prev)}
-              className="p-2 sm:p-2.5 rounded-xl bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black transition-all active:scale-95 flex items-center gap-2 shrink-0 shadow-sm"
+              className="p-2 sm:p-2.5 rounded-xl bg-slate-100 border border-slate-200/80 hover:bg-slate-200/80 text-slate-700 transition-all active:scale-95 flex items-center gap-2 shrink-0 shadow-xs"
               title={isSidebarOpen ? "Close side panel" : "Open side panel"}
               aria-label={isSidebarOpen ? "Close side panel" : "Open side panel"}
             >
@@ -1809,23 +1815,23 @@ const Admin = () => {
               </span>
             </button>
 
-            <h2 className="text-sm sm:text-lg lg:text-2xl font-black tracking-tight text-black flex items-center gap-1.5 sm:gap-2 truncate">
+            <h2 className="text-sm sm:text-lg lg:text-2xl font-black tracking-tight text-slate-900 flex items-center gap-1.5 sm:gap-2 truncate">
               <span className="hidden md:inline">MACENZA CAREERS HUB</span>
               <span className="md:hidden">MACENZA</span>
-              <span className="text-black/40 font-normal">|</span>
-              <span className="text-primary italic text-xs sm:text-base lg:text-lg font-bold truncate">{activeTab}</span>
+              <span className="text-slate-300 font-normal">|</span>
+              <span className="text-blue-600 italic text-xs sm:text-base lg:text-lg font-bold truncate">{activeTab}</span>
             </h2>
           </div>
 
           <div className="flex items-center gap-2 sm:gap-6 shrink-0">
-            <span className="hidden md:inline-flex text-xs sm:text-sm font-bold text-black/60 bg-[#EFF6FF] border border-[#BFDBFE] px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+            <span className="hidden md:inline-flex text-xs sm:text-sm font-bold text-slate-600 bg-slate-100 border border-slate-200/80 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs">
               {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
           </div>
         </header>
 
         {/* Work Area */}
-        <div className="flex-1 p-3 sm:p-6 lg:p-10 bg-white overflow-y-auto overflow-x-hidden" data-lenis-prevent>
+        <div className="flex-1 p-3 sm:p-6 lg:p-10 bg-slate-50/70 overflow-y-auto overflow-x-hidden" data-lenis-prevent>
           {error && (
             <div className="bg-[#EFF6FF] border border-amber-300 p-5 rounded-2xl mb-8 flex items-center gap-3 text-amber-950 font-bold text-sm">
               <span className="w-3 h-3 bg-amber-500 rounded-full animate-ping"></span>
@@ -1835,113 +1841,87 @@ const Admin = () => {
 
           {/* Tab 1: Dashboard Overview */}
           {activeTab === 'Dashboard' && (
-            <div className="flex flex-col gap-8 sm:gap-10">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                {renderStatsCard('Total Jobs Posted', totalJobs, <Briefcase className="w-6 h-6" />, 'Active recruitment')}
-                {renderStatsCard('Total Applications', totalApps, <Users className="w-6 h-6" />, 'High volumes')}
-                {renderStatsCard('New Applications', newApps, <FileText className="w-6 h-6 text-indigo-700" />, 'Action required')}
-                {renderStatsCard('Shortlisted', shortlistedApps, <UserCheck className="w-6 h-6 text-emerald-700" />, 'Highly qualified')}
-                {renderStatsCard('Interviews Scheduled', scheduledApps, <Clock className="w-6 h-6 text-amber-700" />, 'Calendar alignment')}
-                {renderStatsCard('Rejected Candidates', rejectedApps, <X className="w-6 h-6 text-rose-700" />, 'Closed pipelines')}
-              </div>
+            <div className="flex flex-col gap-6 sm:gap-8 max-w-[1600px] mx-auto w-full pb-10">
+              {/* Modern Executive KPI Metrics */}
+              <DashboardKpiMetrics
+                jobs={jobs}
+                applications={applications}
+                onSelectTab={handleTabSelect}
+              />
 
-              {/* Quick Summary Panels */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-2 sm:mt-4">
-                {/* Active Jobs Box */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-lg sm:text-xl font-black text-black">Active Hiring Pipelines</h4>
-                    <button onClick={() => setActiveTab('Jobs')} className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1 hover:underline">
-                      Manage Jobs <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2">
-                    {jobs.map(job => (
-                      <div key={job._id} className="p-4 sm:p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center hover:scale-[1.01] transition-transform">
-                        <div>
-                          <h5 className="font-bold text-black text-sm sm:text-base">{job.title}</h5>
-                          <span className="text-xs text-black/50 font-semibold">{job.department} &bull; {job.location}</span>
-                        </div>
-                        <span className={`px-3 sm:px-4 py-1.5 rounded-full text-[10px] sm:text-xs font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                          }`}>
-                          {job.status}
-                        </span>
-                      </div>
-                    ))}
-                    {jobs.length === 0 && <p className="text-sm text-black/50 italic">No job postings recorded.</p>}
-                  </div>
-                </div>
+              {/* Interactive Graph: Applied Candidates Growth & Stage Distribution */}
+              <AppliedCandidatesChart
+                applications={applications}
+                onSelectCandidateTab={handleTabSelect}
+              />
 
-                {/* Recent Candidates Box */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-lg sm:text-xl font-black text-black">Recent Candidates</h4>
-                    <button onClick={() => setActiveTab('Applications')} className="text-xs sm:text-sm font-bold text-primary flex items-center gap-1 hover:underline">
-                      View Applications <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                  <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto pr-2">
-                    {applications.slice(0, 4).map(app => (
-                      <div
-                        key={app._id}
-                        onClick={() => {
-                          setSelectedApp(app);
-                          setActiveTab('Resume Manager');
-                        }}
-                        className="p-4 sm:p-5 bg-white border border-[#BFDBFE] rounded-2xl flex justify-between items-center cursor-pointer hover:border-primary/40 hover:scale-[1.01] transition-all"
-                      >
-                        <div>
-                          <h5 className="font-bold text-black text-sm sm:text-base">{app.candidateName}</h5>
-                          <span className="text-xs text-black/50 font-semibold">Applied for: {app.jobId ? app.jobId.title : 'General Placement'}</span>
-                        </div>
-                        <span className="px-3 sm:px-4 py-1.5 bg-[#EFF6FF] border border-[#BFDBFE] rounded-full text-[10px] sm:text-xs font-black uppercase text-black">
-                          {app.status}
-                        </span>
-                      </div>
-                    ))}
-                    {applications.length === 0 && <p className="text-sm text-black/50 italic">No applications submitted yet.</p>}
-                  </div>
-                </div>
-              </div>
+              {/* Deep Comparative Analysis: Job Posts vs. Applied Candidates */}
+              <JobVsCandidateAnalysis
+                jobs={jobs}
+                applications={applications}
+                onNavigateTab={handleTabSelect}
+              />
+
+              {/* Modern Recent Candidate Submissions & Command Actions */}
+              <RecentActivityAndActions
+                applications={applications}
+                jobs={jobs}
+                onNavigateTab={handleTabSelect}
+                onSelectCandidate={(app) => {
+                  setSelectedApp(app);
+                  setActiveTab('Resume Manager');
+                }}
+                onOpenCreateJob={() => {
+                  setEditingJobId(null);
+                  setJobForm(initialJobForm);
+                  setActiveTab('Jobs');
+                }}
+              />
             </div>
           )}
 
           {/* Tab 2: Job Posting CRUD Manager */}
           {activeTab === 'Jobs' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)] max-w-[1600px] mx-auto w-full">
               {/* Left Column: Form to create/edit jobs */}
-              <div data-lenis-prevent className="xl:col-span-5 bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
-                <h4 className="text-2xl font-black text-black">
-                  {editingJobId ? 'Edit Job Posting' : 'Create New Job'}
-                </h4>
+              <div data-lenis-prevent className="xl:col-span-5 bg-white border border-slate-200/80 p-5 sm:p-7 rounded-3xl shadow-sm flex flex-col gap-6 overflow-y-auto">
+                <div>
+                  <h4 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    {editingJobId ? 'Edit Job Posting' : 'Create New Job'}
+                  </h4>
+                  <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    {editingJobId ? 'Modify role criteria and publishing status' : 'Publish open career positions to attract candidates'}
+                  </p>
+                </div>
+
                 {jobFormSuccess && (
-                  <div className="p-4 bg-emerald-100 border border-emerald-300 text-emerald-950 font-bold rounded-2xl text-sm flex items-center gap-2">
-                    <Check className="w-5 h-5 text-emerald-700" /> {jobFormSuccess}
+                  <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold rounded-2xl text-xs sm:text-sm flex items-center gap-2 shadow-xs">
+                    <Check className="w-4 h-4 text-emerald-600 shrink-0" /> {jobFormSuccess}
                   </div>
                 )}
 
                 <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Job Title</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Job Title</label>
                       <input
                         type="text"
                         name="title"
                         value={jobForm.title}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         required
                         placeholder="e.g. Frontend Engineer"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Department</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Department</label>
                       <input
                         type="text"
                         name="department"
                         value={jobForm.department}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         required
                         placeholder="e.g. Engineering"
                       />
@@ -1950,23 +1930,23 @@ const Admin = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Salary Range</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Salary Range</label>
                       <input
                         type="text"
                         name="salary"
                         value={jobForm.salary}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         placeholder="e.g. $80k - $100k"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Employment Type</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Employment Type</label>
                       <select
                         name="employmentType"
                         value={jobForm.employmentType}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors cursor-pointer"
                       >
                         <option value="Full Time">Full Time</option>
                         <option value="Part Time">Part Time</option>
@@ -1978,25 +1958,25 @@ const Admin = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Location</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Location</label>
                       <input
                         type="text"
                         name="location"
                         value={jobForm.location}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         required
                         placeholder="e.g. Remote / Hybrid"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Experience Required</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Experience Required</label>
                       <input
                         type="text"
                         name="experience"
                         value={jobForm.experience}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         placeholder="e.g. 3+ Years"
                       />
                     </div>
@@ -2004,47 +1984,47 @@ const Admin = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Skills Required (Comma separated)</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Skills Required (Comma separated)</label>
                       <input
                         type="text"
                         name="skills"
                         value={jobForm.skills}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         placeholder="React, CSS, Node"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Number of Openings</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Number of Openings</label>
                       <input
                         type="number"
                         name="openings"
                         value={jobForm.openings}
                         onChange={handleJobFormChange}
                         min="1"
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Application Deadline</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Application Deadline</label>
                       <input
                         type="date"
                         name="deadline"
                         value={jobForm.deadline}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-black uppercase text-black/60">Status</label>
+                      <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Status</label>
                       <select
                         name="status"
                         value={jobForm.status}
                         onChange={handleJobFormChange}
-                        className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary"
+                        className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors cursor-pointer"
                       >
                         <option value="Active">Active</option>
                         <option value="Draft">Draft</option>
@@ -2053,38 +2033,38 @@ const Admin = () => {
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-black uppercase text-black/60">Job Description</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Job Description</label>
                     <textarea
                       name="description"
                       value={jobForm.description}
                       onChange={handleJobFormChange}
                       rows="3"
-                      className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
+                      className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors resize-none"
                       required
                       placeholder="Enter detailed job overview..."
                     />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-black uppercase text-black/60">Responsibilities (Line separated)</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Responsibilities (Line separated)</label>
                     <textarea
                       name="requirements"
                       value={jobForm.requirements}
                       onChange={handleJobFormChange}
                       rows="3"
-                      className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
+                      className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors resize-none"
                       placeholder="e.g. Design sleek components&#10;Implement API routers"
                     />
                   </div>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-xs font-black uppercase text-black/60">Skills & Requirements</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Skills & Requirements</label>
                     <textarea
                       name="benefits"
                       value={jobForm.benefits}
                       onChange={handleJobFormChange}
                       rows="3"
-                      className="bg-white border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-sm outline-none focus:border-primary resize-none"
+                      className="bg-slate-50/60 border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs sm:text-sm outline-none focus:border-blue-500 focus:bg-white transition-colors resize-none"
                       placeholder="e.g. Strong React understanding&#10;Good team collaboration"
                     />
                   </div>
@@ -2096,7 +2076,7 @@ const Admin = () => {
                         <button
                           type="button"
                           onClick={() => handlePostJob()}
-                          className="flex-1 bg-[#DBEAFE] border border-[#BFDBFE] py-3 rounded-xl text-black font-bold text-sm tracking-wider uppercase hover:bg-primary/20 active:scale-95 transition-all"
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all shadow-sm active:scale-98"
                         >
                           Update Job
                         </button>
@@ -2106,7 +2086,7 @@ const Admin = () => {
                             setEditingJobId(null);
                             setJobForm(initialJobForm);
                           }}
-                          className="bg-[#EFF6FF] border border-[#BFDBFE] px-5 py-3 rounded-xl text-black font-bold text-sm hover:bg-[#DBEAFE] active:scale-95 transition-all"
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all active:scale-98"
                         >
                           Cancel
                         </button>
@@ -2116,14 +2096,14 @@ const Admin = () => {
                         <button
                           type="button"
                           onClick={() => handlePostJob('Active')}
-                          className="flex-1 bg-[#DBEAFE] border border-[#BFDBFE] py-3 rounded-xl text-black font-bold text-sm tracking-wider uppercase hover:bg-primary/20 active:scale-95 transition-all"
+                          className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs sm:text-sm tracking-wide transition-all shadow-sm active:scale-98"
                         >
                           Post Job
                         </button>
                         <button
                           type="button"
                           onClick={() => handlePostJob('Draft')}
-                          className="bg-[#EFF6FF] border border-[#BFDBFE] px-5 py-3 rounded-xl text-black font-bold text-sm hover:bg-[#DBEAFE] active:scale-95 transition-all"
+                          className="bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-5 py-3 rounded-xl font-bold text-xs sm:text-sm transition-all active:scale-98"
                         >
                           Save Draft
                         </button>
@@ -2133,7 +2113,7 @@ const Admin = () => {
                       <button
                         type="button"
                         onClick={() => handleDeleteJob(editingJobId)}
-                        className="w-full bg-rose-100 border border-rose-300 py-3 rounded-xl text-rose-950 font-bold text-sm tracking-wider uppercase hover:bg-rose-200 active:scale-95 transition-all flex items-center justify-center gap-2"
+                        className="w-full bg-rose-50 border border-rose-200 py-3 rounded-xl text-rose-700 hover:bg-rose-100 font-bold text-xs sm:text-sm tracking-wide transition-all flex items-center justify-center gap-2 active:scale-98"
                       >
                         <Trash2 className="w-4 h-4" /> Delete Job Posting
                       </button>
@@ -2143,44 +2123,60 @@ const Admin = () => {
               </div>
 
               {/* Right Column: List of posted jobs */}
-              <div data-lenis-prevent className="xl:col-span-7 bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6 overflow-y-auto">
-                <h4 className="text-xl sm:text-2xl font-black text-black">Active Postings List</h4>
-                <div className="flex flex-col gap-4">
+              <div data-lenis-prevent className="xl:col-span-7 bg-white border border-slate-200/80 p-5 sm:p-7 rounded-3xl shadow-sm flex flex-col gap-6 overflow-y-auto">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                  <div>
+                    <h4 className="text-xl font-black text-slate-900 tracking-tight">Active Postings List</h4>
+                    <p className="text-xs text-slate-500 font-medium">Currently active career opportunities ({jobs.length})</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
                   {jobs.map(job => (
                     <div
                       key={job._id}
-                      className={`p-4 sm:p-6 bg-white border rounded-2xl sm:rounded-[2rem] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 hover:shadow-md transition-shadow ${editingJobId === job._id ? 'border-primary shadow-lg ring-2 ring-primary/20' : 'border-[#BFDBFE]'
-                        }`}
+                      className={`p-4 sm:p-5 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ${
+                        editingJobId === job._id
+                          ? 'border-blue-500 bg-blue-50/40 shadow-sm ring-1 ring-blue-500'
+                          : 'border-slate-200/80 bg-slate-50/40 hover:bg-white hover:border-slate-300 hover:shadow-xs'
+                      }`}
                     >
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-3">
-                          <h5 className="text-xl font-bold text-black">{job.title}</h5>
-                          <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${job.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                            }`}>
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          <h5 className="text-base font-bold text-slate-900">{job.title}</h5>
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                              job.status === 'Active'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200/60'
+                            }`}
+                          >
                             {job.status}
                           </span>
                         </div>
-                        <p className="text-sm font-semibold text-black/50">{job.department} &bull; {job.location} &bull; {job.employmentType}</p>
-                        <div className="flex flex-wrap gap-2 mt-1">
+                        <p className="text-xs font-semibold text-slate-500">
+                          {job.department} &bull; {job.location} &bull; {job.employmentType}
+                        </p>
+                        <div className="flex flex-wrap gap-1.5 mt-1">
                           {job.skills && job.skills.split(',').map((skill, index) => (
-                            <span key={index} className="text-xs bg-[#EFF6FF] border border-[#BFDBFE] px-2.5 py-1 rounded-full font-bold text-black">
+                            <span key={index} className="text-[11px] bg-white border border-slate-200 px-2 py-0.5 rounded-md font-medium text-slate-700 shadow-2xs">
                               {skill.trim()}
                             </span>
                           ))}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                      <div className="flex items-center gap-2 w-full sm:w-auto justify-end shrink-0">
                         <button
                           onClick={() => handleEditJobClick(job)}
-                          className="p-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
+                          className="p-2.5 bg-white border border-slate-200 hover:bg-slate-100 rounded-xl text-slate-700 transition-colors shadow-2xs"
                           title="Edit Job"
                         >
                           <Edit3 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteJob(job._id)}
-                          className="p-3 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-800 transition-colors"
+                          className="p-2.5 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-700 transition-colors shadow-2xs"
                           title="Delete Job"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -2188,7 +2184,11 @@ const Admin = () => {
                       </div>
                     </div>
                   ))}
-                  {jobs.length === 0 && <p className="text-sm text-black/50 italic text-center p-8 bg-white border border-[#BFDBFE] rounded-[2rem]">No job postings found. Create one using the form on the left.</p>}
+                  {jobs.length === 0 && (
+                    <p className="text-sm text-slate-400 italic text-center p-8 bg-slate-50 rounded-2xl border border-slate-200">
+                      No job postings found. Create one using the form on the left.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -2196,11 +2196,14 @@ const Admin = () => {
 
           {/* Tab 3: Candidate Applications & Filters */}
           {activeTab === 'Applications' && (
-            <div className="flex flex-col gap-8">
+            <div className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full">
               {/* Filtering Suite */}
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
-                <div className="flex items-center justify-between border-b border-[#BFDBFE] pb-4">
-                  <h4 className="text-lg sm:text-xl font-black text-black">Structured Resume Filtering</h4>
+              <div className="bg-white border border-slate-200/80 p-5 sm:p-7 rounded-3xl shadow-sm flex flex-col gap-5">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                  <div className="flex items-center gap-2">
+                    <Filter className="w-4 h-4 text-blue-600" />
+                    <h4 className="text-base font-extrabold text-slate-900 tracking-tight">Candidate Search & Filters</h4>
+                  </div>
                   <button
                     onClick={() => {
                       setSearchName('');
@@ -2210,47 +2213,47 @@ const Admin = () => {
                       setFilterType('');
                       setFilterDate('');
                     }}
-                    className="text-xs font-bold text-primary hover:underline"
+                    className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
                   >
                     Reset Filters
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
                   {/* Search by Name */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Candidate Name / Email</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Candidate / Email</label>
                     <div className="relative">
                       <input
                         type="text"
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
-                        className="w-full bg-white border border-[#BFDBFE] pl-9 pr-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                        className="w-full bg-slate-50/60 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors"
                         placeholder="Search..."
                       />
-                      <Search className="w-4 h-4 text-black/40 absolute left-3 top-3" />
+                      <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                     </div>
                   </div>
 
                   {/* Filter by Location */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Location</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Location</label>
                     <input
                       type="text"
                       value={filterLocation}
                       onChange={(e) => setFilterLocation(e.target.value)}
-                      className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                      className="bg-slate-50/60 border border-slate-200 px-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors"
                       placeholder="e.g. Remote"
                     />
                   </div>
 
                   {/* Filter by Position */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Position</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Position</label>
                     <select
                       value={filterPosition}
                       onChange={(e) => setFilterPosition(e.target.value)}
-                      className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                      className="bg-slate-50/60 border border-slate-200 px-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors cursor-pointer"
                     >
                       <option value="">All Positions</option>
                       {[...new Set(jobs.map(j => j.title))].map(title => (
@@ -2261,23 +2264,23 @@ const Admin = () => {
 
                   {/* Filter by Experience */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Experience</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Experience</label>
                     <input
                       type="text"
                       value={filterExperience}
                       onChange={(e) => setFilterExperience(e.target.value)}
-                      className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                      className="bg-slate-50/60 border border-slate-200 px-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors"
                       placeholder="e.g. 4 Years"
                     />
                   </div>
 
                   {/* Filter by Employment Type */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Employment Type</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Type</label>
                     <select
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                      className="bg-slate-50/60 border border-slate-200 px-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors cursor-pointer"
                     >
                       <option value="">All Types</option>
                       <option value="Full Time">Full Time</option>
@@ -2289,11 +2292,11 @@ const Admin = () => {
 
                   {/* Filter by Application Date */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-black uppercase text-black/60">Applied Date</label>
+                    <label className="text-[10px] font-extrabold uppercase tracking-wider text-slate-600">Applied Date</label>
                     <select
                       value={filterDate}
                       onChange={(e) => setFilterDate(e.target.value)}
-                      className="bg-white border border-[#BFDBFE] px-3 py-2.5 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary"
+                      className="bg-slate-50/60 border border-slate-200 px-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors cursor-pointer"
                     >
                       <option value="">Any Time</option>
                       <option value="1">Last 24 Hours</option>
@@ -2306,21 +2309,23 @@ const Admin = () => {
               </div>
 
               {/* Data Table */}
-              <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] overflow-hidden">
-                <div className="px-4 sm:px-8 py-5 sm:py-6 border-b border-[#BFDBFE] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-4">
+              <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm overflow-hidden">
+                <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white">
                   <div>
-                    <h4 className="font-black text-lg sm:text-xl text-black">Applications Submissions ({filteredApplications.length})</h4>
-                    <p className="text-xs text-black/50 font-medium mt-0.5">Manage candidate submissions and download bulk resume archives</p>
+                    <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
+                      Applications Submissions ({filteredApplications.length})
+                    </h4>
+                    <p className="text-xs text-slate-500 font-medium">Manage candidate records, evaluations, and bulk downloads</p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+                  <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={exportApplicationsToCSV}
                       disabled={filteredApplications.length === 0}
-                      className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] text-black font-bold text-xs rounded-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Export all applications & direct resume links to CSV instantly"
                     >
-                      <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
                       <span>Export CSV</span>
                     </button>
 
@@ -2328,78 +2333,86 @@ const Admin = () => {
                       type="button"
                       onClick={handleDownloadAllResumes}
                       disabled={downloadingResumes || filteredApplications.length === 0}
-                      className="flex-1 sm:flex-none justify-center px-4 sm:px-5 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl transition-all duration-300 active:scale-95 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                      className="flex-1 sm:flex-none justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Download ZIP package of all applicant resumes"
                     >
-                      <Download className={`w-4 h-4 ${downloadingResumes ? 'animate-bounce' : ''}`} />
+                      <Download className={`w-3.5 h-3.5 ${downloadingResumes ? 'animate-bounce' : ''}`} />
                       <span>{downloadingResumes ? 'Packaging...' : 'Download Resumes (ZIP)'}</span>
                     </button>
                   </div>
                 </div>
-                <div className="overflow-x-auto custom-scrollbar">
+
+                <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
-                      <tr className="border-b border-[#BFDBFE] text-black bg-[#DBEAFE] font-bold text-xs uppercase tracking-wider">
-                        <th className="px-8 py-4">Candidate</th>
-                        <th className="px-6 py-4">Job Applied</th>
-                        <th className="px-6 py-4">Experience</th>
-                        <th className="px-6 py-4">Location</th>
-                        <th className="px-6 py-4">Applied Date</th>
-                        <th className="px-6 py-4">Status</th>
-                        <th className="px-8 py-4 text-right">Actions</th>
+                      <tr className="border-b border-slate-100 text-slate-500 bg-slate-50/70 font-bold text-[11px] uppercase tracking-wider">
+                        <th className="px-6 py-3.5">Candidate</th>
+                        <th className="px-5 py-3.5">Job Applied</th>
+                        <th className="px-5 py-3.5">Experience</th>
+                        <th className="px-5 py-3.5">Location</th>
+                        <th className="px-5 py-3.5">Applied Date</th>
+                        <th className="px-5 py-3.5">Status</th>
+                        <th className="px-6 py-3.5 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#BFDBFE] bg-white">
+                    <tbody className="divide-y divide-slate-100 bg-white text-xs">
                       {filteredApplications.map(app => (
-                        <tr key={app._id} className="hover:bg-[#EFF6FF]/60 transition-colors text-sm font-semibold">
-                          <td className="px-8 py-5">
+                        <tr key={app._id} className="hover:bg-slate-50/70 transition-colors font-medium">
+                          <td className="px-6 py-4">
                             <button
                               type="button"
                               onClick={() => {
                                 setCandidateDrawerApp(app);
                                 setDrawerNotesText(app.notes || '');
                               }}
-                              className="flex flex-col text-left group cursor-pointer focus:outline-none"
+                              className="flex items-center gap-3 text-left group cursor-pointer focus:outline-none"
                             >
-                              <span className="text-black font-black text-base group-hover:text-primary group-hover:underline transition-colors flex items-center gap-1.5">
-                                {app.candidateName}
-                              </span>
-                              <span className="text-xs text-black/50">{app.email}</span>
+                              <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 font-bold text-xs flex items-center justify-center shrink-0">
+                                {(app.candidateName || 'C').charAt(0).toUpperCase()}
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-slate-900 font-bold text-sm group-hover:text-blue-600 transition-colors">
+                                  {app.candidateName}
+                                </span>
+                                <span className="text-[11px] text-slate-400">{app.email}</span>
+                              </div>
                             </button>
                           </td>
-                          <td className="px-6 py-5 text-black">
-                            {app.jobId ? app.jobId.title : 'General Placement'}
+                          <td className="px-5 py-4 text-slate-800 font-semibold">
+                            {app.jobId ? (typeof app.jobId === 'object' ? app.jobId.title : app.jobId) : 'General Placement'}
                           </td>
-                          <td className="px-6 py-5 text-black">{app.experience}</td>
-                          <td className="px-6 py-5 text-black">{app.location || 'Remote'}</td>
-                          <td className="px-6 py-5 text-black/50">
+                          <td className="px-5 py-4 text-slate-600">{app.experience}</td>
+                          <td className="px-5 py-4 text-slate-600">{app.location || 'Remote'}</td>
+                          <td className="px-5 py-4 text-slate-400">
                             {new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                           </td>
-                          <td className="px-6 py-5">
-                            <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider ${app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
-                              app.status === 'Shortlisted' ? 'bg-indigo-100 text-indigo-800' :
-                                app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
-                                  app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
-                              }`}>
-                              {app.status}
+                          <td className="px-5 py-4">
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                              app.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
+                              app.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
+                              app.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
+                              app.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200/60' :
+                              'bg-blue-50 text-blue-700 border border-blue-200/60'
+                            }`}>
+                              {app.status || 'Applied'}
                             </span>
                           </td>
-                          <td className="px-8 py-5 text-right">
+                          <td className="px-6 py-4 text-right">
                             <button
                               onClick={() => {
                                 setCandidateDrawerApp(app);
                                 setDrawerNotesText(app.notes || '');
                               }}
-                              className="px-4 py-2 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider transition-colors inline-flex items-center gap-1.5"
+                              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-xs transition-colors inline-flex items-center gap-1"
                             >
-                              View Details <ArrowRight className="w-3.5 h-3.5" />
+                              View <ArrowRight className="w-3 h-3" />
                             </button>
                           </td>
                         </tr>
                       ))}
                       {filteredApplications.length === 0 && (
                         <tr>
-                          <td colSpan="7" className="text-center py-12 text-black/40 italic">
+                          <td colSpan="7" className="text-center py-10 text-slate-400 italic">
                             No candidate applications match selected filters.
                           </td>
                         </tr>
@@ -2413,13 +2426,15 @@ const Admin = () => {
 
           {/* Tab 4: Resume Manager & Preview Panel */}
           {activeTab === 'Resume Manager' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)]">
+            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)] max-w-[1600px] mx-auto w-full">
               {/* Candidates Side Drawer List */}
-              <div data-lenis-prevent className="xl:col-span-4 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto max-h-[380px] xl:max-h-none">
-                <h4 className="text-lg sm:text-xl font-black text-black mb-1 sm:mb-2 flex items-center gap-2">
-                  <Users className="w-5 h-5 text-primary" /> Active Pipeline ({applications.length})
-                </h4>
-                <div className="flex flex-col gap-3">
+              <div data-lenis-prevent className="xl:col-span-4 bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto max-h-[380px] xl:max-h-none shadow-sm">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <h4 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                    <Users className="w-4 h-4 text-blue-600" /> Active Pipeline ({applications.length})
+                  </h4>
+                </div>
+                <div className="flex flex-col gap-2.5">
                   {applications.map(app => (
                     <div
                       key={app._id}
@@ -2427,60 +2442,73 @@ const Admin = () => {
                         setSelectedApp(app);
                         setNotesText(app.notes || '');
                       }}
-                      className={`p-4 sm:p-5 rounded-2xl sm:rounded-[2rem] border cursor-pointer transition-all duration-300 ${selectedApp && selectedApp._id === app._id
-                        ? 'bg-white border-primary shadow-lg ring-2 ring-primary/20 scale-[1.01]'
-                        : 'bg-white border-[#BFDBFE] hover:border-primary/40'
-                        }`}
+                      className={`p-3.5 sm:p-4 rounded-2xl border cursor-pointer transition-all duration-200 ${
+                        selectedApp && selectedApp._id === app._id
+                          ? 'bg-blue-50/50 border-blue-500 shadow-xs ring-1 ring-blue-500'
+                          : 'bg-white border-slate-200/80 hover:border-slate-300 hover:bg-slate-50/60'
+                      }`}
                     >
                       <div className="flex justify-between items-start gap-2 mb-1">
-                        <h5 className="font-bold text-black text-sm sm:text-base">{app.candidateName}</h5>
-                        <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${app.status === 'Selected' ? 'bg-emerald-100 text-emerald-800' :
-                          app.status === 'Shortlisted' ? 'bg-indigo-100 text-indigo-800' :
-                            app.status === 'Interview Scheduled' ? 'bg-amber-100 text-amber-800' :
-                              app.status === 'Rejected' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
-                          }`}>
-                          {app.status}
+                        <h5 className="font-bold text-slate-900 text-sm">{app.candidateName}</h5>
+                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
+                          app.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
+                          app.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
+                          app.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
+                          app.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200/60' :
+                          'bg-blue-50 text-blue-700 border border-blue-200/60'
+                        }`}>
+                          {app.status || 'Applied'}
                         </span>
                       </div>
-                      <p className="text-xs font-semibold text-black/50 mb-2 truncate">
-                        {app.jobId ? app.jobId.title : 'General Placement'}
+                      <p className="text-xs font-semibold text-slate-500 mb-2 truncate">
+                        {app.jobId ? (typeof app.jobId === 'object' ? app.jobId.title : app.jobId) : 'General Placement'}
                       </p>
-                      <div className="flex justify-between items-center text-[10px] text-black/40 font-bold uppercase">
+                      <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
                         <span>{app.experience} Exp</span>
                         <span>{new Date(app.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
                   ))}
-                  {applications.length === 0 && <p className="text-sm text-black/50 italic text-center p-8 bg-white border border-[#BFDBFE] rounded-2xl">No applications recorded.</p>}
+                  {applications.length === 0 && (
+                    <p className="text-sm text-slate-400 italic text-center p-8 bg-slate-50 border border-slate-200 rounded-2xl">
+                      No applications recorded.
+                    </p>
+                  )}
                 </div>
               </div>
 
               {/* Recruitment Review Panel & Resume Viewer */}
-              <div data-lenis-prevent className="xl:col-span-8 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 flex flex-col gap-6 overflow-y-auto">
+              <div data-lenis-prevent className="xl:col-span-8 bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 flex flex-col gap-6 overflow-y-auto shadow-sm">
                 {selectedApp ? (
                   <div className="flex flex-col gap-6 w-full">
                     {/* Header Info */}
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-b border-[#BFDBFE] pb-6">
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-                          <h3 className="text-2xl sm:text-3xl font-black text-black">{selectedApp.candidateName}</h3>
-                          <span className="px-3 sm:px-4 py-1.5 bg-[#DBEAFE] border border-[#BFDBFE] rounded-full text-xs font-black uppercase tracking-wider text-black">
+                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-slate-100 pb-5">
+                      <div className="flex flex-col gap-1.5">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="text-2xl font-black text-slate-900">{selectedApp.candidateName}</h3>
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                            selectedApp.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
+                            selectedApp.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
+                            selectedApp.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
+                            selectedApp.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200/60' :
+                            'bg-blue-50 text-blue-700 border border-blue-200/60'
+                          }`}>
                             {selectedApp.status}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm font-semibold text-black/60">
-                          Applied for: <span className="text-primary font-bold">{selectedApp.jobId ? selectedApp.jobId.title : 'General Placement'}</span> &bull; {selectedApp.experience} experience
+                        <p className="text-xs sm:text-sm font-semibold text-slate-500">
+                          Applied for: <span className="text-blue-600 font-bold">{selectedApp.jobId ? (typeof selectedApp.jobId === 'object' ? selectedApp.jobId.title : selectedApp.jobId) : 'General Placement'}</span> &bull; {selectedApp.experience} experience
                         </p>
                       </div>
 
                       {/* Download / Social Links */}
-                      <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+                      <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
                         {selectedApp.linkedInUrl && (
                           <a
                             href={selectedApp.linkedInUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-2.5 sm:p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
+                            className="p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
                             title="LinkedIn Profile"
                           >
                             <Users className="w-4 h-4" />
@@ -2491,7 +2519,7 @@ const Admin = () => {
                             href={selectedApp.portfolioUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-2.5 sm:p-3 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black transition-colors"
+                            className="p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
                             title="Portfolio Link"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -2500,7 +2528,7 @@ const Admin = () => {
                         <a
                           href={selectedApp.resume}
                           onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
-                          className="flex-1 sm:flex-none justify-center px-4 sm:px-5 py-2.5 sm:py-3 bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
+                          className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98"
                         >
                           <Download className="w-4 h-4" /> Download Resume
                         </a>
@@ -2510,45 +2538,45 @@ const Admin = () => {
                     {/* Content Split: Left - Details/Notes, Right - Embed Resume Viewer */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-stretch min-h-[450px]">
                       {/* Details, Cover Letter, Recruiter Notes */}
-                      <div className="lg:col-span-5 flex flex-col gap-6">
-                        <div className="bg-white border border-[#BFDBFE] p-6 rounded-3xl flex flex-col gap-4">
-                          <h5 className="font-black text-black text-sm uppercase tracking-wider border-b border-[#BFDBFE] pb-2">Profile Overview</h5>
-                          <div className="flex flex-col gap-2.5 text-sm font-semibold">
+                      <div className="lg:col-span-5 flex flex-col gap-4">
+                        <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-3">
+                          <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">Profile Overview</h5>
+                          <div className="flex flex-col gap-2 text-xs font-semibold">
                             <div className="flex justify-between">
-                              <span className="text-black/50">Email:</span>
-                              <span className="text-black">{selectedApp.email}</span>
+                              <span className="text-slate-400">Email:</span>
+                              <span className="text-slate-800 select-all">{selectedApp.email}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-black/50">Phone:</span>
-                              <span className="text-black">{selectedApp.phone}</span>
+                              <span className="text-slate-400">Phone:</span>
+                              <span className="text-slate-800">{selectedApp.phone}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-black/50">Location:</span>
-                              <span className="text-black">{selectedApp.location || 'Remote'}</span>
+                              <span className="text-slate-400">Location:</span>
+                              <span className="text-slate-800">{selectedApp.location || 'Remote'}</span>
                             </div>
                           </div>
                         </div>
 
                         {selectedApp.coverLetter && (
-                          <div className="bg-white border border-[#BFDBFE] p-6 rounded-3xl flex flex-col gap-3 max-h-[200px] overflow-y-auto">
-                            <h5 className="font-black text-black text-sm uppercase tracking-wider border-b border-[#BFDBFE] pb-2">Cover Letter</h5>
-                            <p className="text-xs text-black/70 leading-relaxed italic">"{selectedApp.coverLetter}"</p>
+                          <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-2 max-h-[180px] overflow-y-auto">
+                            <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-1.5">Cover Letter</h5>
+                            <p className="text-xs text-slate-600 leading-relaxed italic">"{selectedApp.coverLetter}"</p>
                           </div>
                         )}
 
                         {/* Recruiter Notes Block */}
-                        <div className="bg-white border border-[#BFDBFE] p-6 rounded-3xl flex flex-col gap-4 flex-1">
-                          <h5 className="font-black text-black text-sm uppercase tracking-wider border-b border-[#BFDBFE] pb-2">Recruiter Evaluation Notes</h5>
+                        <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-3 flex-1">
+                          <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-1.5">Recruiter Evaluation Notes</h5>
                           <textarea
                             value={notesText}
                             onChange={(e) => setNotesText(e.target.value)}
                             rows="4"
-                            className="bg-[#EFF6FF] border border-[#BFDBFE] p-3 rounded-xl text-black font-semibold text-xs outline-none focus:border-primary resize-none flex-1"
+                            className="bg-white border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 resize-none flex-1"
                             placeholder="Add evaluation summary or interview feedback..."
                           />
                           <button
                             onClick={handleSaveNotes}
-                            className="bg-[#DBEAFE] border border-[#BFDBFE] hover:bg-primary/20 py-2.5 rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center justify-center gap-2 transition-all active:scale-95"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl font-bold text-xs tracking-wide inline-flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98"
                           >
                             <Save className="w-3.5 h-3.5" /> Save Evaluation Notes
                           </button>
@@ -2556,13 +2584,12 @@ const Admin = () => {
                       </div>
 
                       {/* Interactive PDF/Document Resume Preview */}
-                      <div className="lg:col-span-7 bg-white border border-[#BFDBFE] rounded-3xl overflow-hidden flex flex-col items-stretch shadow-inner relative">
-                        <div className="bg-[#EFF6FF] border-b border-[#BFDBFE] px-5 py-3 flex justify-between items-center">
-                          <span className="text-xs font-black uppercase text-black">Interactive Resume Viewer</span>
-                          <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-2 py-0.5 rounded font-black uppercase">Live Embed</span>
+                      <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col items-stretch shadow-xs relative">
+                        <div className="bg-slate-50/80 border-b border-slate-200/80 px-4 py-2.5 flex justify-between items-center">
+                          <span className="text-xs font-bold uppercase text-slate-600 tracking-wider">Interactive Resume Viewer</span>
+                          <span className="text-[10px] bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded font-extrabold uppercase">Live Preview</span>
                         </div>
-                        <div className="flex-1 w-full bg-slate-100 relative min-h-[350px]">
-                          {/* Attempt to preview PDF. Fallback dynamically to card if not PDF or offline */}
+                        <div className="flex-1 w-full bg-slate-50 relative min-h-[350px]">
                           {selectedApp.resume && selectedApp.resume.toLowerCase().endsWith('.pdf') ? (
                             selectedAppResumeSignedUrl ? (
                               <iframe
@@ -2571,25 +2598,25 @@ const Admin = () => {
                                 title="Resume Preview PDF"
                               />
                             ) : (
-                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-xs font-bold text-black/40">
+                              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-xs font-bold text-slate-400">
                                 <span className="animate-pulse">Loading preview...</span>
                               </div>
                             )
                           ) : (
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white">
-                              <div className="w-16 h-16 bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl flex items-center justify-center text-primary mb-4 glow-blue">
-                                <FileSearch className="w-8 h-8" />
+                              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-3 border border-blue-100">
+                                <FileSearch className="w-7 h-7" />
                               </div>
-                              <h6 className="font-black text-black text-lg mb-2">Resume Preview unavailable</h6>
-                              <p className="text-xs text-black/50 max-w-[250px] mb-6">
-                                Docx formats or local development assets are safely secured. You can read, view, or download the full document here.
+                              <h6 className="font-extrabold text-slate-900 text-base mb-1">Resume Preview Unavailable</h6>
+                              <p className="text-xs text-slate-500 max-w-[240px] mb-5">
+                                Document file is safely secured. You can download or view it directly.
                               </p>
                               <a
                                 href={selectedApp.resume}
                                 onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
-                                className="px-6 py-3 bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all"
+                                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98"
                               >
-                                <Download className="w-4 h-4" /> Download Resume Document
+                                <Download className="w-4 h-4" /> Download Resume
                               </a>
                             </div>
                           )}
@@ -2598,30 +2625,30 @@ const Admin = () => {
                     </div>
 
                     {/* Candidate Management Action Footer */}
-                    <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2.5rem] flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mt-2 shadow-sm">
-                      <span className="text-xs font-black uppercase text-black/60">Update Recruitment Stage:</span>
+                    <div className="bg-slate-50/70 border border-slate-200/80 p-4 sm:p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">Update Recruitment Stage:</span>
                       <div className="flex flex-wrap gap-2 w-full md:w-auto">
                         <button
                           onClick={() => handleUpdateApplicationStatus('Shortlisted')}
-                          className="flex-1 md:flex-initial px-5 py-3 bg-indigo-50 border border-indigo-200 hover:bg-indigo-100 rounded-xl text-indigo-900 font-bold text-xs tracking-wider uppercase transition-colors"
+                          className="flex-1 md:flex-initial px-4 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-emerald-800 font-bold text-xs tracking-wide transition-colors"
                         >
                           Shortlist
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Interview Scheduled')}
-                          className="flex-1 md:flex-initial px-5 py-3 bg-amber-50 border border-amber-200 hover:bg-amber-100 rounded-xl text-amber-900 font-bold text-xs tracking-wider uppercase transition-colors"
+                          className="flex-1 md:flex-initial px-4 py-2 bg-purple-50 border border-purple-200 hover:bg-purple-100 rounded-xl text-purple-800 font-bold text-xs tracking-wide transition-colors"
                         >
                           Schedule Interview
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Selected')}
-                          className="flex-1 md:flex-initial px-5 py-3 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-emerald-900 font-bold text-xs tracking-wider uppercase transition-colors"
+                          className="flex-1 md:flex-initial px-4 py-2 bg-teal-50 border border-teal-200 hover:bg-teal-100 rounded-xl text-teal-800 font-bold text-xs tracking-wide transition-colors"
                         >
                           Select
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Rejected')}
-                          className="flex-1 md:flex-initial px-5 py-3 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-900 font-bold text-xs tracking-wider uppercase transition-colors"
+                          className="flex-1 md:flex-initial px-4 py-2 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-800 font-bold text-xs tracking-wide transition-colors"
                         >
                           Reject
                         </button>
@@ -2629,9 +2656,9 @@ const Admin = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-full text-center">
-                    <FileSearch className="w-12 h-12 text-black/40 mb-3" />
-                    <p className="text-black/50 italic">No candidates selected for review.</p>
+                  <div className="flex flex-col items-center justify-center h-full text-center py-12">
+                    <FileSearch className="w-12 h-12 text-slate-300 mb-3" />
+                    <p className="text-slate-400 text-sm italic">No candidate selected for review.</p>
                   </div>
                 )}
               </div>
@@ -3065,94 +3092,13 @@ const Admin = () => {
             </>
           )}
 
-          {/* Tab 5: Analytics */}
+          {/* Tab 5: Analytics - Futuristic AI Talent Intelligence Center */}
           {activeTab === 'Analytics' && (
-            <div className="flex flex-col gap-6 sm:gap-8">
-              {/* Analytics Top widgets */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Application Volume</span>
-                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">+{applications.length * 15}%</h4>
-                    <span className="text-xs font-semibold text-black/70 mt-1 block">Month-over-month increase</span>
-                  </div>
-                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8" />
-                  </div>
-                </div>
-
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Time-to-Hire Avg</span>
-                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">18 Days</h4>
-                    <span className="text-xs font-semibold text-black/70 mt-1 block">Industry average is 32</span>
-                  </div>
-                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <Clock className="w-6 h-6 sm:w-8 sm:h-8" />
-                  </div>
-                </div>
-
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-6 rounded-2xl sm:rounded-[2rem] flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase text-black/50">Conversion Rate</span>
-                    <h4 className="text-2xl sm:text-3xl font-black text-black mt-1">{totalApps > 0 ? ((shortlistedApps / totalApps) * 100).toFixed(0) : 0}%</h4>
-                    <span className="text-xs font-semibold text-black/70 mt-1 block">Shortlisted from submissions</span>
-                  </div>
-                  <div className="p-3.5 sm:p-4 bg-[#DBEAFE] rounded-2xl text-black">
-                    <UserCheck className="w-6 h-6 sm:w-8 sm:h-8" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Department Demand Visualizations */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-start">
-                {/* Department Demand Chart */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
-                  <h4 className="text-lg sm:text-xl font-black text-black">Open Postings by Department</h4>
-                  <div className="flex flex-col gap-5">
-                    {['Engineering', 'Research', 'Marketing', 'Product'].map((dept, idx) => {
-                      const count = jobs.filter(j => j.department && j.department.toLowerCase() === dept.toLowerCase()).length;
-                      const percentage = jobs.length > 0 ? (count / jobs.length) * 100 : 0;
-                      return (
-                        <div key={idx} className="flex flex-col gap-2">
-                          <div className="flex justify-between text-sm font-semibold">
-                            <span className="text-black">{dept}</span>
-                            <span className="text-black/60">{count} active roles ({percentage.toFixed(0)}%)</span>
-                          </div>
-                          <div className="w-full bg-[#DBEAFE] h-4 rounded-full overflow-hidden border border-[#BFDBFE]">
-                            <div className="bg-primary h-full rounded-full transition-all duration-1000" style={{ width: `${percentage}%` }}></div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Candidate Funnel Bar list */}
-                <div className="bg-[#EFF6FF] border border-[#BFDBFE] p-5 sm:p-8 rounded-2xl sm:rounded-[3rem] flex flex-col gap-6">
-                  <h4 className="text-xl font-black text-black">Candidate Recruitment Funnel</h4>
-                  <div className="flex flex-col gap-4">
-                    {[
-                      { status: 'Applied', count: newApps, percentage: totalApps > 0 ? (newApps / totalApps) * 100 : 0, color: 'bg-blue-600' },
-                      { status: 'Shortlisted', count: shortlistedApps, percentage: totalApps > 0 ? (shortlistedApps / totalApps) * 100 : 0, color: 'bg-indigo-600' },
-                      { status: 'Interview Scheduled', count: scheduledApps, percentage: totalApps > 0 ? (scheduledApps / totalApps) * 100 : 0, color: 'bg-amber-600' },
-                      { status: 'Selected', count: applications.filter(a => a.status === 'Selected').length, percentage: totalApps > 0 ? (applications.filter(a => a.status === 'Selected').length / totalApps) * 100 : 0, color: 'bg-emerald-600' },
-                      { status: 'Rejected', count: rejectedApps, percentage: totalApps > 0 ? (rejectedApps / totalApps) * 100 : 0, color: 'bg-rose-600' }
-                    ].map((stage, idx) => (
-                      <div key={idx} className="flex items-center gap-4">
-                        <span className="w-36 text-xs font-black uppercase text-black/70 truncate">{stage.status}</span>
-                        <div className="flex-1 bg-[#DBEAFE] h-5 rounded-full overflow-hidden border border-[#BFDBFE] relative">
-                          <div className={`h-full rounded-full transition-all duration-1000 ${stage.color}`} style={{ width: `${stage.percentage}%` }}></div>
-                          <span className="absolute inset-0 flex items-center pl-3 text-[10px] font-black text-black select-none">
-                            {stage.count} candidates ({stage.percentage.toFixed(0)}%)
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <FuturisticAnalytics
+              jobs={jobs}
+              applications={applications}
+              onNavigateTab={handleTabSelect}
+            />
           )}
 
           {/* Employee Details Modal */}
@@ -3647,49 +3593,50 @@ const Admin = () => {
         <div className="fixed inset-0 z-[100] flex justify-end overflow-hidden">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
             onClick={() => setCandidateDrawerApp(null)}
           />
 
           {/* Slide-in Panel from Right */}
           <div
             data-lenis-prevent
-            className="relative w-full sm:max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-[#BFDBFE]"
+            className="relative w-full sm:max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-slate-200"
           >
             {/* Drawer Header */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-[#BFDBFE] px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between z-20">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-5 sm:px-7 py-4 sm:py-5 flex items-center justify-between z-20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center font-black text-primary text-lg sm:text-xl shadow-sm shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center font-extrabold text-blue-600 text-base shrink-0">
                   {candidateDrawerApp.candidateName ? candidateDrawerApp.candidateName.charAt(0).toUpperCase() : 'C'}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-lg sm:text-xl font-black text-black leading-tight truncate">
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight truncate">
                     {candidateDrawerApp.candidateName}
                   </h3>
-                  <p className="text-xs font-semibold text-black/60 truncate">
-                    Applied for: <span className="text-primary font-bold">{candidateDrawerApp.jobId ? candidateDrawerApp.jobId.title : 'General Placement'}</span>
+                  <p className="text-xs font-semibold text-slate-500 truncate">
+                    Applied for: <span className="text-blue-600 font-bold">{candidateDrawerApp.jobId ? (typeof candidateDrawerApp.jobId === 'object' ? candidateDrawerApp.jobId.title : candidateDrawerApp.jobId) : 'General Placement'}</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setCandidateDrawerApp(null)}
-                className="p-2 rounded-xl hover:bg-slate-100 text-black/60 hover:text-black transition-colors shrink-0"
+                className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors shrink-0"
                 title="Close"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Top Action Bar: Download Resume & View Portfolio */}
-            <div className="p-4 sm:p-6 bg-[#EFF6FF] border-b border-[#BFDBFE] flex flex-wrap items-center gap-2.5 sm:gap-3">
+            <div className="p-4 sm:p-5 bg-slate-50/70 border-b border-slate-100 flex flex-wrap items-center gap-2.5">
               {/* Download Resume Button */}
               <button
                 onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
                 disabled={!candidateDrawerApp.resume}
-                className={`flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-md transition-all ${candidateDrawerApp.resume
-                  ? 'bg-primary text-white hover:bg-primary/90 hover:scale-[1.02] cursor-pointer'
-                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                  }`}
+                className={`flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-xs ${
+                  candidateDrawerApp.resume
+                    ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-98 cursor-pointer'
+                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                }`}
               >
                 <Download className="w-4 h-4" /> Download Resume
               </button>
@@ -3700,14 +3647,14 @@ const Admin = () => {
                   href={candidateDrawerApp.portfolioUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-black text-xs uppercase tracking-wider bg-white border-2 border-primary text-primary hover:bg-primary/10 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+                  className="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-98"
                 >
                   <Globe className="w-4 h-4" /> View Portfolio <ExternalLink className="w-3.5 h-3.5" />
                 </a>
               ) : (
                 <button
                   disabled
-                  className="flex-1 min-w-[140px] sm:min-w-[180px] py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
+                  className="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
                 >
                   <Globe className="w-4 h-4" /> No Portfolio
                 </button>
@@ -3719,7 +3666,7 @@ const Admin = () => {
                   href={candidateDrawerApp.linkedInUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-3.5 px-5 rounded-2xl font-bold text-xs bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90 flex items-center justify-center gap-2 transition-all shadow-sm hover:scale-[1.02]"
+                  className="py-2.5 px-4 rounded-xl font-bold text-xs bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90 flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98"
                   title="LinkedIn Profile"
                 >
                   <ExternalLink className="w-4 h-4" /> LinkedIn
@@ -3728,75 +3675,75 @@ const Admin = () => {
             </div>
 
             {/* Drawer Body Content */}
-            <div className="p-6 flex flex-col gap-6">
+            <div className="p-5 sm:p-6 flex flex-col gap-5">
               {/* Profile Details Card */}
-              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-4">
-                <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Candidate Contact & Overview</h4>
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3.5">
+                <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Candidate Contact & Overview</h4>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <Mail className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col overflow-hidden">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Email</span>
-                      <a href={`mailto:${candidateDrawerApp.email}`} className="text-xs font-bold text-black hover:text-primary truncate">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Email</span>
+                      <a href={`mailto:${candidateDrawerApp.email}`} className="text-xs font-bold text-slate-800 hover:text-blue-600 truncate">
                         {candidateDrawerApp.email || 'N/A'}
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <Phone className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Phone</span>
-                      <a href={`tel:${candidateDrawerApp.phone}`} className="text-xs font-bold text-black hover:text-primary">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Phone</span>
+                      <a href={`tel:${candidateDrawerApp.phone}`} className="text-xs font-bold text-slate-800 hover:text-blue-600">
                         {candidateDrawerApp.phone || 'N/A'}
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <MapPin className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Location</span>
-                      <span className="text-xs font-bold text-black">{candidateDrawerApp.location || 'Remote'}</span>
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Location</span>
+                      <span className="text-xs font-bold text-slate-800">{candidateDrawerApp.location || 'Remote'}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <Briefcase className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Experience</span>
-                      <span className="text-xs font-bold text-black">{candidateDrawerApp.experience || 'Not Specified'}</span>
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Experience</span>
+                      <span className="text-xs font-bold text-slate-800">{candidateDrawerApp.experience || 'Not Specified'}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <CalendarDays className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Applied Date</span>
-                      <span className="text-xs font-bold text-black">
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Applied Date</span>
+                      <span className="text-xs font-bold text-slate-800">
                         {candidateDrawerApp.createdAt ? new Date(candidateDrawerApp.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3.5 rounded-2xl border border-[#BFDBFE]/60">
-                    <div className="p-2 bg-[#EFF6FF] text-primary rounded-xl">
+                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                       <FileCheck className="w-4 h-4" />
                     </div>
                     <div className="flex flex-col">
-                      <span className="text-[10px] font-bold uppercase text-black/40">Status</span>
-                      <span className="text-xs font-black uppercase text-primary">{candidateDrawerApp.status || 'Applied'}</span>
+                      <span className="text-[10px] font-bold uppercase text-slate-400">Status</span>
+                      <span className="text-xs font-extrabold uppercase text-blue-600">{candidateDrawerApp.status || 'Applied'}</span>
                     </div>
                   </div>
                 </div>
@@ -3804,26 +3751,27 @@ const Admin = () => {
 
               {/* Cover Letter */}
               {candidateDrawerApp.coverLetter && (
-                <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
-                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Cover Letter</h4>
-                  <p className="text-xs text-black/80 leading-relaxed italic bg-white p-4 rounded-2xl border border-[#BFDBFE]/60">
+                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-2">
+                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Cover Letter</h4>
+                  <p className="text-xs text-slate-700 leading-relaxed italic bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
                     "{candidateDrawerApp.coverLetter}"
                   </p>
                 </div>
               )}
 
               {/* Recruitment Pipeline Status update */}
-              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
-                <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Update Pipeline Status</h4>
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
+                <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Update Pipeline Status</h4>
                 <div className="flex flex-wrap gap-2">
                   {['Applied', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'].map((statusOption) => (
                     <button
                       key={statusOption}
                       onClick={() => handleDrawerStatusUpdate(candidateDrawerApp, statusOption)}
-                      className={`px-4 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${candidateDrawerApp.status === statusOption
-                        ? 'bg-primary text-white shadow-md scale-105'
-                        : 'bg-white border border-[#BFDBFE] text-black/70 hover:bg-[#DBEAFE] hover:text-black'
-                        }`}
+                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                        candidateDrawerApp.status === statusOption
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                      }`}
                     >
                       {statusOption}
                     </button>
@@ -3832,12 +3780,12 @@ const Admin = () => {
               </div>
 
               {/* Internal Notes */}
-              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Internal Recruiter Notes</h4>
+                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Internal Recruiter Notes</h4>
                   <button
                     onClick={() => handleDrawerSaveNotes(candidateDrawerApp, drawerNotesText)}
-                    className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark flex items-center gap-1.5 shadow-sm uppercase tracking-wider"
+                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5 shadow-2xs"
                   >
                     <Save className="w-3.5 h-3.5" /> Save Notes
                   </button>
@@ -3846,21 +3794,21 @@ const Admin = () => {
                   value={drawerNotesText}
                   onChange={(e) => setDrawerNotesText(e.target.value)}
                   rows={3}
-                  className="w-full bg-white border border-[#BFDBFE] rounded-2xl p-4 text-xs text-black font-semibold focus:outline-none focus:border-primary"
+                  className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-500"
                   placeholder="Add internal feedback, interview outcome, notes..."
                 />
               </div>
 
               {/* Resume Viewer */}
-              <div className="bg-[#EFF6FF]/50 border border-[#BFDBFE] rounded-3xl p-6 flex flex-col gap-3">
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-black uppercase text-black/50 tracking-wider">Resume Document</h4>
+                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Resume Document</h4>
                   {candidateDrawerApp.resume && (
                     <a
                       href={candidateDrawerAppResumeSignedUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                      className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
                     >
                       Open Document <ExternalLink className="w-3.5 h-3.5" />
                     </a>
@@ -3871,31 +3819,31 @@ const Admin = () => {
                     candidateDrawerAppResumeSignedUrl ? (
                       <iframe
                         src={`${candidateDrawerAppResumeSignedUrl}#toolbar=0`}
-                        className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-white shadow-inner"
+                        className="w-full h-[450px] rounded-xl border border-slate-200 bg-white shadow-xs"
                         title="Resume Preview"
                       />
                     ) : (
-                      <div className="w-full h-[450px] rounded-2xl border border-[#BFDBFE] bg-slate-50 shadow-inner flex items-center justify-center text-xs font-bold text-black/40">
+                      <div className="w-full h-[450px] rounded-xl border border-slate-200 bg-slate-50 shadow-xs flex items-center justify-center text-xs font-bold text-slate-400">
                         <span className="animate-pulse">Loading preview...</span>
                       </div>
                     )
                   ) : (
-                    <div className="bg-white border border-[#BFDBFE] rounded-2xl p-6 text-center flex flex-col items-center gap-3">
-                      <FileText className="w-10 h-10 text-primary" />
+                    <div className="bg-white border border-slate-200 rounded-xl p-6 text-center flex flex-col items-center gap-3 shadow-2xs">
+                      <FileText className="w-9 h-9 text-blue-600" />
                       <div>
-                        <p className="text-xs font-bold text-black">Resume Attached</p>
-                        <p className="text-[11px] text-black/50">Click below to download or view the document</p>
+                        <p className="text-xs font-bold text-slate-800">Resume Attached</p>
+                        <p className="text-[11px] text-slate-400">Click below to download or view the document</p>
                       </div>
                       <button
                         onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
-                        className="px-5 py-2.5 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary-dark flex items-center gap-2"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-2 shadow-xs active:scale-98"
                       >
                         <Download className="w-4 h-4" /> Download Resume
                       </button>
                     </div>
                   )
                 ) : (
-                  <div className="bg-white border border-[#BFDBFE] rounded-2xl p-6 text-center text-black/40 text-xs italic">
+                  <div className="bg-white border border-slate-200 rounded-xl p-6 text-center text-slate-400 text-xs italic shadow-2xs">
                     No resume uploaded by candidate.
                   </div>
                 )}
