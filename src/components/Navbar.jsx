@@ -27,12 +27,12 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] h-[78px] glass-morphism rounded-full px-8 flex items-center justify-between z-[9999] pointer-events-auto shadow-xl">
+      <nav className="fixed top-4 sm:top-6 left-1/2 -translate-x-1/2 w-[92%] h-[64px] sm:h-[78px] glass-morphism rounded-full px-4 sm:px-8 flex items-center justify-between z-[9999] pointer-events-auto shadow-xl">
         {/* Brand Logo */}
         <div className="flex items-center gap-2">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="Macenza Logo" className="w-10 h-10 object-contain rounded-xl glow-blue bg-white p-1" />
-            <span className="text-2xl font-bold tracking-tighter text-black">MACENZA</span>
+            <img src="/logo.svg" alt="Macenza Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-xl glow-blue bg-white p-1" />
+            <span className="text-xl sm:text-2xl font-bold tracking-tighter text-black">MACENZA</span>
           </Link>
         </div>
 

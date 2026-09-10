@@ -2196,13 +2196,13 @@ const Admin = () => {
 
           {/* Tab 3: Candidate Applications & Filters */}
           {activeTab === 'Applications' && (
-            <div className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full">
+            <div className="flex flex-col gap-4 sm:gap-6 max-w-[1600px] mx-auto w-full">
               {/* Filtering Suite */}
-              <div className="bg-white border border-slate-200/80 p-5 sm:p-7 rounded-3xl shadow-sm flex flex-col gap-5">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+              <div className="bg-white border border-slate-200/80 p-4 sm:p-6 lg:p-7 rounded-2xl sm:rounded-3xl shadow-sm flex flex-col gap-4 sm:gap-5">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2">
                     <Filter className="w-4 h-4 text-blue-600" />
-                    <h4 className="text-base font-extrabold text-slate-900 tracking-tight">Candidate Search & Filters</h4>
+                    <h4 className="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">Candidate Search & Filters</h4>
                   </div>
                   <button
                     onClick={() => {
@@ -2213,7 +2213,7 @@ const Admin = () => {
                       setFilterType('');
                       setFilterDate('');
                     }}
-                    className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                    className="text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer py-1 px-2 rounded-lg hover:bg-blue-50"
                   >
                     Reset Filters
                   </button>
@@ -2229,7 +2229,7 @@ const Admin = () => {
                         value={searchName}
                         onChange={(e) => setSearchName(e.target.value)}
                         className="w-full bg-slate-50/60 border border-slate-200 pl-9 pr-3 py-2 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 focus:bg-white transition-colors"
-                        placeholder="Search..."
+                        placeholder="Search candidate name or email..."
                       />
                       <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
                     </div>
@@ -2308,41 +2308,122 @@ const Admin = () => {
                 </div>
               </div>
 
-              {/* Data Table */}
-              <div className="bg-white border border-slate-200/80 rounded-3xl shadow-sm overflow-hidden">
-                <div className="px-5 sm:px-7 py-4 sm:py-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white">
+              {/* Data Presentation: Responsive Desktop Table & Mobile Card List */}
+              <div className="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-sm overflow-hidden">
+                <div className="p-4 sm:px-7 sm:py-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white">
                   <div>
                     <h4 className="font-extrabold text-base sm:text-lg text-slate-900">
                       Applications Submissions ({filteredApplications.length})
                     </h4>
                     <p className="text-xs text-slate-500 font-medium">Manage candidate records, evaluations, and bulk downloads</p>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                  <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={exportApplicationsToCSV}
                       disabled={filteredApplications.length === 0}
-                      className="flex-1 sm:flex-none justify-center px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 sm:flex-none justify-center px-3 py-2 sm:px-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       title="Export all applications & direct resume links to CSV instantly"
                     >
-                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>Export CSV</span>
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span className="truncate">Export CSV</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={handleDownloadAllResumes}
                       disabled={downloadingResumes || filteredApplications.length === 0}
-                      className="flex-1 sm:flex-none justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="flex-1 sm:flex-none justify-center px-3 py-2 sm:px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-xs transition-all active:scale-98 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                       title="Download ZIP package of all applicant resumes"
                     >
-                      <Download className={`w-3.5 h-3.5 ${downloadingResumes ? 'animate-bounce' : ''}`} />
-                      <span>{downloadingResumes ? 'Packaging...' : 'Download Resumes (ZIP)'}</span>
+                      <Download className={`w-3.5 h-3.5 shrink-0 ${downloadingResumes ? 'animate-bounce' : ''}`} />
+                      <span className="truncate">{downloadingResumes ? 'Packaging...' : 'Download (ZIP)'}</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="overflow-x-auto">
+                {/* Mobile Card View (shown on screens < md) */}
+                <div className="md:hidden divide-y divide-slate-100 bg-slate-50/30">
+                  {filteredApplications.map(app => (
+                    <div
+                      key={app._id}
+                      onClick={() => {
+                        setCandidateDrawerApp(app);
+                        setDrawerNotesText(app.notes || '');
+                      }}
+                      className="p-4 bg-white hover:bg-blue-50/30 active:bg-blue-50/50 transition-colors cursor-pointer flex flex-col gap-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 font-bold text-sm flex items-center justify-center shrink-0 border border-blue-100/80">
+                            {(app.candidateName || 'C').charAt(0).toUpperCase()}
+                          </div>
+                          <div className="min-w-0">
+                            <h5 className="text-sm font-bold text-slate-900 truncate">
+                              {app.candidateName}
+                            </h5>
+                            <p className="text-[11px] text-slate-500 truncate">{app.email}</p>
+                          </div>
+                        </div>
+
+                        <span className={`shrink-0 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                          app.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
+                          app.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
+                          app.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
+                          app.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200/60' :
+                          'bg-blue-50 text-blue-700 border border-blue-200/60'
+                        }`}>
+                          {app.status || 'Applied'}
+                        </span>
+                      </div>
+
+                      <div className="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100 flex flex-col gap-1.5 text-xs">
+                        <div className="flex items-center justify-between text-slate-700 font-semibold">
+                          <span className="text-slate-400 text-[11px]">Role:</span>
+                          <span className="text-right truncate max-w-[200px] text-blue-700 font-bold">
+                            {app.jobId ? (typeof app.jobId === 'object' ? app.jobId.title : app.jobId) : 'General Placement'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-600">
+                          <span className="text-slate-400 text-[11px]">Experience:</span>
+                          <span>{app.experience || 'Not specified'}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-600">
+                          <span className="text-slate-400 text-[11px]">Location:</span>
+                          <span>{app.location || 'Remote'}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-slate-600">
+                          <span className="text-slate-400 text-[11px]">Applied:</span>
+                          <span>{app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-1">
+                        <span className="text-[11px] font-semibold text-slate-400">Tap candidate to view details</span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCandidateDrawerApp(app);
+                            setDrawerNotesText(app.notes || '');
+                          }}
+                          className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg font-bold text-xs transition-colors inline-flex items-center gap-1 cursor-pointer"
+                        >
+                          View <ArrowRight className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {filteredApplications.length === 0 && (
+                    <div className="text-center py-10 px-4 text-slate-400 italic text-xs">
+                      No candidate applications match selected filters.
+                    </div>
+                  )}
+                </div>
+
+                {/* Desktop & Tablet Table View (shown on screens >= md) */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left border-collapse min-w-[700px]">
                     <thead>
                       <tr className="border-b border-slate-100 text-slate-500 bg-slate-50/70 font-bold text-[11px] uppercase tracking-wider">
@@ -2403,7 +2484,7 @@ const Admin = () => {
                                 setCandidateDrawerApp(app);
                                 setDrawerNotesText(app.notes || '');
                               }}
-                              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-xs transition-colors inline-flex items-center gap-1"
+                              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg font-bold text-xs transition-colors inline-flex items-center gap-1 cursor-pointer"
                             >
                               View <ArrowRight className="w-3 h-3" />
                             </button>
@@ -2426,15 +2507,21 @@ const Admin = () => {
 
           {/* Tab 4: Resume Manager & Preview Panel */}
           {activeTab === 'Resume Manager' && (
-            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-8 items-stretch min-h-full xl:h-[calc(100vh-200px)] max-w-[1600px] mx-auto w-full">
-              {/* Candidates Side Drawer List */}
-              <div data-lenis-prevent className="xl:col-span-4 bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-6 flex flex-col gap-4 overflow-y-auto max-h-[380px] xl:max-h-none shadow-sm">
+            <div className="flex flex-col xl:grid xl:grid-cols-12 gap-4 sm:gap-6 lg:gap-8 items-stretch min-h-full max-w-[1600px] mx-auto w-full">
+              {/* Candidates Side List / Pipeline */}
+              <div
+                data-lenis-prevent
+                className={`xl:col-span-4 bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 lg:p-6 flex flex-col gap-3 sm:gap-4 shadow-sm ${
+                  selectedApp ? 'hidden xl:flex' : 'flex'
+                }`}
+              >
                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <h4 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                  <h4 className="text-sm sm:text-base font-extrabold text-slate-900 flex items-center gap-2">
                     <Users className="w-4 h-4 text-blue-600" /> Active Pipeline ({applications.length})
                   </h4>
+                  <span className="text-[11px] font-semibold text-slate-400">Select candidate</span>
                 </div>
-                <div className="flex flex-col gap-2.5">
+                <div className="flex flex-col gap-2.5 overflow-y-auto max-h-[420px] xl:max-h-[calc(100vh-280px)]">
                   {applications.map(app => (
                     <div
                       key={app._id}
@@ -2449,8 +2536,8 @@ const Admin = () => {
                       }`}
                     >
                       <div className="flex justify-between items-start gap-2 mb-1">
-                        <h5 className="font-bold text-slate-900 text-sm">{app.candidateName}</h5>
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
+                        <h5 className="font-bold text-slate-900 text-sm truncate">{app.candidateName}</h5>
+                        <span className={`shrink-0 px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider ${
                           app.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
                           app.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
                           app.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
@@ -2464,8 +2551,8 @@ const Admin = () => {
                         {app.jobId ? (typeof app.jobId === 'object' ? app.jobId.title : app.jobId) : 'General Placement'}
                       </p>
                       <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase">
-                        <span>{app.experience} Exp</span>
-                        <span>{new Date(app.createdAt).toLocaleDateString()}</span>
+                        <span>{app.experience || 'Exp not specified'}</span>
+                        <span>{app.createdAt ? new Date(app.createdAt).toLocaleDateString() : ''}</span>
                       </div>
                     </div>
                   ))}
@@ -2478,37 +2565,56 @@ const Admin = () => {
               </div>
 
               {/* Recruitment Review Panel & Resume Viewer */}
-              <div data-lenis-prevent className="xl:col-span-8 bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 flex flex-col gap-6 overflow-y-auto shadow-sm">
+              <div
+                data-lenis-prevent
+                className={`xl:col-span-8 bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 flex flex-col gap-5 sm:gap-6 shadow-sm overflow-y-auto ${
+                  !selectedApp ? 'hidden xl:flex' : 'flex'
+                }`}
+              >
                 {selectedApp ? (
-                  <div className="flex flex-col gap-6 w-full">
+                  <div className="flex flex-col gap-5 sm:gap-6 w-full">
+                    {/* Mobile Back to Pipeline button */}
+                    <div className="xl:hidden flex items-center justify-between pb-3 border-b border-slate-100">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedApp(null)}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 bg-blue-50/70 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                      >
+                        &larr; Back to Pipeline
+                      </button>
+                      <span className="text-[11px] font-semibold text-slate-400 truncate max-w-[180px]">
+                        {selectedApp.candidateName}
+                      </span>
+                    </div>
+
                     {/* Header Info */}
-                    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-slate-100 pb-5">
-                      <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <h3 className="text-2xl font-black text-slate-900">{selectedApp.candidateName}</h3>
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 sm:pb-5">
+                      <div className="flex flex-col gap-1.5 min-w-0">
+                        <div className="flex items-center gap-2.5 sm:gap-3 flex-wrap">
+                          <h3 className="text-lg sm:text-2xl font-black text-slate-900 truncate">{selectedApp.candidateName}</h3>
+                          <span className={`px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
                             selectedApp.status === 'Selected' ? 'bg-teal-50 text-teal-700 border border-teal-200/60' :
                             selectedApp.status === 'Shortlisted' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60' :
                             selectedApp.status === 'Interview Scheduled' ? 'bg-purple-50 text-purple-700 border border-purple-200/60' :
                             selectedApp.status === 'Rejected' ? 'bg-rose-50 text-rose-700 border border-rose-200/60' :
                             'bg-blue-50 text-blue-700 border border-blue-200/60'
                           }`}>
-                            {selectedApp.status}
+                            {selectedApp.status || 'Applied'}
                           </span>
                         </div>
                         <p className="text-xs sm:text-sm font-semibold text-slate-500">
-                          Applied for: <span className="text-blue-600 font-bold">{selectedApp.jobId ? (typeof selectedApp.jobId === 'object' ? selectedApp.jobId.title : selectedApp.jobId) : 'General Placement'}</span> &bull; {selectedApp.experience} experience
+                          Applied for: <span className="text-blue-600 font-bold">{selectedApp.jobId ? (typeof selectedApp.jobId === 'object' ? selectedApp.jobId.title : selectedApp.jobId) : 'General Placement'}</span> &bull; {selectedApp.experience || 'N/A'}
                         </p>
                       </div>
 
                       {/* Download / Social Links */}
-                      <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
                         {selectedApp.linkedInUrl && (
                           <a
                             href={selectedApp.linkedInUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
+                            className="p-2 sm:p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
                             title="LinkedIn Profile"
                           >
                             <Users className="w-4 h-4" />
@@ -2519,7 +2625,7 @@ const Admin = () => {
                             href={selectedApp.portfolioUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
+                            className="p-2 sm:p-2.5 bg-slate-100 border border-slate-200 hover:bg-slate-200 rounded-xl text-slate-700 transition-colors shadow-2xs"
                             title="Portfolio Link"
                           >
                             <ExternalLink className="w-4 h-4" />
@@ -2528,55 +2634,55 @@ const Admin = () => {
                         <a
                           href={selectedApp.resume}
                           onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
-                          className="flex-1 sm:flex-none justify-center px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98"
+                          className="flex-1 md:flex-none justify-center px-3.5 py-2 sm:px-4 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98 cursor-pointer"
                         >
-                          <Download className="w-4 h-4" /> Download Resume
+                          <Download className="w-4 h-4 shrink-0" /> <span className="truncate">Download Resume</span>
                         </a>
                       </div>
                     </div>
 
-                    {/* Content Split: Left - Details/Notes, Right - Embed Resume Viewer */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 items-stretch min-h-[450px]">
+                    {/* Content Split: Details/Notes & Embed Resume Viewer */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 flex-1 items-stretch">
                       {/* Details, Cover Letter, Recruiter Notes */}
                       <div className="lg:col-span-5 flex flex-col gap-4">
-                        <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-3">
+                        <div className="bg-slate-50/70 border border-slate-200/80 p-3.5 sm:p-5 rounded-2xl flex flex-col gap-3">
                           <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-2">Profile Overview</h5>
                           <div className="flex flex-col gap-2 text-xs font-semibold">
-                            <div className="flex justify-between">
-                              <span className="text-slate-400">Email:</span>
-                              <span className="text-slate-800 select-all">{selectedApp.email}</span>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-slate-400 shrink-0">Email:</span>
+                              <a href={`mailto:${selectedApp.email}`} className="text-slate-800 select-all truncate hover:text-blue-600">{selectedApp.email || 'N/A'}</a>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-400">Phone:</span>
-                              <span className="text-slate-800">{selectedApp.phone}</span>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-slate-400 shrink-0">Phone:</span>
+                              <a href={`tel:${selectedApp.phone}`} className="text-slate-800 hover:text-blue-600 truncate">{selectedApp.phone || 'N/A'}</a>
                             </div>
-                            <div className="flex justify-between">
-                              <span className="text-slate-400">Location:</span>
-                              <span className="text-slate-800">{selectedApp.location || 'Remote'}</span>
+                            <div className="flex justify-between items-center gap-2">
+                              <span className="text-slate-400 shrink-0">Location:</span>
+                              <span className="text-slate-800 truncate">{selectedApp.location || 'Remote'}</span>
                             </div>
                           </div>
                         </div>
 
                         {selectedApp.coverLetter && (
-                          <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-2 max-h-[180px] overflow-y-auto">
+                          <div className="bg-slate-50/70 border border-slate-200/80 p-3.5 sm:p-5 rounded-2xl flex flex-col gap-2 max-h-[180px] overflow-y-auto">
                             <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-1.5">Cover Letter</h5>
-                            <p className="text-xs text-slate-600 leading-relaxed italic">"{selectedApp.coverLetter}"</p>
+                            <p className="text-xs text-slate-600 leading-relaxed italic break-words">"{selectedApp.coverLetter}"</p>
                           </div>
                         )}
 
                         {/* Recruiter Notes Block */}
-                        <div className="bg-slate-50/70 border border-slate-200/80 p-5 rounded-2xl flex flex-col gap-3 flex-1">
+                        <div className="bg-slate-50/70 border border-slate-200/80 p-3.5 sm:p-5 rounded-2xl flex flex-col gap-3 flex-1">
                           <h5 className="font-extrabold text-slate-700 text-xs uppercase tracking-wider border-b border-slate-200/80 pb-1.5">Recruiter Evaluation Notes</h5>
                           <textarea
                             value={notesText}
                             onChange={(e) => setNotesText(e.target.value)}
-                            rows="4"
-                            className="bg-white border border-slate-200 p-3 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 resize-none flex-1"
+                            rows="3"
+                            className="bg-white border border-slate-200 p-2.5 sm:p-3 rounded-xl text-slate-900 font-semibold text-xs outline-none focus:border-blue-500 resize-none flex-1"
                             placeholder="Add evaluation summary or interview feedback..."
                           />
                           <button
                             onClick={handleSaveNotes}
-                            className="bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl font-bold text-xs tracking-wide inline-flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded-xl font-bold text-xs tracking-wide inline-flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98 cursor-pointer"
                           >
                             <Save className="w-3.5 h-3.5" /> Save Evaluation Notes
                           </button>
@@ -2584,12 +2690,21 @@ const Admin = () => {
                       </div>
 
                       {/* Interactive PDF/Document Resume Preview */}
-                      <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col items-stretch shadow-xs relative">
-                        <div className="bg-slate-50/80 border-b border-slate-200/80 px-4 py-2.5 flex justify-between items-center">
+                      <div className="lg:col-span-7 bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col items-stretch shadow-xs relative min-h-[300px] sm:min-h-[420px]">
+                        <div className="bg-slate-50/80 border-b border-slate-200/80 px-3.5 py-2 sm:px-4 sm:py-2.5 flex justify-between items-center">
                           <span className="text-xs font-bold uppercase text-slate-600 tracking-wider">Interactive Resume Viewer</span>
-                          <span className="text-[10px] bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded font-extrabold uppercase">Live Preview</span>
+                          {selectedApp.resume && (
+                            <a
+                              href={selectedAppResumeSignedUrl || selectedApp.resume}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-[10px] bg-emerald-50 border border-emerald-200 text-emerald-700 px-2 py-0.5 rounded font-extrabold uppercase hover:underline inline-flex items-center gap-1"
+                            >
+                              Live Preview <ExternalLink className="w-2.5 h-2.5" />
+                            </a>
+                          )}
                         </div>
-                        <div className="flex-1 w-full bg-slate-50 relative min-h-[350px]">
+                        <div className="flex-1 w-full bg-slate-50 relative min-h-[280px] sm:min-h-[380px]">
                           {selectedApp.resume && selectedApp.resume.toLowerCase().endsWith('.pdf') ? (
                             selectedAppResumeSignedUrl ? (
                               <iframe
@@ -2603,18 +2718,18 @@ const Admin = () => {
                               </div>
                             )
                           ) : (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-white">
-                              <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-3 border border-blue-100">
-                                <FileSearch className="w-7 h-7" />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center p-6 sm:p-8 text-center bg-white">
+                              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mb-3 border border-blue-100">
+                                <FileSearch className="w-6 h-6 sm:w-7 sm:h-7" />
                               </div>
-                              <h6 className="font-extrabold text-slate-900 text-base mb-1">Resume Preview Unavailable</h6>
-                              <p className="text-xs text-slate-500 max-w-[240px] mb-5">
+                              <h6 className="font-extrabold text-slate-900 text-sm sm:text-base mb-1">Resume Preview Unavailable</h6>
+                              <p className="text-xs text-slate-500 max-w-[240px] mb-4">
                                 Document file is safely secured. You can download or view it directly.
                               </p>
                               <a
                                 href={selectedApp.resume}
                                 onClick={(e) => handleDownloadResume(e, selectedApp.resume, selectedApp.candidateName)}
-                                className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98"
+                                className="px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs tracking-wide inline-flex items-center gap-2 transition-all shadow-xs active:scale-98 cursor-pointer"
                               >
                                 <Download className="w-4 h-4" /> Download Resume
                               </a>
@@ -2625,30 +2740,30 @@ const Admin = () => {
                     </div>
 
                     {/* Candidate Management Action Footer */}
-                    <div className="bg-slate-50/70 border border-slate-200/80 p-4 sm:p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-                      <span className="text-xs font-extrabold uppercase tracking-wider text-slate-600">Update Recruitment Stage:</span>
-                      <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                    <div className="bg-slate-50/70 border border-slate-200/80 p-3.5 sm:p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                      <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-wider text-slate-600">Update Recruitment Stage:</span>
+                      <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full md:w-auto">
                         <button
                           onClick={() => handleUpdateApplicationStatus('Shortlisted')}
-                          className="flex-1 md:flex-initial px-4 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-emerald-800 font-bold text-xs tracking-wide transition-colors"
+                          className="flex-1 md:flex-initial px-3 sm:px-4 py-2 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 rounded-xl text-emerald-800 font-bold text-xs tracking-wide transition-colors text-center cursor-pointer truncate"
                         >
                           Shortlist
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Interview Scheduled')}
-                          className="flex-1 md:flex-initial px-4 py-2 bg-purple-50 border border-purple-200 hover:bg-purple-100 rounded-xl text-purple-800 font-bold text-xs tracking-wide transition-colors"
+                          className="flex-1 md:flex-initial px-3 sm:px-4 py-2 bg-purple-50 border border-purple-200 hover:bg-purple-100 rounded-xl text-purple-800 font-bold text-xs tracking-wide transition-colors text-center cursor-pointer truncate"
                         >
-                          Schedule Interview
+                          Schedule
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Selected')}
-                          className="flex-1 md:flex-initial px-4 py-2 bg-teal-50 border border-teal-200 hover:bg-teal-100 rounded-xl text-teal-800 font-bold text-xs tracking-wide transition-colors"
+                          className="flex-1 md:flex-initial px-3 sm:px-4 py-2 bg-teal-50 border border-teal-200 hover:bg-teal-100 rounded-xl text-teal-800 font-bold text-xs tracking-wide transition-colors text-center cursor-pointer truncate"
                         >
                           Select
                         </button>
                         <button
                           onClick={() => handleUpdateApplicationStatus('Rejected')}
-                          className="flex-1 md:flex-initial px-4 py-2 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-800 font-bold text-xs tracking-wide transition-colors"
+                          className="flex-1 md:flex-initial px-3 sm:px-4 py-2 bg-rose-50 border border-rose-200 hover:bg-rose-100 rounded-xl text-rose-800 font-bold text-xs tracking-wide transition-colors text-center cursor-pointer truncate"
                         >
                           Reject
                         </button>
@@ -2659,6 +2774,7 @@ const Admin = () => {
                   <div className="flex flex-col items-center justify-center h-full text-center py-12">
                     <FileSearch className="w-12 h-12 text-slate-300 mb-3" />
                     <p className="text-slate-400 text-sm italic">No candidate selected for review.</p>
+                    <p className="text-slate-400 text-xs mt-1">Select any applicant from the pipeline to preview their resume and evaluation notes.</p>
                   </div>
                 )}
               </div>
@@ -2908,21 +3024,21 @@ const Admin = () => {
             <>
               {/* Add Employee Modal */}
               {isAddingEmployee && (
-                <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setIsAddingEmployee(false)}>
-                  <div className="bg-white rounded-2xl sm:rounded-[2rem] w-full max-w-2xl max-h-[90vh] overflow-y-auto p-5 sm:p-8" onClick={e => e.stopPropagation()}>
-                    <div className="flex justify-between items-center mb-6">
-                      <div>
-                        <h3 className="text-xl sm:text-2xl font-black text-black tracking-tight">Add Employee</h3>
-                        <p className="text-xs font-semibold text-black/45 uppercase tracking-wide mt-1">Create a new company record</p>
+                <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm" onClick={() => setIsAddingEmployee(false)}>
+                  <div className="bg-white rounded-2xl sm:rounded-[2rem] w-full max-w-2xl max-h-[92vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-7 md:p-8 shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="flex justify-between items-center mb-5 sm:mb-6 border-b border-slate-100 pb-3 sm:pb-4">
+                      <div className="min-w-0 pr-2">
+                        <h3 className="text-lg sm:text-2xl font-black text-black tracking-tight truncate">Add Employee</h3>
+                        <p className="text-[11px] sm:text-xs font-semibold text-black/45 uppercase tracking-wide mt-0.5">Create a new company record</p>
                       </div>
-                      <button onClick={() => setIsAddingEmployee(false)} className="w-9 h-9 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-black/50 hover:text-black transition-colors">
-                        <X className="w-5 h-5" />
+                      <button onClick={() => setIsAddingEmployee(false)} className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hover:bg-gray-100 flex items-center justify-center text-black/50 hover:text-black transition-colors shrink-0 cursor-pointer">
+                        <X className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                     </div>
-                    <form onSubmit={handleAddEmployee} className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                      <div className="col-span-full flex flex-col gap-1.5 items-center">
+                    <form onSubmit={handleAddEmployee} className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5">
+                      <div className="col-span-full flex flex-col gap-1.5 items-center mb-1">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Profile Picture</label>
-                        <div className="relative w-24 h-24 rounded-full border-2 border-dashed border-[#BFDBFE] flex items-center justify-center overflow-hidden group cursor-pointer hover:border-primary transition-colors">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-dashed border-[#BFDBFE] flex items-center justify-center overflow-hidden group cursor-pointer hover:border-primary transition-colors bg-white">
                           {newEmployeeForm.profile_picture ? (
                             <img src={newEmployeeForm.profile_picture} alt="Preview" className="w-full h-full object-cover" />
                           ) : (
@@ -2935,41 +3051,41 @@ const Admin = () => {
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Registration No.</label>
-                        <input type="text" value={newEmployeeForm.registration_no} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, registration_no: e.target.value })} placeholder="e.g. EMP-003" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.registration_no} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, registration_no: e.target.value })} placeholder="e.g. EMP-003" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Full Name</label>
-                        <input type="text" required value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, name: e.target.value })} placeholder="e.g. John Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" required value={newEmployeeForm.name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, name: e.target.value })} placeholder="e.g. John Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Father's Name</label>
-                        <input type="text" value={newEmployeeForm.father_name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, father_name: e.target.value })} placeholder="e.g. Richard Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.father_name} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, father_name: e.target.value })} placeholder="e.g. Richard Doe" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Date of Birth</label>
-                        <input type="date" value={newEmployeeForm.dob} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, dob: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" value={newEmployeeForm.dob} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, dob: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Email ID</label>
-                        <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, email: e.target.value })} placeholder="e.g. john@macenza.com" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="email" value={newEmployeeForm.email} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, email: e.target.value })} placeholder="e.g. john@macenza.com" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Contact Number</label>
-                        <input type="text" value={newEmployeeForm.contact_number} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, contact_number: e.target.value })} placeholder="e.g. +1 555 0103" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.contact_number} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, contact_number: e.target.value })} placeholder="e.g. +1 555 0103" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Role / Designation</label>
-                        <input type="text" value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, role: e.target.value })} placeholder="e.g. Fullstack Engineer" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.role} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, role: e.target.value })} placeholder="e.g. Fullstack Engineer" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
-                        <input type="text" value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, department: e.target.value })} placeholder="e.g. Engineering" className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="text" value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, department: e.target.value })} placeholder="e.g. Engineering" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
                       <div className="flex flex-col gap-1.5 md:col-span-2">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
-                        <input type="date" value={newEmployeeForm.start_date} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, start_date: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all" />
+                        <input type="date" value={newEmployeeForm.start_date} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, start_date: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
-                      <button type="submit" className="md:col-span-2 w-full py-4 mt-2 bg-primary text-white rounded-full font-black text-xs tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 active:scale-95 flex items-center justify-center gap-2">
+                      <button type="submit" className="md:col-span-2 w-full py-3.5 sm:py-4 mt-2 bg-primary text-white rounded-xl sm:rounded-full font-black text-xs tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                         Create Employee Profile
                       </button>
                     </form>
@@ -2977,29 +3093,114 @@ const Admin = () => {
                 </div>
               )}
 
-              <div className="flex flex-col gap-8">
-                {/* Top/Main Box: Employees List taking full width */}
-                <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] overflow-hidden">
-                  <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-[#BFDBFE] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-4">
-                    <h4 className="text-lg sm:text-xl font-black text-black flex items-center gap-2">
+              <div className="flex flex-col gap-6 sm:gap-8">
+                {/* Main Box: Employees List */}
+                <div className="w-full bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-3xl lg:rounded-[3rem] overflow-hidden">
+                  <div className="p-4 sm:px-8 sm:py-6 border-b border-[#BFDBFE] flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white gap-3 sm:gap-4">
+                    <h4 className="text-base sm:text-xl font-black text-black flex items-center gap-2">
                       <Users className="w-5 h-5 text-primary" /> Employees ({employees.length})
                     </h4>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                       {selectedRows.length > 0 && (
-                        <button type="button" onClick={handleDeleteSelected} className="flex-1 sm:flex-none justify-center bg-rose-100 text-rose-600 hover:bg-rose-200 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
-                          <Trash2 className="w-4 h-4 inline mr-1" /> Delete Selected ({selectedRows.length})
+                        <button type="button" onClick={handleDeleteSelected} className="flex-1 sm:flex-none justify-center bg-rose-100 text-rose-600 hover:bg-rose-200 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">
+                          <Trash2 className="w-3.5 h-3.5 inline mr-1" /> <span className="truncate">Delete ({selectedRows.length})</span>
                         </button>
                       )}
-                      <button type="button" onClick={exportEmployeesToCSV} className="flex-1 sm:flex-none justify-center bg-primary/10 text-primary hover:bg-primary/20 px-3 py-2 rounded-xl text-xs font-bold transition-colors">
-                        <Download className="w-4 h-4 inline mr-1" /> Export CSV
+                      <button type="button" onClick={exportEmployeesToCSV} className="flex-1 sm:flex-none justify-center bg-primary/10 text-primary hover:bg-primary/20 px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer">
+                        <Download className="w-3.5 h-3.5 inline mr-1" /> <span className="truncate">Export CSV</span>
                       </button>
-                      <button type="button" onClick={() => setIsAddingEmployee(true)} className="flex-1 sm:flex-none justify-center bg-primary text-white hover:bg-primary-dark px-4 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20">
+                      <button type="button" onClick={() => setIsAddingEmployee(true)} className="flex-1 sm:flex-none justify-center bg-primary text-white hover:bg-primary-dark px-3.5 py-2 rounded-xl text-xs font-bold transition-colors shadow-lg shadow-primary/20 cursor-pointer truncate">
                         + Add Employee
                       </button>
                     </div>
                   </div>
 
-                  <div className="overflow-x-auto custom-scrollbar bg-white relative">
+                  {/* Mobile Cards View for Small Screens (< md) */}
+                  <div className="md:hidden divide-y divide-[#BFDBFE]/60 bg-white">
+                    {employees.map((emp, index) => (
+                      <div
+                        key={emp.id}
+                        onClick={() => {
+                          setSelectedEmployee(emp);
+                          setEditEmployeeForm(emp);
+                          loadEmployeeCertificates(emp.id);
+                        }}
+                        className={`p-4 transition-colors cursor-pointer flex flex-col gap-3 ${
+                          selectedRows.includes(emp.id) ? 'bg-[#EFF6FF]' : 'hover:bg-slate-50'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2.5">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <input
+                              type="checkbox"
+                              checked={selectedRows.includes(emp.id)}
+                              onChange={(e) => toggleRowSelection(e, emp.id)}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer shrink-0"
+                            />
+                            <div className="w-10 h-10 rounded-full overflow-hidden bg-[#EFF6FF] border border-[#BFDBFE] flex items-center justify-center shrink-0">
+                              {getProfilePicture(emp.name, emp.profile_picture) ? (
+                                <img src={getProfilePicture(emp.name, emp.profile_picture)} alt="Profile" className="w-full h-full object-cover" />
+                              ) : (
+                                <User className="w-5 h-5 text-primary/40" />
+                              )}
+                            </div>
+                            <div className="min-w-0">
+                              <h5 className="text-sm font-bold text-black truncate">{emp.name || 'Unnamed Employee'}</h5>
+                              <p className="text-[11px] font-semibold text-primary truncate">{emp.registration_no || 'No Reg ID'}</p>
+                            </div>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteEmployee(emp.id, emp.name);
+                            }}
+                            className="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition-colors shrink-0"
+                            title="Delete Employee"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+
+                        <div className="bg-[#EFF6FF]/60 rounded-xl p-3 border border-[#BFDBFE]/50 flex flex-col gap-1.5 text-xs">
+                          <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Role & Dept:</span>
+                            <span className="font-semibold text-black truncate max-w-[180px]">{emp.role || '-'} {emp.department ? `(${emp.department})` : ''}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Email:</span>
+                            <span className="font-semibold text-black truncate max-w-[180px]">{emp.email || '-'}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Contact:</span>
+                            <span className="font-semibold text-black">{emp.contact_number || '-'}</span>
+                          </div>
+                          <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Date of Birth:</span>
+                            <span className="font-semibold text-black">{emp.dob || '-'}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-0.5">
+                          <span className="text-[11px] font-semibold text-primary/80">Tap to view full details</span>
+                          <span className="text-xs font-bold text-primary flex items-center gap-1">
+                            Details <ArrowRight className="w-3.5 h-3.5" />
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+
+                    {employees.length === 0 && (
+                      <div className="p-8 text-center text-black/50 italic text-xs">
+                        No employee records found.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Desktop & Tablet Table (>= md) */}
+                  <div className="hidden md:block overflow-x-auto custom-scrollbar bg-white relative">
                     <table className="w-full text-left border-collapse min-w-[1500px]">
                       <thead className="bg-[#DBEAFE] sticky top-0 z-10 border-b border-[#BFDBFE]">
                         <tr className="text-black font-bold text-xs uppercase tracking-wider">
@@ -3069,7 +3270,7 @@ const Admin = () => {
                                   e.stopPropagation();
                                   handleDeleteEmployee(emp.id, emp.name);
                                 }}
-                                className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors active:scale-90"
+                                className="p-2 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl transition-colors active:scale-90 cursor-pointer"
                                 title="Delete Employee"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -3105,32 +3306,32 @@ const Admin = () => {
           {selectedEmployee && !isEditingEmployee && (
             <div
               onClick={() => setSelectedEmployee(null)}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 cursor-pointer"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4 cursor-pointer"
             >
               <div
                 onClick={(e) => e.stopPropagation()}
                 data-lenis-prevent
-                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative cursor-default"
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-7 md:p-8 max-w-4xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl relative cursor-default"
               >
                 {/* Close Button */}
                 <button
                   onClick={() => setSelectedEmployee(null)}
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                  className="absolute top-3 right-3 sm:top-6 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors cursor-pointer shadow-xs"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <h3 className="text-xl sm:text-2xl font-black text-black mb-4 sm:mb-6">Employee Details</h3>
+                <h3 className="text-lg sm:text-2xl font-black text-black mb-3 sm:mb-6 pr-10">Employee Details</h3>
 
                 {/* Profile Header */}
-                <div className="bg-white border border-[#BFDBFE] rounded-2xl sm:rounded-[2rem] p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center text-white font-black text-2xl shadow-md">
+                <div className="bg-white border border-[#BFDBFE] rounded-2xl sm:rounded-[2rem] p-3.5 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary rounded-full flex items-center justify-center text-white font-black text-lg sm:text-2xl shadow-md shrink-0">
                       {selectedEmployee.name ? selectedEmployee.name.charAt(0).toUpperCase() : 'E'}
                     </div>
-                    <div>
-                      <h4 className="text-2xl font-black text-black">{selectedEmployee.name}</h4>
-                      <p className="text-sm font-semibold text-black/55">{selectedEmployee.role} in {selectedEmployee.department}</p>
+                    <div className="min-w-0">
+                      <h4 className="text-base sm:text-2xl font-black text-black truncate">{selectedEmployee.name}</h4>
+                      <p className="text-xs sm:text-sm font-semibold text-black/55 truncate">{selectedEmployee.role || 'Team Member'} in {selectedEmployee.department || 'Macenza'}</p>
                     </div>
                   </div>
                   <button
@@ -3138,17 +3339,17 @@ const Admin = () => {
                       setEditEmployeeForm(selectedEmployee);
                       setIsEditingEmployee(true);
                     }}
-                    className="px-5 py-2.5 bg-white border border-[#BFDBFE] hover:bg-[#EFF6FF] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95"
+                    className="w-full sm:w-auto justify-center px-4 py-2 sm:px-5 sm:py-2.5 bg-white border border-[#BFDBFE] hover:bg-[#EFF6FF] rounded-xl text-black font-bold text-xs tracking-wider uppercase inline-flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
                   >
                     <Edit3 className="w-4 h-4 text-primary" /> Edit Profile
                   </button>
                 </div>
 
                 {/* Information Panels */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                   {/* Personal Details */}
-                  <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
-                    <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Personal Details</h5>
+                  <div className="bg-white border border-[#BFDBFE] p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col gap-2.5 sm:gap-3">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-1">Personal Details</h5>
 
                     <div className="flex justify-between items-center text-xs font-semibold py-1">
                       <span className="text-black/50">Registration No.</span>
@@ -3166,34 +3367,34 @@ const Admin = () => {
                       <span className="text-black/50">Aadhaar No.</span>
                       <span className="text-black font-bold">{selectedEmployee.aadhaar_no || '-'}</span>
                     </div>
-                    <div className="flex justify-between items-center text-xs font-semibold py-1">
-                      <span className="text-black/50">Email ID</span>
-                      <span className="text-black font-bold">{selectedEmployee.email || '-'}</span>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1 gap-2">
+                      <span className="text-black/50 shrink-0">Email ID</span>
+                      <a href={`mailto:${selectedEmployee.email}`} className="text-black font-bold truncate hover:text-primary">{selectedEmployee.email || '-'}</a>
                     </div>
-                    <div className="flex justify-between items-center text-xs font-semibold py-1">
-                      <span className="text-black/50">Contact No.</span>
-                      <span className="text-black font-bold">{selectedEmployee.contact_number || '-'}</span>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1 gap-2">
+                      <span className="text-black/50 shrink-0">Contact No.</span>
+                      <a href={`tel:${selectedEmployee.contact_number}`} className="text-black font-bold hover:text-primary truncate">{selectedEmployee.contact_number || '-'}</a>
                     </div>
-                    <div className="flex justify-between items-center text-xs font-semibold py-1">
-                      <span className="text-black/50">Alt Phone No.</span>
-                      <span className="text-black font-bold">{selectedEmployee.alt_phone || '-'}</span>
+                    <div className="flex justify-between items-center text-xs font-semibold py-1 gap-2">
+                      <span className="text-black/50 shrink-0">Alt Phone No.</span>
+                      <span className="text-black font-bold truncate">{selectedEmployee.alt_phone || '-'}</span>
                     </div>
 
-                    <div className="text-xs font-semibold mt-3 pt-3 border-t border-[#BFDBFE]/60">
+                    <div className="text-xs font-semibold mt-2 pt-2 border-t border-[#BFDBFE]/60">
                       <span className="text-black/50 uppercase text-[9px] tracking-wider block mb-1">Permanent Address:</span>
-                      <span className="text-black font-bold block leading-relaxed">{selectedEmployee.permanent_address || 'Not Provided'}</span>
+                      <span className="text-black font-bold block leading-relaxed break-words">{selectedEmployee.permanent_address || 'Not Provided'}</span>
                     </div>
-                    <div className="text-xs font-semibold mt-2">
+                    <div className="text-xs font-semibold mt-1">
                       <span className="text-black/50 uppercase text-[9px] tracking-wider block mb-1">Current Address:</span>
-                      <span className="text-black font-bold block leading-relaxed">{selectedEmployee.current_address || 'Not Provided'}</span>
+                      <span className="text-black font-bold block leading-relaxed break-words">{selectedEmployee.current_address || 'Not Provided'}</span>
                     </div>
                   </div>
 
                   {/* Right Column Panels */}
-                  <div className="flex flex-col gap-6">
+                  <div className="flex flex-col gap-4 sm:gap-6">
                     {/* Professional Details */}
-                    <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
-                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Professional Details</h5>
+                    <div className="bg-white border border-[#BFDBFE] p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col gap-2.5 sm:gap-3">
+                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-1">Professional Details</h5>
                       <div className="flex justify-between items-center text-xs font-semibold py-1">
                         <span className="text-black/50">Start Date</span>
                         <span className="text-black font-bold">{selectedEmployee.start_date || '-'}</span>
@@ -3205,8 +3406,8 @@ const Admin = () => {
                     </div>
 
                     {/* Bank Details */}
-                    <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-3">
-                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-2">Bank Details</h5>
+                    <div className="bg-white border border-[#BFDBFE] p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col gap-2.5 sm:gap-3">
+                      <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 mb-1">Bank Details</h5>
                       <div className="flex justify-between items-center text-xs font-semibold py-1">
                         <span className="text-black/50">Account No.</span>
                         <span className="text-black font-bold">{selectedEmployee.account_no || '-'}</span>
@@ -3220,28 +3421,28 @@ const Admin = () => {
                 </div>
 
                 {/* Employee Documents & Certifications */}
-                <div className="bg-white border border-[#BFDBFE] p-6 rounded-[2rem] flex flex-col gap-4">
+                <div className="bg-white border border-[#BFDBFE] p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] flex flex-col gap-3 sm:gap-4">
                   <h5 className="font-black text-black text-xs uppercase tracking-wider border-b border-[#BFDBFE] pb-2 flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" /> Employee Documents & Certifications
                   </h5>
 
-                  <div className="flex flex-wrap gap-3 items-center">
+                  <div className="flex flex-wrap gap-2.5 sm:gap-3 items-center">
                     {/* General Documents */}
                     {selectedEmployee.documents && selectedEmployee.documents.map((doc, idx) => (
                       <div
                         key={idx}
-                        className="bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE]/45 px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-xs font-bold text-black group transition-all"
+                        className="bg-[#EFF6FF] border border-[#BFDBFE] hover:bg-[#DBEAFE]/45 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-center justify-between gap-2.5 text-xs font-bold text-black group transition-all w-full sm:w-auto"
                       >
                         <a
                           href={doc.url}
                           onClick={(e) => handleDownloadResume(e, doc.url, `${selectedEmployee.name}_${doc.name}`)}
-                          className="flex items-center gap-2 hover:underline"
+                          className="flex items-center gap-2 hover:underline truncate min-w-0"
                         >
-                          <FileText className="w-4 h-4 text-primary" />
-                          <span>{doc.name}</span>
+                          <FileText className="w-4 h-4 text-primary shrink-0" />
+                          <span className="truncate">{doc.name}</span>
                         </a>
 
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <a
                             href={doc.url}
                             onClick={(e) => handleDownloadResume(e, doc.url, `${selectedEmployee.name}_${doc.name}`)}
@@ -3261,7 +3462,7 @@ const Admin = () => {
                                 setSelectedEmployee(updatedEmp);
                               }
                             }}
-                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40"
+                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40 cursor-pointer"
                             title="Remove Document"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -3271,21 +3472,21 @@ const Admin = () => {
                     ))}
 
                     {/* Certificates */}
-                    {selectedEmployee.certificates && selectedEmployee.certificates.map((cert, idx) => (
+                    {selectedEmployee.certificates && selectedEmployee.certificates.map((cert) => (
                       <div
                         key={'cert_' + cert.id}
-                        className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/50 px-4 py-3 rounded-xl flex items-center justify-between gap-3 text-xs font-bold text-black group transition-all"
+                        className="bg-emerald-50 border border-emerald-200 hover:bg-emerald-100/50 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl flex items-center justify-between gap-2.5 text-xs font-bold text-black group transition-all w-full sm:w-auto"
                       >
                         <a
                           href={cert.url}
                           onClick={(e) => handleDownloadResume(e, cert.url, `${selectedEmployee.name}_${cert.name}`)}
-                          className="flex items-center gap-2 hover:underline"
+                          className="flex items-center gap-2 hover:underline truncate min-w-0"
                         >
-                          <Award className="w-4 h-4 text-emerald-600" />
-                          <span>{cert.name} <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-1.5 py-0.5 rounded font-black uppercase ml-1">{cert.certification_number}</span></span>
+                          <Award className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span className="truncate">{cert.name} <span className="text-[10px] bg-emerald-100 border border-emerald-300 text-emerald-800 px-1.5 py-0.5 rounded font-black uppercase ml-1">{cert.certification_number}</span></span>
                         </a>
 
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <a
                             href={cert.url}
                             onClick={(e) => handleDownloadResume(e, cert.url, `${selectedEmployee.name}_${cert.name}`)}
@@ -3314,7 +3515,7 @@ const Admin = () => {
                                 }
                               }
                             }}
-                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40"
+                            className="p-1 hover:bg-rose-100 hover:text-rose-600 rounded-md transition-colors text-black/40 cursor-pointer"
                             title="Remove Certificate"
                           >
                             <X className="w-3.5 h-3.5" />
@@ -3324,8 +3525,8 @@ const Admin = () => {
                     ))}
 
                     {/* Action Upload Triggers */}
-                    <div className="flex gap-3 items-center flex-wrap w-full mt-2 pt-2 border-t border-[#BFDBFE]/40">
-                      <label className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
+                    <div className="flex gap-2 sm:gap-3 items-center flex-wrap w-full mt-2 pt-2 border-t border-[#BFDBFE]/40">
+                      <label className="flex-1 sm:flex-none border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer relative">
                         <Plus className="w-4 h-4" /> Upload Document
                         <input
                           type="file"
@@ -3337,7 +3538,7 @@ const Admin = () => {
                       <button
                         type="button"
                         onClick={handleUploadCertificateClick}
-                        className="border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-4 py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        className="flex-1 sm:flex-none border-2 border-dashed border-[#BFDBFE] hover:border-primary/50 hover:bg-[#EFF6FF]/50 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl text-primary font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <Award className="w-4 h-4 text-emerald-600" /> Upload Certificate
                       </button>
@@ -3358,31 +3559,31 @@ const Admin = () => {
 
           {/* Edit Employee Profile Modal */}
           {isEditingEmployee && editEmployeeForm && (
-            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-3 sm:p-4">
               <form
                 onSubmit={handleSaveEmployeeEdit}
                 data-lenis-prevent
-                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[3rem] p-5 sm:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative"
+                className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl sm:rounded-[2.5rem] p-4 sm:p-7 md:p-8 max-w-4xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl relative"
               >
                 {/* Close Button */}
                 <button
                   type="button"
                   onClick={() => setIsEditingEmployee(false)}
-                  className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors"
+                  className="absolute top-3 right-3 sm:top-6 sm:right-6 w-8 h-8 sm:w-10 sm:h-10 bg-white border border-[#BFDBFE] hover:bg-[#DBEAFE] rounded-full flex items-center justify-center text-black font-black transition-colors cursor-pointer shadow-xs"
                 >
                   <X className="w-4 h-4" />
                 </button>
 
-                <h3 className="text-xl sm:text-2xl font-black text-black mb-6 sm:mb-8 border-b border-[#BFDBFE] pb-4">Edit Employee Profile</h3>
+                <h3 className="text-lg sm:text-2xl font-black text-black mb-4 sm:mb-6 border-b border-[#BFDBFE] pb-3 sm:pb-4 pr-10">Edit Employee Profile</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 sm:gap-y-5">
                   {/* Left Column: Personal Info */}
-                  <div className="flex flex-col gap-5">
-                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-2 border-b border-[#BFDBFE]/40 pb-1">Personal Info</h5>
+                  <div className="flex flex-col gap-3.5 sm:gap-5">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-1 border-b border-[#BFDBFE]/40 pb-1">Personal Info</h5>
 
-                    <div className="flex flex-col gap-1.5 items-center mb-2">
+                    <div className="flex flex-col gap-1.5 items-center mb-1">
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Profile Picture</label>
-                      <div className="relative w-24 h-24 rounded-full border-2 border-dashed border-[#BFDBFE] flex items-center justify-center overflow-hidden group cursor-pointer hover:border-primary transition-colors bg-white">
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-dashed border-[#BFDBFE] flex items-center justify-center overflow-hidden group cursor-pointer hover:border-primary transition-colors bg-white">
                         {editEmployeeForm.profile_picture ? (
                           <img src={editEmployeeForm.profile_picture} alt="Preview" className="w-full h-full object-cover" />
                         ) : (
@@ -3400,7 +3601,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.registration_no || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, registration_no: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3411,7 +3612,7 @@ const Admin = () => {
                         required
                         value={editEmployeeForm.name || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, name: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3421,7 +3622,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.father_name || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, father_name: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3431,7 +3632,7 @@ const Admin = () => {
                         type="date"
                         value={editEmployeeForm.dob || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, dob: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3441,7 +3642,7 @@ const Admin = () => {
                         type="email"
                         value={editEmployeeForm.email || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, email: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3451,7 +3652,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.contact_number || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, contact_number: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3462,7 +3663,7 @@ const Admin = () => {
                         value={editEmployeeForm.alt_phone || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, alt_phone: e.target.value })}
                         placeholder="e.g. +1 555 0109"
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3473,7 +3674,7 @@ const Admin = () => {
                         value={editEmployeeForm.aadhaar_no || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, aadhaar_no: e.target.value })}
                         placeholder="e.g. 1234-5678-9012"
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3483,7 +3684,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.permanent_address || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, permanent_address: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3493,14 +3694,14 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.current_address || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, current_address: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
                   </div>
 
                   {/* Right Column: Professional & Bank */}
-                  <div className="flex flex-col gap-5">
-                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-2 border-b border-[#BFDBFE]/40 pb-1">Professional & Bank</h5>
+                  <div className="flex flex-col gap-3.5 sm:gap-5">
+                    <h5 className="font-black text-black text-xs uppercase tracking-wider mb-1 border-b border-[#BFDBFE]/40 pb-1">Professional & Bank</h5>
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Account No.</label>
@@ -3509,7 +3710,7 @@ const Admin = () => {
                         value={editEmployeeForm.account_no || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, account_no: e.target.value })}
                         placeholder="e.g. 0987654321"
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3520,7 +3721,7 @@ const Admin = () => {
                         value={editEmployeeForm.ifsc_detail || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, ifsc_detail: e.target.value })}
                         placeholder="e.g. CHAS0001"
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3530,7 +3731,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.role || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, role: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3540,7 +3741,7 @@ const Admin = () => {
                         type="text"
                         value={editEmployeeForm.department || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, department: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3550,7 +3751,7 @@ const Admin = () => {
                         type="date"
                         value={editEmployeeForm.start_date || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, start_date: e.target.value })}
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
 
@@ -3561,24 +3762,24 @@ const Admin = () => {
                         value={editEmployeeForm.salary || ''}
                         onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, salary: e.target.value })}
                         placeholder="e.g. $120,000"
-                        className="bg-white border border-[#BFDBFE] p-3.5 rounded-2xl text-black font-semibold text-sm outline-none focus:border-primary transition-all"
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-4 mt-8 border-t border-[#BFDBFE]/60 pt-6">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-6 sm:mt-8 border-t border-[#BFDBFE]/60 pt-4 sm:pt-6">
                   <button
                     type="submit"
-                    className="bg-primary hover:bg-primary-dark text-white font-black text-sm tracking-wider uppercase py-4 px-8 rounded-full shadow-lg shadow-primary/20 hover:shadow-2xl transition-all duration-300 active:scale-95"
+                    className="flex-1 sm:flex-none justify-center bg-primary hover:bg-primary-dark text-white font-black text-xs sm:text-sm tracking-wider uppercase py-3.5 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-full shadow-lg shadow-primary/20 hover:shadow-2xl transition-all duration-300 active:scale-95 cursor-pointer text-center"
                   >
                     SAVE CHANGES
                   </button>
                   <button
                     type="button"
                     onClick={() => setIsEditingEmployee(false)}
-                    className="bg-white border-2 border-primary/20 hover:border-primary text-black font-black text-sm tracking-wider uppercase py-4 px-8 rounded-full transition-all duration-300 active:scale-95"
+                    className="flex-1 sm:flex-none justify-center bg-white border-2 border-primary/20 hover:border-primary text-black font-black text-xs sm:text-sm tracking-wider uppercase py-3 sm:py-4 px-6 sm:px-8 rounded-xl sm:rounded-full transition-all duration-300 active:scale-95 cursor-pointer text-center"
                   >
                     CANCEL
                   </button>
@@ -3593,52 +3794,54 @@ const Admin = () => {
         <div className="fixed inset-0 z-[100] flex justify-end overflow-hidden">
           {/* Backdrop */}
           <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
             onClick={() => setCandidateDrawerApp(null)}
           />
 
           {/* Slide-in Panel from Right */}
           <div
             data-lenis-prevent
-            className="relative w-full sm:max-w-2xl bg-white h-full shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-slate-200"
+            className="relative w-full max-w-full sm:max-w-xl md:max-w-2xl bg-white h-[100dvh] max-h-[100dvh] shadow-2xl z-10 overflow-y-auto flex flex-col transform transition-transform duration-300 ease-in-out border-l border-slate-200"
           >
             {/* Drawer Header */}
-            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-5 sm:px-7 py-4 sm:py-5 flex items-center justify-between z-20">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center font-extrabold text-blue-600 text-base shrink-0">
+            <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 py-3 sm:px-6 sm:py-4 flex items-center justify-between z-20 shrink-0 gap-2">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center font-extrabold text-blue-600 text-sm sm:text-base shrink-0">
                   {candidateDrawerApp.candidateName ? candidateDrawerApp.candidateName.charAt(0).toUpperCase() : 'C'}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight truncate">
+                  <h3 className="text-sm sm:text-lg font-black text-slate-900 leading-tight truncate">
                     {candidateDrawerApp.candidateName}
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 truncate">
+                  <p className="text-[11px] sm:text-xs font-semibold text-slate-500 truncate">
                     Applied for: <span className="text-blue-600 font-bold">{candidateDrawerApp.jobId ? (typeof candidateDrawerApp.jobId === 'object' ? candidateDrawerApp.jobId.title : candidateDrawerApp.jobId) : 'General Placement'}</span>
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setCandidateDrawerApp(null)}
-                className="p-2 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-700 transition-colors shrink-0"
+                className="p-1.5 sm:p-2 rounded-xl bg-slate-100/70 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors shrink-0 cursor-pointer"
                 title="Close"
+                aria-label="Close details"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Top Action Bar: Download Resume & View Portfolio */}
-            <div className="p-4 sm:p-5 bg-slate-50/70 border-b border-slate-100 flex flex-wrap items-center gap-2.5">
+            <div className="p-3 sm:p-4 bg-slate-50/70 border-b border-slate-100 flex flex-wrap items-center gap-2">
               {/* Download Resume Button */}
               <button
                 onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
                 disabled={!candidateDrawerApp.resume}
-                className={`flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-2 transition-all shadow-xs ${
+                className={`flex-1 min-w-[120px] py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs tracking-wide flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-xs ${
                   candidateDrawerApp.resume
                     ? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-98 cursor-pointer'
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                 }`}
               >
-                <Download className="w-4 h-4" /> Download Resume
+                <Download className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                <span className="truncate">Download Resume</span>
               </button>
 
               {/* View Portfolio Button */}
@@ -3647,16 +3850,19 @@ const Admin = () => {
                   href={candidateDrawerApp.portfolioUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 flex items-center justify-center gap-2 transition-all shadow-2xs active:scale-98"
+                  className="flex-1 min-w-[120px] py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-blue-600 flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-2xs active:scale-98"
                 >
-                  <Globe className="w-4 h-4" /> View Portfolio <ExternalLink className="w-3.5 h-3.5" />
+                  <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+                  <span className="truncate">Portfolio</span>
+                  <ExternalLink className="w-3 h-3 shrink-0" />
                 </a>
               ) : (
                 <button
                   disabled
-                  className="flex-1 min-w-[140px] py-2.5 px-4 rounded-xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-2 cursor-not-allowed"
+                  className="flex-1 min-w-[120px] py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs bg-slate-100 border border-slate-200 text-slate-400 flex items-center justify-center gap-1.5 cursor-not-allowed"
                 >
-                  <Globe className="w-4 h-4" /> No Portfolio
+                  <Globe className="w-3.5 h-3.5 shrink-0" />
+                  <span className="truncate">No Portfolio</span>
                 </button>
               )}
 
@@ -3666,26 +3872,27 @@ const Admin = () => {
                   href={candidateDrawerApp.linkedInUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="py-2.5 px-4 rounded-xl font-bold text-xs bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90 flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98"
+                  className="py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl font-bold text-xs bg-[#0A66C2] text-white hover:bg-[#0A66C2]/90 flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-98 shrink-0"
                   title="LinkedIn Profile"
                 >
-                  <ExternalLink className="w-4 h-4" /> LinkedIn
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                  <span>LinkedIn</span>
                 </a>
               )}
             </div>
 
             {/* Drawer Body Content */}
-            <div className="p-5 sm:p-6 flex flex-col gap-5">
+            <div className="p-3.5 sm:p-5 lg:p-6 flex flex-col gap-4 sm:gap-5 pb-8">
               {/* Profile Details Card */}
-              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3.5">
-                <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Candidate Contact & Overview</h4>
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-3.5 sm:p-5 flex flex-col gap-3">
+                <h4 className="text-[11px] sm:text-xs font-extrabold uppercase text-slate-500 tracking-wider">Candidate Contact & Overview</h4>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <Mail className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col overflow-hidden">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Email</span>
                       <a href={`mailto:${candidateDrawerApp.email}`} className="text-xs font-bold text-slate-800 hover:text-blue-600 truncate">
                         {candidateDrawerApp.email || 'N/A'}
@@ -3693,57 +3900,57 @@ const Admin = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <Phone className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Phone</span>
-                      <a href={`tel:${candidateDrawerApp.phone}`} className="text-xs font-bold text-slate-800 hover:text-blue-600">
+                      <a href={`tel:${candidateDrawerApp.phone}`} className="text-xs font-bold text-slate-800 hover:text-blue-600 truncate">
                         {candidateDrawerApp.phone || 'N/A'}
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <MapPin className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Location</span>
-                      <span className="text-xs font-bold text-slate-800">{candidateDrawerApp.location || 'Remote'}</span>
+                      <span className="text-xs font-bold text-slate-800 truncate">{candidateDrawerApp.location || 'Remote'}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <Briefcase className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Experience</span>
-                      <span className="text-xs font-bold text-slate-800">{candidateDrawerApp.experience || 'Not Specified'}</span>
+                      <span className="text-xs font-bold text-slate-800 truncate">{candidateDrawerApp.experience || 'Not Specified'}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <CalendarDays className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Applied Date</span>
-                      <span className="text-xs font-bold text-slate-800">
+                      <span className="text-xs font-bold text-slate-800 truncate">
                         {candidateDrawerApp.createdAt ? new Date(candidateDrawerApp.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
-                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                  <div className="flex items-center gap-2.5 sm:gap-3 bg-white p-2.5 sm:p-3 rounded-xl border border-slate-200/80 shadow-2xs min-w-0">
+                    <div className="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0">
                       <FileCheck className="w-4 h-4" />
                     </div>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col min-w-0">
                       <span className="text-[10px] font-bold uppercase text-slate-400">Status</span>
-                      <span className="text-xs font-extrabold uppercase text-blue-600">{candidateDrawerApp.status || 'Applied'}</span>
+                      <span className="text-xs font-extrabold uppercase text-blue-600 truncate">{candidateDrawerApp.status || 'Applied'}</span>
                     </div>
                   </div>
                 </div>
@@ -3751,26 +3958,26 @@ const Admin = () => {
 
               {/* Cover Letter */}
               {candidateDrawerApp.coverLetter && (
-                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-2">
-                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Cover Letter</h4>
-                  <p className="text-xs text-slate-700 leading-relaxed italic bg-white p-4 rounded-xl border border-slate-200/80 shadow-2xs">
+                <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-3.5 sm:p-5 flex flex-col gap-2">
+                  <h4 className="text-[11px] sm:text-xs font-extrabold uppercase text-slate-500 tracking-wider">Cover Letter</h4>
+                  <p className="text-xs text-slate-700 leading-relaxed italic bg-white p-3 sm:p-4 rounded-xl border border-slate-200/80 shadow-2xs break-words">
                     "{candidateDrawerApp.coverLetter}"
                   </p>
                 </div>
               )}
 
               {/* Recruitment Pipeline Status update */}
-              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
-                <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Update Pipeline Status</h4>
-                <div className="flex flex-wrap gap-2">
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-3.5 sm:p-5 flex flex-col gap-2.5 sm:gap-3">
+                <h4 className="text-[11px] sm:text-xs font-extrabold uppercase text-slate-500 tracking-wider">Update Pipeline Status</h4>
+                <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 sm:gap-2">
                   {['Applied', 'Shortlisted', 'Interview Scheduled', 'Selected', 'Rejected'].map((statusOption) => (
                     <button
                       key={statusOption}
                       onClick={() => handleDrawerStatusUpdate(candidateDrawerApp, statusOption)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+                      className={`px-2.5 sm:px-3.5 py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all text-center truncate ${
                         candidateDrawerApp.status === statusOption
                           ? 'bg-blue-600 text-white shadow-xs'
-                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                          : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 cursor-pointer'
                       }`}
                     >
                       {statusOption}
@@ -3780,37 +3987,37 @@ const Admin = () => {
               </div>
 
               {/* Internal Notes */}
-              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Internal Recruiter Notes</h4>
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-3.5 sm:p-5 flex flex-col gap-2.5 sm:gap-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="text-[11px] sm:text-xs font-extrabold uppercase text-slate-500 tracking-wider truncate">Internal Recruiter Notes</h4>
                   <button
                     onClick={() => handleDrawerSaveNotes(candidateDrawerApp, drawerNotesText)}
-                    className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5 shadow-2xs"
+                    className="px-2.5 sm:px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
                   >
-                    <Save className="w-3.5 h-3.5" /> Save Notes
+                    <Save className="w-3.5 h-3.5" /> <span>Save</span>
                   </button>
                 </div>
                 <textarea
                   value={drawerNotesText}
                   onChange={(e) => setDrawerNotesText(e.target.value)}
                   rows={3}
-                  className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-slate-200 rounded-xl p-2.5 sm:p-3 text-xs text-slate-900 font-semibold focus:outline-none focus:border-blue-500"
                   placeholder="Add internal feedback, interview outcome, notes..."
                 />
               </div>
 
               {/* Resume Viewer */}
-              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-5 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-extrabold uppercase text-slate-500 tracking-wider">Resume Document</h4>
+              <div className="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-3.5 sm:p-5 flex flex-col gap-2.5 sm:gap-3">
+                <div className="flex items-center justify-between gap-2">
+                  <h4 className="text-[11px] sm:text-xs font-extrabold uppercase text-slate-500 tracking-wider">Resume Document</h4>
                   {candidateDrawerApp.resume && (
                     <a
                       href={candidateDrawerAppResumeSignedUrl || '#'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
+                      className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1 shrink-0"
                     >
-                      Open Document <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Open Tab</span> <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                   )}
                 </div>
@@ -3819,24 +4026,24 @@ const Admin = () => {
                     candidateDrawerAppResumeSignedUrl ? (
                       <iframe
                         src={`${candidateDrawerAppResumeSignedUrl}#toolbar=0`}
-                        className="w-full h-[450px] rounded-xl border border-slate-200 bg-white shadow-xs"
+                        className="w-full h-[320px] sm:h-[450px] rounded-xl border border-slate-200 bg-white shadow-xs"
                         title="Resume Preview"
                       />
                     ) : (
-                      <div className="w-full h-[450px] rounded-xl border border-slate-200 bg-slate-50 shadow-xs flex items-center justify-center text-xs font-bold text-slate-400">
+                      <div className="w-full h-[240px] sm:h-[450px] rounded-xl border border-slate-200 bg-slate-50 shadow-xs flex items-center justify-center text-xs font-bold text-slate-400">
                         <span className="animate-pulse">Loading preview...</span>
                       </div>
                     )
                   ) : (
-                    <div className="bg-white border border-slate-200 rounded-xl p-6 text-center flex flex-col items-center gap-3 shadow-2xs">
-                      <FileText className="w-9 h-9 text-blue-600" />
+                    <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 text-center flex flex-col items-center gap-3 shadow-2xs">
+                      <FileText className="w-8 h-8 sm:w-9 sm:h-9 text-blue-600" />
                       <div>
                         <p className="text-xs font-bold text-slate-800">Resume Attached</p>
                         <p className="text-[11px] text-slate-400">Click below to download or view the document</p>
                       </div>
                       <button
                         onClick={(e) => handleDownloadResume(e, candidateDrawerApp.resume, candidateDrawerApp.candidateName)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-2 shadow-xs active:scale-98"
+                        className="px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 flex items-center gap-2 shadow-xs active:scale-98 cursor-pointer"
                       >
                         <Download className="w-4 h-4" /> Download Resume
                       </button>

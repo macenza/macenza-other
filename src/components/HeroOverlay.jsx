@@ -57,26 +57,25 @@ const HeroOverlay = () => {
   ];
 
   return (
-    <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-6 pb-3 md:p-12 overflow-hidden">
-
+    <div ref={overlayRef} className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between p-4 sm:p-8 md:p-12 overflow-hidden">
       {/* Hero Content (Left) & Stats (Right) */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-6 sm:gap-12 mt-16 sm:mt-20">
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center md:justify-between gap-6 sm:gap-12 mt-12 sm:mt-16 md:mt-20">
 
         {/* Left Hero Content */}
-        <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto -mt-0 md:mt-0">
-          <div className="overflow-hidden pt-5 mb-2">
-            <h1 className="hero-line-1 text-[2.2rem] md:text-[3.3rem] font-faculty font-normal text-black tracking-normal leading-[1.2] pb-2">
+        <div ref={leftContentRef} className="max-w-[600px] pointer-events-auto w-full">
+          <div className="overflow-hidden pt-2 sm:pt-4 mb-1 sm:mb-2">
+            <h1 className="hero-line-1 text-[1.85rem] min-[360px]:text-[2.1rem] sm:text-[2.6rem] md:text-[3.3rem] font-faculty font-normal text-black tracking-normal leading-[1.15] sm:leading-[1.2] pb-1 sm:pb-2">
               <BouncyText text="Custom Web Apps" />
             </h1>
           </div>
-          <div className="overflow-hidden pt-5 mb-10">
-            <h1 className="hero-line-2 text-[2.2rem] md:text-[3.3rem] font-faculty font-normal text-primary tracking-normal leading-[1.2] pb-2">
+          <div className="overflow-hidden pt-1 sm:pt-2 mb-6 sm:mb-8 md:mb-10">
+            <h1 className="hero-line-2 text-[1.85rem] min-[360px]:text-[2.1rem] sm:text-[2.6rem] md:text-[3.3rem] font-faculty font-normal text-primary tracking-normal leading-[1.15] sm:leading-[1.2] pb-1 sm:pb-2">
               <BouncyText text="Development" />
             </h1>
           </div>
-          <div className="hero-btns flex flex-wrap gap-4">
-            <Link to="/contact" className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300">
-              Contact Us <ArrowRight className="w-5 h-5" />
+          <div className="hero-btns flex flex-wrap gap-3 sm:gap-4">
+            <Link to="/contact" className="px-6 py-3.5 sm:px-8 sm:py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 glow-blue hover:bg-primary-dark transition-all duration-300 text-sm sm:text-base min-h-[48px]">
+              Contact Us <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </Link>
           </div>
         </div>

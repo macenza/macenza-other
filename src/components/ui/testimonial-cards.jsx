@@ -14,8 +14,8 @@ export function TestimonialCard({ handleShuffle, testimonial, position, id, auth
         zIndex: position === "front" ? "2" : position === "middle" ? "1" : "0"
       }}
       animate={{
-        rotate: position === "front" ? "-6deg" : position === "middle" ? "0deg" : "6deg",
-        x: position === "front" ? "0%" : position === "middle" ? "33%" : "66%"
+        rotate: position === "front" ? "-4deg" : position === "middle" ? "0deg" : "4deg",
+        x: position === "front" ? "0%" : position === "middle" ? "10%" : "20%"
       }}
       drag={true}
       dragElastic={0.35}
@@ -30,26 +30,26 @@ export function TestimonialCard({ handleShuffle, testimonial, position, id, auth
         dragRef.current = e.clientX;
       }}
       onDragEnd={(e) => {
-        if (dragRef.current - e.clientX > 150) {
+        if (dragRef.current - e.clientX > 120) {
           handleShuffle();
         }
         dragRef.current = 0;
       }}
       transition={{ duration: 0.35 }}
-      className={`absolute left-0 top-0 grid h-[450px] w-[320px] md:w-[350px] select-none place-content-center space-y-6 rounded-3xl border border-black/10 bg-white/80 p-8 shadow-xl backdrop-blur-md ${
+      className={`absolute left-0 top-0 grid h-[380px] sm:h-[420px] md:h-[450px] w-[260px] min-[360px]:w-[280px] min-[400px]:w-[310px] sm:w-[330px] md:w-[350px] select-none place-content-center space-y-4 sm:space-y-6 rounded-3xl border border-black/10 bg-white/90 p-5 sm:p-7 md:p-8 shadow-xl backdrop-blur-md ${
         isFront ? "cursor-grab active:cursor-grabbing" : ""
       }`}
     >
       <img
         src={avatarUrl}
         alt={`Avatar of ${author}`}
-        className="pointer-events-none mx-auto h-28 w-28 rounded-full border border-black/10 bg-slate-100 object-cover shadow-sm"
+        className="pointer-events-none mx-auto h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full border border-black/10 bg-slate-100 object-cover shadow-sm"
       />
-      <span className="text-center text-base md:text-lg italic text-black/70 leading-relaxed">
+      <span className="text-center text-sm sm:text-base md:text-lg italic text-black/70 leading-relaxed line-clamp-4 sm:line-clamp-none">
         "{testimonial}"
       </span>
-      <div className="text-center flex flex-col gap-1">
-        <span className="text-sm font-bold text-primary">{author}</span>
+      <div className="text-center flex flex-col gap-0.5 sm:gap-1">
+        <span className="text-xs sm:text-sm font-bold text-primary">{author}</span>
       </div>
     </motion.div>
   );

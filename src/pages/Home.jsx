@@ -301,7 +301,7 @@ const Home = React.memo(() => {
   ];
 
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-full overflow-x-clip">
       <SEO
         title="Macenza | AI Software Development Company"
         description="Macenza delivers AI software solutions, automation systems, high-performance web applications, and custom digital transformation solutions."
@@ -317,18 +317,18 @@ const Home = React.memo(() => {
       </div>
 
       {/* Technology & Partners Logo Carousel */}
-      <div className="py-16 bg-white border-y border-black/5 overflow-hidden">
-        <div className="container mx-auto px-6 mb-8">
-          <p className="text-xs font-bold text-center text-black/40 uppercase tracking-[0.25em]">
+      <div className="py-8 sm:py-12 bg-white border-y border-black/5 overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 mb-4 sm:mb-6">
+          <p className="text-[11px] sm:text-xs font-bold text-center text-black/40 uppercase tracking-[0.2em] sm:tracking-[0.25em]">
             Programming Languages, Frameworks, and Tools We Use
           </p>
         </div>
         <LogoLoop
           logos={techLogos}
-          speed={40}
+          speed={35}
           direction="left"
-          logoHeight={48}
-          gap={60}
+          logoHeight={36}
+          gap={40}
           fadeOut={true}
           fadeOutColor="#ffffff"
           scaleOnHover={true}
@@ -342,7 +342,7 @@ const Home = React.memo(() => {
         title="Our Capabilities"
         subtitle="We build custom software, modern web applications, and smart automation that fits your business needs."
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {services.map((service, index) => (
             <div
               key={index}
@@ -356,7 +356,7 @@ const Home = React.memo(() => {
                   }
                 }
               }}
-              className="rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block overflow-hidden bg-white/50 backdrop-blur-sm cursor-pointer select-text"
+              className="rounded-2xl sm:rounded-3xl border border-dark/5 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 group block overflow-hidden bg-white/50 backdrop-blur-sm cursor-pointer select-text"
             >
               <div className="aspect-video w-full overflow-hidden relative border-b border-dark/5">
                 <img
@@ -367,8 +367,8 @@ const Home = React.memo(() => {
                   draggable="false"
                 />
               </div>
-              <div className="p-8">
-                <h3 className="text-2xl font-bold text-black mb-4 group-hover:text-primary transition-colors duration-300">{service.title}</h3>
+              <div className="p-5 sm:p-6 md:p-8">
+                <h3 className="text-xl sm:text-2xl font-bold text-black mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300">{service.title}</h3>
                 <p className="text-black/60 font-light leading-relaxed text-sm md:text-base">
                   {service.desc}
                 </p>
@@ -379,31 +379,31 @@ const Home = React.memo(() => {
       </Section>
 
       <Section id="why-macenza" className="bg-white text-black">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           <div>
-            <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tight text-black">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 tracking-tight text-black">
               Why <span className="text-primary">Macenza?</span>
             </h2>
-            <div className="space-y-8">
+            <div className="space-y-4 sm:space-y-6">
               {[
                 { title: "Transparent Development Process", desc: "We provide clients with direct access to their project's Git repository and schedule weekly video reviews to demo codebase updates." },
                 { title: "Scalable Relational Databases", desc: "We write clean database schemas with proper foreign keys, indexing, and query optimizations to keep response times low under high user concurrency." },
                 { title: "Automated Deployment Pipelines", desc: "We containerize applications using Docker and write configuration scripts for automated server updates, minimizing staging and production downtime." },
                 { title: "Long-Term Code Maintenance", desc: "We offer monthly maintenance plans to monitor server error logs, update outdated libraries, patch security issues, and fix user bugs." }
               ].map((item, i) => (
-                <div key={i} className="flex gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold">
+                <div key={i} className="flex gap-4 sm:gap-6">
+                  <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-sm sm:text-base">
                     0{i + 1}
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold mb-2 text-black">{item.title}</h4>
-                    <p className="text-black/60 font-light leading-relaxed">{item.desc}</p>
+                    <h4 className="text-lg sm:text-xl font-bold mb-1.5 sm:mb-2 text-black">{item.title}</h4>
+                    <p className="text-black/60 font-light leading-relaxed text-sm sm:text-base">{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="relative aspect-square rounded-3xl overflow-hidden group">
+          <div className="relative aspect-[4/3] sm:aspect-square rounded-2xl sm:rounded-3xl overflow-hidden group max-w-lg mx-auto lg:max-w-none w-full">
             <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-700"></div>
             <img
               src="/macenza-ad.webp"
@@ -412,22 +412,22 @@ const Home = React.memo(() => {
               height={800}
               loading="lazy"
               decoding="async"
-              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100"
+              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 scale-105 group-hover:scale-100"
             />
           </div>
         </div>
       </Section>
 
-      <div className="py-10 bg-white overflow-hidden border-t border-black/5 flex flex-col gap-4">
+      <div className="py-6 sm:py-8 bg-white overflow-hidden border-t border-black/5 flex flex-col gap-2 sm:gap-3">
         <ScrollVelocity
           texts={['Website Development • IT Services • Web App Development • AI Solutions • Custom Software •']}
-          velocity={40}
-          className="text-black/10 uppercase font-black"
+          velocity={35}
+          className="text-black/10 uppercase font-black text-xl sm:text-2xl md:text-3xl"
         />
         <ScrollVelocity
           texts={['Cloud Infrastructure • Automation • UI/UX Design • Mobile Apps • Data Science •']}
-          velocity={-40}
-          className="text-black/5 uppercase font-black"
+          velocity={-35}
+          className="text-black/5 uppercase font-black text-xl sm:text-2xl md:text-3xl"
         />
       </div>
 
@@ -437,7 +437,7 @@ const Home = React.memo(() => {
         subtitle="Explore software projects we have designed, built, and deployed for client organizations."
         className="bg-white text-black"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
           {portfolioProjects.map((project, index) => {
             const isExternal = project.url.startsWith('http');
             const handlePortfolioClick = () => {
@@ -455,10 +455,10 @@ const Home = React.memo(() => {
               <div
                 key={index}
                 onClick={handlePortfolioClick}
-                className="portfolio-card group relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-6 md:p-8 transition-colors transition-shadow duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer select-text"
+                className="portfolio-card group relative rounded-2xl sm:rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 hover:border-primary/20 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_25px_60px_rgba(37,99,235,0.12)] p-5 sm:p-7 md:p-8 transition-colors transition-shadow duration-700 ease-out flex flex-col justify-between overflow-hidden cursor-pointer select-text"
               >
                 <div>
-                  <div className="relative aspect-[16/10] rounded-[2rem] overflow-hidden mb-8 shadow-[0_15px_35px_rgba(0,0,0,0.05)] border border-black/5">
+                  <div className="relative aspect-[16/10] rounded-xl sm:rounded-[2rem] overflow-hidden mb-5 sm:mb-7 shadow-[0_15px_35px_rgba(0,0,0,0.05)] border border-black/5">
                     <img
                       src={project.image}
                       alt={project.name}
@@ -466,25 +466,25 @@ const Home = React.memo(() => {
                       draggable="false"
                     />
                     <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100 backdrop-blur-[2px] transition-all duration-500">
-                      <span className="px-6 py-3 bg-white/95 backdrop-blur-md text-black rounded-full font-bold text-sm shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-75">
+                      <span className="px-5 py-2.5 sm:px-6 sm:py-3 bg-white/95 backdrop-blur-md text-black rounded-full font-bold text-xs sm:text-sm shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 delay-75">
                         {project.buttonText} <ArrowRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-primary text-xs font-black tracking-[0.2em] uppercase">
+                  <div className="flex justify-between items-center mb-3 sm:mb-4">
+                    <span className="text-primary text-[11px] sm:text-xs font-black tracking-[0.18em] sm:tracking-[0.2em] uppercase">
                       {project.category}
                     </span>
-                    <div className="w-8 h-8 rounded-full border border-black/10 flex items-center justify-center text-xs font-bold text-black/40 group-hover:text-primary group-hover:border-primary/30 transition-colors duration-300">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-black/10 flex items-center justify-center text-xs font-bold text-black/40 group-hover:text-primary group-hover:border-primary/30 transition-colors duration-300">
                       0{index + 1}
                     </div>
                   </div>
 
-                  <h3 className="text-3xl font-bold text-black group-hover:text-primary transition-colors duration-300 tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-black group-hover:text-primary transition-colors duration-300 tracking-tight">
                     {project.name}
                   </h3>
-                  <p className="text-black/60 font-light mt-4 leading-relaxed text-[0.95rem] md:text-base">
+                  <p className="text-black/60 font-light mt-2.5 sm:mt-4 leading-relaxed text-sm md:text-base">
                     {project.desc}
                   </p>
                 </div>
@@ -501,26 +501,26 @@ const Home = React.memo(() => {
         id="testimonials-section"
         className="bg-white text-black relative overflow-hidden"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-16 items-center">
           {/* Column 1: Copy/Info */}
           <div className="flex flex-col items-start text-left max-w-xl">
-            <h2 className="text-4xl md:text-6xl font-bold tracking-tight text-black mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-black mb-4 sm:mb-6">
               Trusted by Businesses Worldwide
             </h2>
-            <p className="text-lg md:text-xl text-black/60 font-light leading-relaxed mb-8">
+            <p className="text-base sm:text-lg md:text-xl text-black/60 font-light leading-relaxed mb-6 sm:mb-8">
               Discover some of the software solutions we've delivered for businesses across multiple industries and countries. Drag the top card left/right or click the button to cycle through client success stories.
             </p>
             <button
               onClick={handleShuffle}
-              className="px-8 py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-black transition-all duration-300 shadow-lg hover:shadow-primary/20"
+              className="px-6 py-3.5 sm:px-8 sm:py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-black transition-all duration-300 shadow-lg hover:shadow-primary/20 min-h-[44px]"
             >
               Next Story
             </button>
           </div>
 
           {/* Column 2: Testimonial Card Stack */}
-          <div className="relative h-[480px] w-full flex justify-center items-center overflow-visible">
-            <div className="relative h-[450px] w-[320px] md:w-[350px] select-none">
+          <div className="relative h-[410px] sm:h-[450px] md:h-[480px] w-full flex justify-center items-center overflow-hidden sm:overflow-visible">
+            <div className="relative h-[380px] sm:h-[420px] md:h-[450px] w-[260px] min-[360px]:w-[280px] min-[400px]:w-[310px] sm:w-[330px] md:w-[350px] select-none">
               {globalTestimonials.map((t, index) => (
                 <TestimonialCard
                   key={index}
@@ -544,64 +544,64 @@ const Home = React.memo(() => {
         subtitle="The vision behind Macenza and the principles that guide every software solution we build."
         className="bg-white text-black relative overflow-hidden"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch reveal-up">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-stretch reveal-up">
           {/* Left Column: Portrait and Stats */}
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="portfolio-card relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-6 flex flex-col justify-between overflow-hidden h-full">
-              <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden mb-6 shadow-sm border border-black/5">
+          <div className="lg:col-span-5 flex flex-col gap-5 sm:gap-8">
+            <div className="portfolio-card relative rounded-2xl sm:rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-4 sm:p-6 flex flex-col justify-between overflow-hidden h-full">
+              <div className="relative aspect-[4/5] rounded-xl sm:rounded-[2rem] overflow-hidden mb-4 sm:mb-6 shadow-sm border border-black/5">
                 <img
                   src="/review/founder.webp"
                   alt="Shashank Shubham"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="text-center md:text-left px-2">
-                <h3 className="text-3xl font-bold text-black tracking-tight mb-1">Shashank Shubham</h3>
+              <div className="text-center md:text-left px-1 sm:px-2">
+                <h3 className="text-2xl sm:text-3xl font-bold text-black tracking-tight mb-1">Shashank Shubham</h3>
                 <span className="text-primary text-xs font-black tracking-[0.2em] uppercase">Founder & CEO</span>
               </div>
             </div>
 
             {/* Stats list */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {[
                 { title: "Founded", value: "2025" },
                 { title: "Specialization", value: "AI & SaaS" },
                 { title: "Focus", value: "Custom Software" },
                 { title: "Mission", value: "Practical Tech" }
               ].map((stat, i) => (
-                <div key={i} className="p-6 rounded-[2rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.02)] text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">{stat.value}</div>
-                  <div className="text-xs text-black/55 uppercase font-black tracking-wider">{stat.title}</div>
+                <div key={i} className="p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-[2rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.02)] text-center">
+                  <div className="text-xl sm:text-2xl font-bold text-primary mb-1">{stat.value}</div>
+                  <div className="text-[10px] sm:text-xs text-black/55 uppercase font-black tracking-wider">{stat.title}</div>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right Column: Founder content and quote */}
-          <div className="lg:col-span-7 flex flex-col justify-between gap-8">
+          <div className="lg:col-span-7 flex flex-col justify-between gap-6 sm:gap-8">
             {/* Main content card */}
-            <div className="portfolio-card relative rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-8 md:p-10 flex flex-col gap-8 h-full">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="portfolio-card relative rounded-2xl sm:rounded-[2.5rem] bg-white/40 backdrop-blur-xl border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-5 sm:p-7 md:p-10 flex flex-col gap-6 sm:gap-8 h-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
                 <div>
-                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">About</h4>
+                  <h4 className="text-base sm:text-lg font-bold text-primary mb-2 sm:mb-3 uppercase tracking-wider">About</h4>
                   <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
                     Macenza was founded with a simple belief: technology should solve real business problems, not create unnecessary complexity. From AI-powered applications to enterprise software and SaaS platforms, every solution is designed with long-term scalability, performance, and usability in mind.
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Why Macenza Was Started</h4>
+                  <h4 className="text-base sm:text-lg font-bold text-primary mb-2 sm:mb-3 uppercase tracking-wider">Why Macenza Was Started</h4>
                   <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
                     Many businesses struggle with software that is difficult to use, expensive to maintain, or doesn't truly fit their workflows. Macenza was created to build practical software that helps companies automate operations, improve efficiency, and grow with confidence.
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Our Philosophy</h4>
+                  <h4 className="text-base sm:text-lg font-bold text-primary mb-2 sm:mb-3 uppercase tracking-wider">Our Philosophy</h4>
                   <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
                     We believe great software starts by understanding the business before writing a single line of code. Every project begins with discovery, thoughtful planning, clean architecture, and transparent collaboration. Our focus is on building software that delivers long-term value rather than unnecessary complexity.
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-lg font-bold text-primary mb-3 uppercase tracking-wider">Our Vision</h4>
+                  <h4 className="text-base sm:text-lg font-bold text-primary mb-2 sm:mb-3 uppercase tracking-wider">Our Vision</h4>
                   <p className="text-black/65 font-light leading-relaxed text-sm md:text-base">
                     To build intelligent software and AI solutions that help businesses around the world innovate, automate, and scale. We aim to create reliable digital products that make advanced technology practical, accessible, and impactful.
                   </p>
@@ -609,8 +609,8 @@ const Home = React.memo(() => {
               </div>
 
               {/* Founder quote */}
-              <div className="border-t border-black/5 pt-8 mt-4">
-                <blockquote className="text-xl md:text-2xl text-black/80 font-light italic leading-relaxed mb-4">
+              <div className="border-t border-black/5 pt-5 sm:pt-7 mt-2 sm:mt-4">
+                <blockquote className="text-lg sm:text-xl md:text-2xl text-black/80 font-light italic leading-relaxed mb-3 sm:mb-4">
                   "The best software isn't the one with the most features—it's the one that solves the right problem in the simplest possible way."
                 </blockquote>
                 <cite className="text-xs font-bold text-black/55 uppercase tracking-wider not-italic">
@@ -619,16 +619,16 @@ const Home = React.memo(() => {
               </div>
 
               {/* Buttons */}
-              <div className="flex flex-wrap gap-4 mt-4">
+              <div className="flex flex-col min-[480px]:flex-row flex-wrap gap-3 sm:gap-4 mt-2 sm:mt-4">
                 <Link
                   to="/contact"
-                  className="px-8 py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-md flex items-center gap-2"
+                  className="px-6 py-3.5 sm:px-8 sm:py-4 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary-dark transition-all duration-300 shadow-md flex items-center justify-center gap-2 min-h-[44px]"
                 >
                   Let's Build Together
                 </Link>
                 <Link
                   to="/solutions"
-                  className="px-8 py-4 bg-white text-black border border-black/10 rounded-full font-bold text-sm hover:bg-black hover:text-white transition-all duration-300 shadow-sm"
+                  className="px-6 py-3.5 sm:px-8 sm:py-4 bg-white text-black border border-black/10 rounded-full font-bold text-sm hover:bg-black hover:text-white transition-all duration-300 shadow-sm flex items-center justify-center min-h-[44px]"
                 >
                   View Our Work
                 </Link>
@@ -639,16 +639,16 @@ const Home = React.memo(() => {
       </Section>
 
       <Section id="contact" className="text-center bg-white">
-        <div className="max-w-5xl mx-auto p-20 rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
+        <div className="max-w-5xl mx-auto px-5 py-10 sm:px-10 sm:py-14 md:p-16 lg:p-20 rounded-3xl sm:rounded-[3rem] lg:rounded-[4rem] bg-primary text-white relative overflow-hidden reveal-up">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-white/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/20 rounded-full blur-[100px] pointer-events-none"></div>
-          <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight font-turret">
+          <h2 className="text-3xl min-[380px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 md:mb-8 tracking-tight font-turret">
             Start Your Software Project
           </h2>
-          <p className="text-2xl text-white/80 font-light mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl md:text-2xl text-white/85 font-light mb-8 sm:mb-10 md:mb-12 max-w-3xl mx-auto leading-relaxed">
             Get in touch with our engineering team to discuss your application requirements, database schema design, and cloud hosting specifications.
           </p>
-          <Link to="/contact" className="relative z-10 inline-block px-8 py-4 sm:px-16 sm:py-6 bg-white text-primary rounded-full font-bold text-base sm:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap">
+          <Link to="/contact" className="relative z-10 inline-block px-7 py-3.5 sm:px-12 sm:py-5 md:px-16 md:py-6 bg-white text-primary rounded-full font-bold text-sm sm:text-lg md:text-xl hover:bg-dark hover:text-white transition-all duration-300 shadow-2xl whitespace-nowrap min-h-[48px]">
             Get in Touch
           </Link>
         </div>
