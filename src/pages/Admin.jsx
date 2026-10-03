@@ -246,6 +246,23 @@ const Admin = () => {
     return nameToImage[normalized] || null;
   };
 
+  const calculateWorkingDays = (startDateStr, endDateStr) => {
+    if (!startDateStr) return null;
+    const start = new Date(startDateStr);
+    if (isNaN(start.getTime())) return null;
+    const end = endDateStr ? new Date(endDateStr) : new Date();
+    if (isNaN(end.getTime())) return null;
+
+    // Reset time components for accurate calendar date difference
+    const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const e = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+    const diffTime = e.getTime() - s.getTime();
+    if (diffTime < 0) return 0;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays;
+  };
+
   // Employees states
   const [employees, setEmployees] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -308,25 +325,30 @@ const Admin = () => {
       toast.error('No employees to export');
       return;
     }
-    const headers = ['Registration No.', 'Full Name', 'Father\'s Name', 'Date of Birth', 'Email ID', 'Contact Number', 'Role', 'Department', 'Start Date', 'Aadhaar No.', 'Permanent Address', 'Current Address', 'Account No.', 'IFSC Code'];
+    const headers = ['Registration No.', 'Full Name', 'Father\'s Name', 'Date of Birth', 'Email ID', 'Contact Number', 'Role', 'Department', 'Start Date', 'End Date', 'Total Working Days', 'Aadhaar No.', 'Permanent Address', 'Current Address', 'Account No.', 'IFSC Code'];
     const csvContent = [
       headers.join(','),
-      ...employees.map(emp => [
-        `"${emp.registration_no || ''}"`,
-        `"${emp.name || ''}"`,
-        `"${emp.father_name || ''}"`,
-        `"${emp.dob || ''}"`,
-        `"${emp.email || ''}"`,
-        `"${emp.contact_number || ''}"`,
-        `"${emp.role || ''}"`,
-        `"${emp.department || ''}"`,
-        `"${emp.start_date || ''}"`,
-        `"${emp.aadhaar_no || ''}"`,
-        `"${emp.permanent_address || ''}"`,
-        `"${emp.current_address || ''}"`,
-        `"${emp.account_no || ''}"`,
-        `"${emp.ifsc_detail || ''}"`
-      ].join(','))
+      ...employees.map(emp => {
+        const workingDays = calculateWorkingDays(emp.start_date, emp.end_date);
+        return [
+          `"${emp.registration_no || ''}"`,
+          `"${emp.name || ''}"`,
+          `"${emp.father_name || ''}"`,
+          `"${emp.dob || ''}"`,
+          `"${emp.email || ''}"`,
+          `"${emp.contact_number || ''}"`,
+          `"${emp.role || ''}"`,
+          `"${emp.department || ''}"`,
+          `"${emp.start_date || ''}"`,
+          `"${emp.end_date || ''}"`,
+          `"${workingDays !== null ? workingDays : ''}"`,
+          `"${emp.aadhaar_no || ''}"`,
+          `"${emp.permanent_address || ''}"`,
+          `"${emp.current_address || ''}"`,
+          `"${emp.account_no || ''}"`,
+          `"${emp.ifsc_detail || ''}"`
+        ].join(',');
+      })
     ].join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -354,6 +376,7 @@ const Admin = () => {
     role: '',
     department: '',
     start_date: '',
+    end_date: '',
     alt_phone: '',
     aadhaar_no: '',
     permanent_address: '',
@@ -813,6 +836,7 @@ const Admin = () => {
       role: '',
       department: '',
       start_date: '',
+      end_date: '',
       alt_phone: '',
       aadhaar_no: '',
       permanent_address: '',
@@ -3081,10 +3105,20 @@ const Admin = () => {
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Department</label>
                         <input type="text" value={newEmployeeForm.department} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, department: e.target.value })} placeholder="e.g. Engineering" className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
-                      <div className="flex flex-col gap-1.5 md:col-span-2">
+                      <div className="flex flex-col gap-1.5">
                         <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Start Date</label>
                         <input type="date" value={newEmployeeForm.start_date} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, start_date: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
                       </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">End Date (Optional)</label>
+                        <input type="date" value={newEmployeeForm.end_date || ''} onChange={(e) => setNewEmployeeForm({ ...newEmployeeForm, end_date: e.target.value })} className="bg-[#EFF6FF] border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all" />
+                      </div>
+                      {newEmployeeForm.start_date && (
+                        <div className="md:col-span-2 bg-primary/10 border border-primary/20 rounded-xl p-2.5 sm:p-3 text-xs font-semibold text-primary flex items-center justify-between">
+                          <span>Total Working Days ({newEmployeeForm.end_date ? 'Completed Period' : 'Till Today'}):</span>
+                          <span className="font-black text-sm">{calculateWorkingDays(newEmployeeForm.start_date, newEmployeeForm.end_date)} days</span>
+                        </div>
+                      )}
                       <button type="submit" className="md:col-span-2 w-full py-3.5 sm:py-4 mt-2 bg-primary text-white rounded-xl sm:rounded-full font-black text-xs tracking-wider uppercase shadow-xl shadow-primary/20 hover:bg-primary-dark transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                         Create Employee Profile
                       </button>
@@ -3170,6 +3204,20 @@ const Admin = () => {
                             <span className="font-semibold text-black truncate max-w-[180px]">{emp.role || '-'} {emp.department ? `(${emp.department})` : ''}</span>
                           </div>
                           <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Working Days:</span>
+                            <span className="font-black text-primary bg-primary/10 px-2 py-0.5 rounded text-[11px]">
+                              {calculateWorkingDays(emp.start_date, emp.end_date) !== null
+                                ? `${calculateWorkingDays(emp.start_date, emp.end_date)} days (${emp.end_date ? 'Completed' : 'Active'})`
+                                : '-'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-black/70">
+                            <span className="text-black/40 text-[11px]">Duration:</span>
+                            <span className="font-semibold text-black truncate max-w-[180px]">
+                              {emp.start_date || '-'} {emp.end_date ? `to ${emp.end_date}` : '(Present)'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-black/70">
                             <span className="text-black/40 text-[11px]">Email:</span>
                             <span className="font-semibold text-black truncate max-w-[180px]">{emp.email || '-'}</span>
                           </div>
@@ -3218,6 +3266,9 @@ const Admin = () => {
                           <th className="px-6 py-4 whitespace-nowrap">Contact Number</th>
                           <th className="px-6 py-4 whitespace-nowrap">Aadhaar No.</th>
                           <th className="px-6 py-4 whitespace-nowrap">Alternative Phone No.</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Start Date</th>
+                          <th className="px-6 py-4 whitespace-nowrap">End Date</th>
+                          <th className="px-6 py-4 whitespace-nowrap">Working Days</th>
                           <th className="px-6 py-4 whitespace-nowrap">Account No.</th>
                           <th className="px-6 py-4 whitespace-nowrap">IFSC Code</th>
                           <th className="px-8 py-4 whitespace-nowrap">Action</th>
@@ -3262,6 +3313,17 @@ const Admin = () => {
                             <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.contact_number || '-'}</td>
                             <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.aadhaar_no || '-'}</td>
                             <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.alt_phone || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.start_date || '-'}</td>
+                            <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.end_date || 'Present'}</td>
+                            <td className="px-6 py-5 text-sm whitespace-nowrap">
+                              {calculateWorkingDays(emp.start_date, emp.end_date) !== null ? (
+                                <span className="font-bold text-primary bg-primary/10 px-2 py-1 rounded-md text-xs">
+                                  {calculateWorkingDays(emp.start_date, emp.end_date)} days
+                                </span>
+                              ) : (
+                                <span className="text-black/40">-</span>
+                              )}
+                            </td>
                             <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.account_no || '-'}</td>
                             <td className="px-6 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">{emp.ifsc_detail || '-'}</td>
                             <td className="px-8 py-5 text-sm font-semibold text-black/70 whitespace-nowrap">
@@ -3280,7 +3342,7 @@ const Admin = () => {
                         ))}
                         {employees.length === 0 && (
                           <tr>
-                            <td colSpan="15" className="p-8 text-center text-black/50 italic">
+                            <td colSpan="18" className="p-8 text-center text-black/50 italic">
                               No employee records found.
                             </td>
                           </tr>
@@ -3398,6 +3460,18 @@ const Admin = () => {
                       <div className="flex justify-between items-center text-xs font-semibold py-1">
                         <span className="text-black/50">Start Date</span>
                         <span className="text-black font-bold">{selectedEmployee.start_date || '-'}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">End Date</span>
+                        <span className="text-black font-bold">{selectedEmployee.end_date || 'Ongoing (Present)'}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs font-semibold py-1">
+                        <span className="text-black/50">Total Working Days</span>
+                        <span className="text-primary font-black bg-primary/10 px-2 py-0.5 rounded-md">
+                          {calculateWorkingDays(selectedEmployee.start_date, selectedEmployee.end_date) !== null
+                            ? `${calculateWorkingDays(selectedEmployee.start_date, selectedEmployee.end_date)} days`
+                            : '-'}
+                        </span>
                       </div>
                       <div className="flex justify-between items-center text-xs font-semibold py-1">
                         <span className="text-black/50">Base Salary</span>
@@ -3754,6 +3828,23 @@ const Admin = () => {
                         className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
                       />
                     </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">End Date (Optional)</label>
+                      <input
+                        type="date"
+                        value={editEmployeeForm.end_date || ''}
+                        onChange={(e) => setEditEmployeeForm({ ...editEmployeeForm, end_date: e.target.value })}
+                        className="bg-white border border-[#BFDBFE] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl text-black font-semibold text-xs sm:text-sm outline-none focus:border-primary transition-all"
+                      />
+                    </div>
+
+                    {editEmployeeForm.start_date && (
+                      <div className="md:col-span-2 bg-primary/10 border border-primary/20 rounded-xl p-2.5 sm:p-3 text-xs font-semibold text-primary flex items-center justify-between">
+                        <span>Total Working Days ({editEmployeeForm.end_date ? 'Completed Period' : 'Till Today'}):</span>
+                        <span className="font-black text-sm">{calculateWorkingDays(editEmployeeForm.start_date, editEmployeeForm.end_date)} days</span>
+                      </div>
+                    )}
 
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[10px] font-black uppercase text-black/60 tracking-wider">Salary</label>
